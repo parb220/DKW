@@ -1,0 +1,102 @@
+%2multibyte Version: 5.50.0.2953 CodePage: 65001
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2953}
+%TCIDATA{Codepage=65001}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Monday, June 01, 2015 12:51:54}
+%TCIDATA{LastRevised=Saturday, June 06, 2015 14:26:19}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\input{tcilatex}
+\begin{document}
+
+
+\begin{tabular}{llccccccc}
+\hline\hline
+&  & RW &  & DKW &  & \multicolumn{3}{c}{GW} \\ \cline{7-9}
+&  &  &  &  &  & option & oil & full$^{\ast }$ \\ \hline
+In-Sample & 1m & \multicolumn{1}{l}{0.003401585353471} & \multicolumn{1}{l}{}
+& \multicolumn{1}{l}{0.002658497379662} & \multicolumn{1}{l}{} & 
+\multicolumn{1}{l}{0.002986107075085} & \multicolumn{1}{l}{0.002984479843472}
+& \multicolumn{1}{l}{} \\ 
+(1990-2013) & 6m & \multicolumn{1}{l}{0.015075179670670} & 
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{0.008672047406964} & 
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{0.011504461502062} & 
+\multicolumn{1}{l}{0.011490215692915} & \multicolumn{1}{l}{} \\ 
+& 12m & \multicolumn{1}{l}{0.027062338970873} & \multicolumn{1}{l}{} & 
+\multicolumn{1}{l}{0.012086440104836} & \multicolumn{1}{l}{} & 
+\multicolumn{1}{l}{0.019619491387490} & \multicolumn{1}{l}{0.019585766020468}
+& \multicolumn{1}{l}{} \\ 
+&  & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & 
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & 
+\multicolumn{1}{l}{} \\ \hline
+Out-of-Sample & 1m & \multicolumn{1}{l}{0.002662854362953} & 
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{0.003321733023336} & 
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{0.002581300431064} & 
+\multicolumn{1}{l}{0.002580321384848} & \multicolumn{1}{l}{} \\ 
+(2014-2015) & 6m & \multicolumn{1}{l}{0.008535651121990} & 
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{0.010077738784987} & 
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{0.008104384870160} & 
+\multicolumn{1}{l}{0.008082035195854} &  \\ 
+&  & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & 
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & 
+\multicolumn{1}{l}{} \\ \hline\hline
+\end{tabular}
+
+\bigskip
+
+\begin{tabular}{llcccccccc}
+\hline\hline
+&  & RW &  & DKW &  & \multicolumn{4}{c}{GW} \\ \cline{7-10}
+&  &  &  &  &  & DKW\_option & DKWv\_option & oil & full$^{\ast }$ \\ \hline
+In-Sample & 1m & \multicolumn{1}{l}{0.0034} & \multicolumn{1}{l}{} & 
+\multicolumn{1}{l}{0.0027} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{0.0027
+} & \multicolumn{1}{l}{} &  & \multicolumn{1}{l}{} \\ 
+(1990-2012) & 6m & \multicolumn{1}{l}{0.0153} & \multicolumn{1}{l}{} & 
+\multicolumn{1}{l}{0.0088} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{0.0087
+} & \multicolumn{1}{l}{} &  & \multicolumn{1}{l}{} \\ 
+& 12m & \multicolumn{1}{l}{0.0275} & \multicolumn{1}{l}{} & 
+\multicolumn{1}{l}{0.0123} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{0.0120
+} & \multicolumn{1}{l}{} &  & \multicolumn{1}{l}{} \\ 
+&  & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & 
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} &  & 
+\multicolumn{1}{l}{} \\ \hline
+Out-of-Sample & 1m & \multicolumn{1}{l}{0.0027} & \multicolumn{1}{l}{} & 
+\multicolumn{1}{l}{0.0033} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{0.0027
+} & \multicolumn{1}{l}{} &  & \multicolumn{1}{l}{} \\ 
+(2013-2015) & 6m & 0.0085 &  & 0.0098 &  & \multicolumn{1}{l}{0.0065} & 
+\multicolumn{1}{l}{} &  &  \\ 
+& 12m & \multicolumn{1}{l}{0.0156} & \multicolumn{1}{l}{} & 
+\multicolumn{1}{l}{0.0134} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{0.0065
+} & \multicolumn{1}{l}{} &  & \multicolumn{1}{l}{} \\ \hline\hline
+\end{tabular}
+
+\end{document}

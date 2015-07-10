@@ -1,0 +1,1383 @@
+%2multibyte Version: 5.50.0.2953 CodePage: 1252
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsfonts}
+\usepackage{amsmath}
+
+\setcounter{MaxMatrixCols}{10}
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2953}
+%TCIDATA{Codepage=1252}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Tuesday, May 06, 2008 16:53:02}
+%TCIDATA{LastRevised=Wednesday, May 27, 2015 11:29:13}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{ComputeDefs=
+%$n$
+%}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\setlength{\oddsidemargin}{.25in}
+\setlength{\evensidemargin}{.05in}
+\setlength{\textwidth}{6.0in}
+\setlength{\textheight}{8.2in}
+\renewcommand{\topmargin}{0.0in}
+\renewcommand{\baselinestretch}{1.0}
+\input{tcilatex}
+\makeatletter
+\def\@biblabel#1{\hspace*{-\labelsep}}
+\makeatother
+
+\begin{document}
+
+\title{Documentation: MODEL\_FRBA\_full}
+\author{Nikolay Gospodinov and Bin Wei}
+\maketitle
+
+\section{Model}
+
+Suppose that there are a vector of four latent variables $x_{t}=\left(
+x_{1t},x_{2t},x_{3t}\right) ^{\prime }$ and $v_{t}$\textbf{\ }that drive
+nominal and real yields as well as inflation. Their dynamics under the
+physical measure is%
+\begin{eqnarray}
+dx_{t} &=&\mathcal{K}\left( \mu -x_{t}\right) dt+\Sigma dW_{x,t} \\
+dv_{t} &=&\kappa _{v}\left( \mu _{v}-v_{t}\right) dt+\sigma _{v}\sqrt{v_{t}}%
+\left( \sqrt{1-\rho ^{2}}dW_{v,t}+\rho dW_{\bot ,t}\right) 
+\end{eqnarray}%
+and%
+\begin{eqnarray}
+d\delta _{t} &=&\kappa _{\delta }\left( \mu _{\delta }-\delta _{t}\right)
+dt+\sigma _{\delta }dW_{\delta ,t} \\
+ds_{t} &=&\left( r_{t}^{N}-\delta _{t}-\frac{1}{2}\sigma _{s}^{2}+\sigma
+_{s}\Lambda _{\delta ,t}^{N}\right) dt+\sigma _{s}dW_{\delta ,t}
+\end{eqnarray}%
+The nominal pricing kernel takes the form%
+\begin{equation}
+dM_{t}^{N}/M_{t}^{N}=-r_{t}^{N}dt-\Lambda _{x,t}^{N\prime }dW_{x,t}-\Lambda
+_{v,t}^{N}dW_{v,t}-\Lambda _{\bot ,t}^{N}dW_{\bot ,t}-\Lambda _{\delta
+,t}^{N}dW_{\delta ,t}
+\end{equation}%
+where the nominal short rate is%
+\begin{equation}
+r_{t}^{N}=\rho _{0}^{N}+\rho _{x}^{N\prime }x_{t}+\rho _{v}^{N}v_{t}+\rho
+_{\delta }^{N}\delta _{t}+\rho _{s}^{N}s_{t}
+\end{equation}%
+and the vector of prices of risk is given by\qquad 
+\begin{eqnarray*}
+\Lambda _{x,t}^{N} &=&\lambda _{0,x}^{N}+\lambda _{x}^{N}x_{t} \\
+\Lambda _{v,t}^{N} &=&\gamma _{v}\sqrt{v_{t}} \\
+\Lambda _{\bot ,t}^{N} &=&\gamma _{v}^{\bot }\sqrt{v_{t}} \\
+\Lambda _{\delta ,t}^{N} &=&\lambda _{0,\delta }^{N}+\lambda _{\delta
+}^{N}\delta _{t}
+\end{eqnarray*}%
+Let $q_{t}\equiv \log Q_{t}$ denote the log price level. The price level
+evolves as follows: 
+\begin{equation}
+dq_{t}=\pi _{t}dt+\sigma _{q}^{\prime }dW_{x,t}+\sqrt{v_{t}}dW_{\bot ,t}
+\end{equation}%
+where the instantaneous expected inflation rate is given by 
+\begin{equation}
+\pi _{t}=\rho _{0}^{\pi }+\rho _{x}^{\pi \prime }x_{t}+\rho _{v}^{\pi
+}v_{t}+\rho _{\delta }^{\pi }\delta _{t}+\rho _{s}^{\pi }s_{t}
+\end{equation}
+
+Under the risk-neutral measure, 
+\begin{eqnarray*}
+d\delta _{t} &=&\kappa _{\delta }\left( \mu _{\delta }-\delta _{t}\right)
+dt+\sigma _{\delta }dW_{\delta ,t} \\
+&=&\kappa _{\delta }\left( \mu _{\delta }-\delta _{t}\right) dt+\sigma
+_{\delta }\left( dW_{\delta ,t}^{\ast }-\Lambda _{\delta ,t}^{N}dt\right)  \\
+&\equiv &\kappa _{\delta }^{\ast }\left( \mu _{\delta }^{\ast }-\delta
+_{t}\right) dt+\sigma _{\delta }dW_{\delta ,t}^{\ast }
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+ds_{t} &=&\left( r_{t}^{N}-\delta _{t}-\frac{1}{2}\sigma _{s}^{2}+\sigma
+_{s}\Lambda _{\delta ,t}^{N}\right) dt+\sigma _{s}dW_{\delta ,t} \\
+&\equiv &\left( \phi _{0}+\phi _{x}^{\prime }x_{t}+\phi _{v}v_{t}+\phi
+_{\delta }\delta _{t}+\phi _{s}s_{t}\right) dt+\sigma _{s}dW_{\delta ,t} \\
+&\equiv &\left( \phi _{0}^{\ast }+\phi _{x}^{\ast \prime }x_{t}+\phi
+_{v}^{\ast }v_{t}+\phi _{\delta }^{\ast }\delta _{t}+\phi _{s}^{\ast
+}s_{t}\right) dt+\sigma _{s}dW_{\delta ,t}^{\ast }
+\end{eqnarray*}%
+where%
+\begin{eqnarray*}
+\kappa _{\delta }^{\ast } &=&\kappa _{\delta }+\sigma _{\delta }\lambda
+_{\delta }^{N} \\
+\kappa _{\delta }^{\ast }\mu _{\delta }^{\ast } &=&\kappa _{\delta }\mu
+_{\delta }-\sigma _{\delta }\lambda _{0,\delta }^{N}
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+\phi _{0} &=&\rho _{0}^{N}-\frac{1}{2}\sigma _{s}^{2}+\sigma _{s}\lambda
+_{0,\delta }^{N} \\
+\phi _{x} &=&\rho _{x}^{N} \\
+\phi _{v} &=&\rho _{v}^{N} \\
+\phi _{\delta } &=&\rho _{\delta }^{N}-1+\sigma _{s}\lambda _{\delta }^{N} \\
+\phi _{s} &=&\rho _{s}^{N}
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+\phi _{0}^{\ast } &=&\rho _{0}^{N}-\frac{1}{2}\sigma _{s}^{2}=\phi
+_{0}-\sigma _{s}\lambda _{0,\delta }^{N} \\
+\phi _{x}^{\ast } &=&\rho _{x}^{N} \\
+\phi _{v}^{\ast } &=&\rho _{v}^{N} \\
+\phi _{\delta }^{\ast } &=&\rho _{\delta }^{N}-1=\phi _{\delta }-\sigma
+_{s}\lambda _{\delta }^{N} \\
+\phi _{s}^{\ast } &=&\rho _{s}^{N}
+\end{eqnarray*}
+
+Remark. We initialize $\lambda _{\delta }^{N}$ so that $\phi _{\delta
+}=0=\rho _{\delta }^{N}-1+\sigma _{s}\lambda _{\delta }^{N}$, or $\lambda
+_{\delta }^{N}=\left( 1-\rho _{\delta }^{N}\right) /\sigma _{s}$.
+Furthermore, as we show later, the long run mean of $s_{t}$ is%
+\begin{equation*}
+s_{\infty }\equiv -\frac{1}{\phi _{s}}\left( \phi _{0}+\phi _{x}^{\prime
+}\mu +\phi _{v}\mu _{v}+\phi _{\delta }\mu _{\delta }\right)
+\end{equation*}%
+Given the other parameters including $\phi _{s}$, we can initialize $\lambda
+_{0,\delta }^{N}$ by matching sample mean of $s_{t}$, denoted by $\widehat{s}
+$, to its long run mean $s_{\infty }$. Given that $\phi _{\delta }=0$ via
+initialization and $\mu =0$ by normalization and $\phi _{v}=\rho _{v}^{N}=0$
+by restriction, we have%
+\begin{eqnarray*}
+\phi _{0} &=&-\left( \phi _{v}\mu _{v}+\phi _{s}\widehat{s}\right) =\rho
+_{0}^{N}-\frac{1}{2}\sigma _{s}^{2}+\sigma _{s}\lambda _{0,\delta }^{N} \\
+&\Rightarrow &\lambda _{0,\delta }^{N}=-\frac{\phi _{v}\mu _{v}+\phi _{s}%
+\widehat{s}+\rho _{0}^{N}-\frac{1}{2}\sigma _{s}^{2}}{\sigma _{s}} \\
+&\Rightarrow &\lambda _{0,\delta }^{N}=-\frac{\phi _{s}\widehat{s}+\rho
+_{0}^{N}-\frac{1}{2}\sigma _{s}^{2}}{\sigma _{s}}
+\end{eqnarray*}
+
+NOTE:\ 
+\begin{eqnarray}
+dx_{t} &=&\mathcal{K}^{\ast }\left( \mu ^{\ast }-x_{t}\right) dt+\Sigma
+dW_{x,t}^{\ast } \\
+dv_{t} &=&\kappa _{v}^{\ast }\left( \mu _{v}^{\ast }-v_{t}\right) dt+\sigma
+_{v}\sqrt{v_{t}}\left( \sqrt{1-\rho ^{2}}dW_{v,t}^{\ast }+\rho dW_{\bot
+,t}^{\ast }\right) \\
+d\delta _{t} &=&\kappa _{\delta }^{\ast }\left( \mu _{\delta }^{\ast
+}-\delta _{t}\right) dt+\sigma _{\delta }dW_{\delta ,t}^{\ast } \\
+ds_{t} &=&\left( \phi _{0}^{\ast }+\phi _{x}^{\ast \prime }x_{t}+\phi
+_{v}^{\ast }v_{t}+\phi _{\delta }^{\ast }\delta _{t}+\phi _{s}^{\ast
+}s_{t}\right) dt+\sigma _{s}dW_{\delta ,t}^{\ast }
+\end{eqnarray}
+
+Oil futures. Let $s_{t}\equiv \log \left( S_{t}\right) $ denote the spot oil
+price.
+
+\begin{eqnarray*}
+F_{t,\tau }^{oil} &=&E_{t}^{\ast }\left[ \exp \left( s_{t+\tau }\right) %
+\right] \\
+&\equiv &\exp \left( A_{\tau }^{oil}+B_{\tau }^{oil\prime }x_{t}+C_{\tau
+}^{oil}v_{t}+D_{\tau }^{oil}\delta _{t}+E_{\tau }^{oil}s_{t}\right)
+\end{eqnarray*}%
+where%
+\begin{eqnarray*}
+\dot{A}_{\tau }^{oil} &=&\left( \mathcal{K}^{\ast }\mu ^{\ast }\right)
+^{\prime }B_{\tau }^{oil}+\left( \kappa _{v}^{\ast }\mu _{v}^{\ast }\right)
+C_{\tau }^{oil}+\left( \kappa _{\delta }^{\ast }\mu _{\delta }^{\ast
+}\right) D_{\tau }^{oil}+\phi _{0}^{\ast }E_{\tau }^{oil} \\
+&&+\frac{1}{2}B_{\tau }^{oil\prime }\Sigma \Sigma ^{\prime }B_{\tau }^{oil}+%
+\frac{1}{2}\sigma _{\delta }^{2}\left( D_{\tau }^{oil}\right) ^{2}+\frac{1}{2%
+}\sigma _{s}^{2}\left( E_{\tau }^{oil}\right) ^{2} \\
+\dot{B}_{\tau }^{oil} &=&-\left( \mathcal{K}^{\ast }\right) ^{\prime
+}B_{\tau }^{oil}+\phi _{x}^{\ast }E_{\tau }^{oil} \\
+\dot{C}_{\tau }^{oil} &=&-\kappa _{v}^{\ast }C_{\tau }^{oil}+\frac{1}{2}%
+\sigma _{v}^{2}\left( C_{\tau }^{oil}\right) ^{2}+\phi _{v}^{\ast }E_{\tau
+}^{oil} \\
+\dot{D}_{\tau }^{oil} &=&-\kappa _{\delta }^{\ast }D_{\tau }^{oil}+\phi
+_{\delta }^{\ast }E_{\tau }^{oil} \\
+\dot{E}_{\tau }^{oil} &=&\phi _{s}^{\ast }E_{\tau }^{oil}
+\end{eqnarray*}%
+and the initial conditions are: $%
+A_{0}^{oil}=B_{0}^{oil}=C_{0}^{oil}=D_{0}^{oil}=0$ and $E_{0}^{oil}=1$.
+
+For simplicity, we assume%
+\begin{equation}
+\rho _{v}^{N}=0
+\end{equation}%
+which implies $\phi _{v}^{\ast }=\phi _{v}=0$.
+
+Consider the transformation%
+\begin{eqnarray*}
+\mathcal{A} &=&A_{\tau }^{oil} \\
+\mathcal{B} &=&\left( 
+\begin{array}{c}
+B_{\tau }^{oil} \\ 
+D_{\tau }^{oil} \\ 
+E_{\tau }^{oil}-1%
+\end{array}%
+\right) \\
+\mathcal{C} &=&C_{\tau }^{oil}
+\end{eqnarray*}%
+Then $\mathcal{A}\left( 0\right) =\mathcal{B}\left( 0\right) =\mathcal{C}%
+\left( 0\right) =0\,\ $and%
+\begin{eqnarray*}
+\overset{\cdot }{\mathcal{A}} &=&\left( \phi _{0}^{\ast }+\frac{1}{2}\sigma
+_{s}^{2}\right) +\left( 
+\begin{array}{c}
+\mathcal{K}^{\ast }\mu ^{\ast } \\ 
+\kappa _{\delta }^{\ast }\mu _{\delta }^{\ast } \\ 
+\phi _{0}^{\ast }+\sigma _{s}^{2}%
+\end{array}%
+\right) ^{\prime }\mathcal{B+}\left( \kappa _{v}^{\ast }\mu _{v}^{\ast
+}\right) \mathcal{C}+\frac{1}{2}\mathcal{B}^{\prime }%
+\begin{pmatrix}
+\Sigma \Sigma ^{\prime } &  &  \\ 
+& \sigma _{\delta }^{2} &  \\ 
+&  & \sigma _{s}^{2}%
+\end{pmatrix}%
+\mathcal{B} \\
+\overset{\cdot }{\mathcal{B}} &=&\left( 
+\begin{array}{c}
+\phi _{x}^{\ast } \\ 
+\phi _{\delta }^{\ast } \\ 
+\phi _{s}^{\ast }%
+\end{array}%
+\right) +%
+\begin{pmatrix}
+-\left( \mathcal{K}^{\ast }\right) ^{\prime } & 0 & \phi _{x}^{\ast } \\ 
+0 & -\kappa _{\delta }^{\ast } & \phi _{\delta }^{\ast } \\ 
+0 & 0 & \phi _{s}^{\ast }%
+\end{pmatrix}%
+\mathcal{B} \\
+\overset{\cdot }{\mathcal{C}} &=&-\kappa _{v}^{\ast }\mathcal{C}+\frac{1}{2}%
+\sigma _{v}^{2}\mathcal{C}^{2}
+\end{eqnarray*}
+
+Based on the observation $M_{t}^{R}=M_{t}^{N}Q_{t}$, we have%
+\begin{eqnarray*}
+dM_{t}^{R}/M_{t}^{R} &=&dM_{t}^{N}/M_{t}^{N}+dQ_{t}/Q_{t}+\left(
+dM_{t}^{N}/M_{t}^{N}\right) \cdot \left( dQ_{t}/Q_{t}\right)  \\
+&=&-r_{t}^{N}dt-\Lambda _{x,t}^{N\prime }dW_{x,t}-\Lambda
+_{v,t}^{N}dW_{v,t}-\Lambda _{\bot ,t}^{N}dW_{\bot ,t}-\Lambda _{\delta
+,t}^{N}dW_{\delta ,t} \\
+&&+\left[ \pi _{t}+\frac{1}{2}\left( \sigma _{q}^{\prime }\sigma
+_{q}+v_{t}\right) -\sigma _{q}^{\prime }\Lambda _{x,t}^{N}-\sqrt{v_{t}}%
+\Lambda _{\bot ,t}^{N}\right] dt+\sigma _{q}^{\prime }dW_{x,t}+\sqrt{v_{t}}%
+dW_{\bot ,t} \\
+&\equiv &-r_{t}^{R}dt-\Lambda _{x,t}^{R\prime }dW_{x,t}-\Lambda
+_{v,t}^{R}dW_{v,t}-\Lambda _{\bot ,t}^{R}dW_{\bot ,t}-\Lambda _{\delta
+,t}^{R}dW_{\delta ,t}
+\end{eqnarray*}%
+where 
+\begin{eqnarray*}
+r_{t}^{R} &=&r_{t}^{N}-\left[ \pi _{t}+\frac{1}{2}\left( \sigma _{q}^{\prime
+}\sigma _{q}+v_{t}\right) \right] +\sigma _{q}^{\prime }\Lambda _{x,t}^{N}+%
+\sqrt{v_{t}}\Lambda _{\bot ,t}^{N} \\
+&=&r_{t}^{N}-\left[ \pi _{t}+\frac{1}{2}\left( \sigma _{q}^{\prime }\sigma
+_{q}+v_{t}\right) \right] +\sigma _{q}^{\prime }\left( \lambda
+_{0,x}^{N}+\lambda _{x}^{N\prime }x_{t}\right) +\gamma _{v}^{\bot }v_{t} \\
+&\equiv &\rho _{0}^{R}+\rho _{x}^{R\prime }x_{t}+\rho _{v}^{R}v_{t}+\rho
+_{\delta }^{R}\delta _{t}+\rho _{s}^{R}s_{t} \\
+\Lambda _{x,t}^{R} &=&\Lambda _{x,t}^{N}-\sigma _{q}\equiv \lambda
+_{0,x}^{R}+\lambda _{x}^{R\prime }x_{t} \\
+\Lambda _{v,t}^{R} &=&\Lambda _{v,t}^{N}=\gamma _{v}\sqrt{v_{t}}, \\
+\Lambda _{\bot ,t}^{R} &=&\Lambda _{\bot ,t}^{N}-\sqrt{v_{t}}=\left( \gamma
+_{v}^{\bot }-1\right) \sqrt{v_{t}} \\
+\Lambda _{\delta ,t}^{R} &=&\Lambda _{\delta ,t}^{N}\equiv \lambda
+_{0,\delta }^{R}+\lambda _{\delta }^{R}\delta _{t}
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+\rho _{0}^{R} &=&\rho _{0}^{N}-\rho _{0}^{\pi }-\frac{1}{2}\sigma
+_{q}^{\prime }\sigma _{q}+\lambda _{0,x}^{\prime }\sigma _{q} \\
+\rho _{x}^{R} &=&\rho _{x}^{N}-\rho _{x}^{\pi }+\lambda _{x}^{N\prime
+}\sigma _{q} \\
+\rho _{v}^{R} &=&\rho _{v}^{N}-\rho _{v}^{\pi }+\gamma _{v}^{\bot }-\frac{1}{%
+2} \\
+\rho _{\delta }^{R} &=&\rho _{\delta }^{N}-\rho _{\delta }^{\pi }\text{ and }%
+\rho _{s}^{R}=\rho _{s}^{N}-\rho _{s}^{\pi }
+\end{eqnarray*}%
+and 
+\begin{eqnarray*}
+\lambda _{0,x}^{R} &=&\lambda _{0,x}^{N}-\sigma _{q},\text{ and }\lambda
+_{x}^{R}=\lambda _{x}^{N} \\
+\lambda _{0,\delta }^{R} &=&\lambda _{0,\delta }^{N},\text{ and }\lambda
+_{\delta }^{R}=\lambda _{\delta }^{N}
+\end{eqnarray*}
+
+\subsection{Dynamics under the Risk-Neutral Measure and Bond Pricing}
+
+Let 
+\begin{equation*}
+\Lambda _{t}^{N}\equiv \left( 
+\begin{array}{c}
+\Lambda _{x,t}^{N} \\ 
+\Lambda _{v,t}^{N} \\ 
+\Lambda _{\bot ,t}^{N} \\ 
+\Lambda _{\delta ,t}^{N}%
+\end{array}%
+\right) ,W_{t}\equiv \left( 
+\begin{array}{c}
+W_{x,t} \\ 
+W_{v,t} \\ 
+W_{\bot ,t} \\ 
+W_{\delta ,t}%
+\end{array}%
+\right) .
+\end{equation*}%
+Then, the Radon-Nikodym derivative of the risk neutral measure $\mathbb{P}%
+^{\ast }$ with respect to the physical measure $\mathbb{P}$ is given by%
+\begin{equation}
+\left( \frac{d\mathbb{P}^{\ast }}{d\mathbb{P}}\right) _{t,T}=\exp \left[ -%
+\frac{1}{2}\int_{t}^{T}\Lambda _{s}^{N\prime }\Lambda
+_{s}^{N}ds-\int_{t}^{T}\Lambda _{s}^{N\prime }dW_{s}\right] 
+\end{equation}%
+By the Girsanov theorem, $dW_{t}^{\ast }=dW_{t}+\Lambda _{t}^{N}dt$ is a
+standard Brownian motion under the risk-neutral probability measure $\mathbb{%
+P}^{\ast }$. It implies that under the risk neutral measure, 
+\begin{eqnarray*}
+dW_{x,t}^{\ast } &=&dW_{x,t}+\Lambda _{x,t}^{N}dt \\
+dW_{v,t}^{\ast } &=&dW_{v,t}+\Lambda _{v,t}^{N}dt \\
+dW_{\bot ,t}^{\ast } &=&dW_{\bot ,t}+\Lambda _{\bot ,t}^{N}dt \\
+dW_{\delta ,t}^{\ast } &=&dW_{\delta ,t}+\Lambda _{\delta ,t}^{N}dt
+\end{eqnarray*}%
+Therefore,%
+\begin{eqnarray*}
+dx_{t} &=&\mathcal{K}\left( \mu -x_{t}\right) dt+\Sigma dW_{x,t} \\
+&=&\mathcal{K}\left( \mu -x_{t}\right) dt+\Sigma \left( dW_{x,t}^{\ast
+}-\Lambda _{x,t}^{N}dt\right)  \\
+&=&\left[ \left( \mathcal{K}\mu -\Sigma \lambda _{0}^{N}\right) -\left( 
+\mathcal{K}+\Sigma \lambda _{x}^{N}\right) x_{t}\right] dt+\Sigma
+dW_{x,t}^{\ast } \\
+&\equiv &\mathcal{K}^{\ast }\left( \mu ^{\ast }-x_{t}\right) dt+\Sigma
+dW_{x,t}^{\ast },
+\end{eqnarray*}%
+\begin{eqnarray*}
+dv_{t} &=&\kappa _{v}\left( \mu _{v}-v_{t}\right) dt+\sigma _{v}\sqrt{v_{t}}%
+\left( \sqrt{1-\rho ^{2}}dW_{v,t}+\rho dW_{\bot ,t}\right)  \\
+&=&\kappa _{v}\left( \mu _{v}-v_{t}\right) dt+\sigma _{v}\sqrt{v_{t}}\left( 
+\sqrt{1-\rho ^{2}}\left( dW_{v,t}^{\ast }-\Lambda _{v,t}^{N}dt\right) +\rho
+\left( dW_{\bot ,t}^{\ast }-\Lambda _{\bot ,t}^{N}dt\right) \right)  \\
+&=&\left( \kappa _{v}\mu _{v}-\left[ \kappa _{v}+\sqrt{1-\rho ^{2}}\sigma
+_{v}\gamma _{v}+\rho \sigma _{v}\gamma _{\bot }\right] v_{t}\right)
+dt+\sigma _{v}\sqrt{v_{t}}\left( \sqrt{1-\rho ^{2}}dW_{v,t}^{\ast }+\rho
+dW_{\bot ,t}^{\ast }\right) \text{ \ \ \ } \\
+&\equiv &\kappa _{v}^{\ast }\left( \mu _{v}^{\ast }-v_{t}\right) dt+\sigma
+_{v}\sqrt{v_{t}}\left( \sqrt{1-\rho ^{2}}dW_{v,t}^{\ast }+\rho dW_{\bot
+,t}^{\ast }\right) 
+\end{eqnarray*}%
+\begin{eqnarray*}
+d\delta _{t} &=&\kappa _{\delta }^{\ast }\left( \mu _{\delta }^{\ast
+}-\delta _{t}\right) dt+\sigma _{\delta }dW_{\delta ,t}^{\ast } \\
+ds_{t} &=&\left( \phi _{0}^{\ast }+\phi _{x}^{\ast \prime }x_{t}+\phi
+_{v}^{\ast }v_{t}+\phi _{\delta }^{\ast }\delta _{t}+\phi _{s}^{\ast
+}s_{t}\right) dt+\sigma _{s}dW_{\delta ,t}^{\ast }
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+dq_{t} &=&\pi _{t}dt+\sigma _{q}^{\prime }dW_{x,t}+\sqrt{v_{t}}dW_{\bot ,t}
+\\
+&=&\left( \rho _{0}^{\pi }+\rho _{x}^{\pi \prime }x_{t}+\rho _{v}^{\pi
+}v_{t}+\rho _{\delta }^{\pi }\delta _{t}+\rho _{s}^{\pi }s_{t}\right)
+dt+\sigma _{q}^{\prime }\left( dW_{x,t}^{\ast }-\Lambda _{x,t}^{N}dt\right) +%
+\sqrt{v_{t}}\left( dW_{\bot ,t}^{\ast }-\Lambda _{\bot ,t}^{N}dt\right)  \\
+&=&\left( \rho _{0}^{\pi }+\rho _{x}^{\pi \prime }x_{t}+\rho _{v}^{\pi
+}v_{t}+\rho _{\delta }^{\pi }\delta _{t}+\rho _{s}^{\pi }s_{t}-\sigma
+_{q}^{\prime }\left( \lambda _{0}^{N}+\lambda _{x}^{N}x_{t}\right) -\gamma
+_{\bot }v_{t}\right) dt+\sigma _{q}^{\prime }dW_{x,t}^{\ast }+\sqrt{v_{t}}%
+dW_{\bot ,t}^{\ast } \\
+&=&\left( \rho _{0}^{\pi }-\lambda _{0}^{N\prime }\sigma _{q}+\left( \rho
+_{x}^{\pi }-\lambda _{x}^{N\prime }\sigma _{q}\right) ^{\prime }x_{t}+\left(
+\rho _{v}^{\pi }-\gamma _{\bot }\right) v_{t}+\rho _{\delta }^{\pi }\delta
+_{t}+\rho _{s}^{\pi }s_{t}\right) dt+\sigma _{q}^{\prime }dW_{x,t}^{\ast }+%
+\sqrt{v_{t}}dW_{\bot ,t}^{\ast } \\
+&\equiv &\left( \rho _{0}^{\pi \ast }+\rho _{x}^{\pi \ast \prime }x_{t}+\rho
+_{v}^{\pi \ast }v_{t}+\rho _{\delta }^{\pi \ast }\delta _{t}+\rho _{s}^{\pi
+\ast }s_{t}\right) dt+\sigma _{q}^{\prime }dW_{x,t}^{\ast }+\sqrt{v_{t}}%
+dW_{\bot ,t}^{\ast },
+\end{eqnarray*}%
+where 
+\begin{eqnarray*}
+\mathcal{K}^{\ast } &=&\mathcal{K+}\Sigma \lambda _{x}^{N} \\
+\mathcal{K}^{\ast }\mu ^{\ast } &=&\mathcal{K}\mu \mathcal{-}\Sigma \lambda
+_{0}^{N} \\
+\kappa _{v}^{\ast } &=&\kappa _{v}+\sqrt{1-\rho ^{2}}\sigma _{v}\gamma
+_{v}+\rho \sigma _{v}\gamma _{\bot } \\
+\kappa _{v}^{\ast }\mu _{v}^{\ast } &=&\kappa _{v}\mu _{v} \\
+\kappa _{\delta }^{\ast } &=&\kappa _{\delta }+\sigma _{\delta }\lambda
+_{\delta }^{N} \\
+\kappa _{\delta }^{\ast }\mu _{\delta }^{\ast } &=&\kappa _{v}\mu
+_{v}-\sigma _{\delta }\lambda _{0,\delta }^{N} \\
+\pi _{t}^{\ast } &=&\rho _{0}^{\pi \ast }+\rho _{x}^{\pi \ast \prime
+}x_{t}+\rho _{v}^{\pi \ast }v_{t}+\rho _{\delta }^{\pi \ast }\delta
+_{t}+\rho _{s}^{\pi \ast }s_{t} \\
+\rho _{0}^{\pi \ast } &=&\rho _{0}^{\pi }-\lambda _{0}^{N\prime }\sigma _{q}
+\\
+\rho _{x}^{\pi \ast } &=&\rho _{x}^{\pi }-\lambda _{x}^{N\prime }\sigma _{q}
+\\
+\rho _{v}^{\pi \ast } &=&\rho _{v}^{\pi }-\gamma _{\bot } \\
+\rho _{\delta }^{\pi \ast } &=&\rho _{\delta }^{\pi }\text{ and }\rho
+_{s}^{\pi \ast }=\rho _{s}^{\pi }
+\end{eqnarray*}
+
+We first establish a well-known result of affine-form of nominal yields in
+Proposition \ref{prop_yields} below.
+
+\begin{proposition}
+\label{prop_yields}Under this model, nominal and real bond prices take the
+exponential-affine form%
+\begin{equation}
+P_{t,\tau }^{i}=\exp \left( A_{\tau }^{i}+B_{\tau }^{i\prime }x_{t}+C_{\tau
+}^{i}v_{t}+D_{\tau }^{i}\delta _{t}+E_{\tau }^{i}s_{t}\right) ,\text{ }i=N,R
+\end{equation}%
+and nominal and real yields take the affine form%
+\begin{equation}
+y_{t,\tau }^{i}=a_{\tau }^{i}+b_{\tau }^{i\prime }x_{t}+c_{\tau
+}^{i}v_{t}+d_{\tau }^{i}\delta _{t}+e_{\tau }^{i}s_{t},\text{ }i=N,R
+\end{equation}%
+where $a_{\tau }^{i}\equiv -A_{\tau }^{i}/\tau $, $b_{\tau }^{i}\equiv
+-B_{\tau }^{i}/\tau $, $c_{\tau }^{i}\equiv -C_{\tau }^{i}/\tau $, $d_{\tau
+}^{i}\equiv -D_{\tau }^{i}/\tau $ and $e_{\tau }^{i}\equiv -E_{\tau
+}^{i}/\tau $, and $A_{\tau }^{i}$, $B_{\tau }^{i}$, $C_{\tau }^{i}$, $%
+D_{\tau }^{i}$, $E_{\tau }^{i}$ $(i=N,R)$ satisfy the following system of
+ODEs:%
+\begin{eqnarray*}
+\frac{dA_{\tau }^{i}}{d\tau } &=&-\rho _{0}^{i}+\left( \mathcal{K\mu }%
+-\Sigma \lambda _{0}^{i}\right) ^{\prime }B_{\tau }^{i}+\kappa _{v}^{\ast
+}\mu _{v}^{\ast }C_{\tau }^{i}+\kappa _{\delta }^{\ast }\mu _{\delta }^{\ast
+}D_{\tau }^{i}+\phi _{0}^{\ast }E_{\tau }^{i}+\frac{1}{2}B_{\tau }^{i\prime
+}\Sigma \Sigma ^{\prime }B_{\tau }^{i}+\frac{1}{2}\sigma _{\delta
+}^{2}\left( D_{\tau }^{i}\right) ^{2}+\frac{1}{2}\sigma _{s}^{2}\left(
+E_{\tau }^{i}\right) ^{2}\text{, with }A_{0}^{i}=0 \\
+\frac{dB_{\tau }^{i}}{d\tau } &=&-\rho _{x}^{i}-\left( \mathcal{K}+\Sigma
+\lambda _{x}^{i}\right) ^{\prime }B_{\tau }^{i}+\phi _{x}^{\ast }E_{\tau
+}^{i}\text{, with }B_{0}^{i}=0 \\
+\frac{dC_{\tau }^{i}}{d\tau } &=&-\rho _{v}^{i}-\kappa _{v}^{\ast }C_{\tau
+}^{i}+\frac{1}{2}\sigma _{v}^{2}\left( C_{\tau }^{i}\right) ^{2}+\phi
+_{v}^{\ast }E_{\tau }^{i}\text{, with }C_{0}^{i}=0 \\
+\frac{dD_{\tau }^{i}}{d\tau } &=&-\rho _{\delta }^{i}-\kappa _{\delta
+}^{\ast }D_{\tau }^{i}+\phi _{\delta }^{\ast }E_{\tau }^{i}\text{, with }%
+D_{0}^{i}=0 \\
+\frac{dE_{\tau }^{i}}{d\tau } &=&-\rho _{s}^{i}+\phi _{s}^{\ast }E_{\tau
+}^{i}\text{, with }E_{0}^{i}=0
+\end{eqnarray*}
+\end{proposition}
+
+Consider the transformation%
+\begin{eqnarray*}
+\mathcal{A} &=&A_{\tau }^{i} \\
+\mathcal{B} &=&\left( 
+\begin{array}{c}
+B_{\tau }^{i} \\ 
+D_{\tau }^{i} \\ 
+E_{\tau }^{i}%
+\end{array}%
+\right) \\
+\mathcal{C} &=&C_{\tau }^{i}
+\end{eqnarray*}%
+Then%
+\begin{eqnarray*}
+\overset{\cdot }{\mathcal{A}} &=&-\rho _{0}^{i}+\left( 
+\begin{array}{c}
+\mathcal{K\mu }-\Sigma \lambda _{0}^{i} \\ 
+\kappa _{\delta }^{\ast }\mu _{\delta }^{\ast } \\ 
+\phi _{0}^{\ast }%
+\end{array}%
+\right) ^{\prime }\mathcal{B+}\left( \kappa _{v}^{\ast }\mu _{v}^{\ast
+}\right) \mathcal{C}+\frac{1}{2}\mathcal{B}^{\prime }%
+\begin{pmatrix}
+\Sigma \Sigma ^{\prime } &  &  \\ 
+& \sigma _{\delta }^{2} &  \\ 
+&  & \sigma _{s}^{2}%
+\end{pmatrix}%
+\mathcal{B} \\
+\overset{\cdot }{\mathcal{B}} &=&\left( 
+\begin{array}{c}
+-\rho _{x}^{i} \\ 
+-\rho _{\delta }^{i} \\ 
+-\rho _{s}^{i}%
+\end{array}%
+\right) +%
+\begin{pmatrix}
+-\left( \mathcal{K}+\Sigma \lambda _{x}^{i}\right) ^{\prime } & 0 & \phi
+_{x}^{\ast } \\ 
+0 & -\kappa _{\delta }^{\ast } & \phi _{\delta }^{\ast } \\ 
+0 & 0 & \phi _{s}^{\ast }%
+\end{pmatrix}%
+\mathcal{B} \\
+\overset{\cdot }{\mathcal{C}} &=&-\rho _{v}^{i}-\kappa _{v}^{\ast }\mathcal{C%
+}+\frac{1}{2}\sigma _{v}^{2}\mathcal{C}^{2}
+\end{eqnarray*}
+
+\textbf{Survey Yield Forecast.} To calculate survey yield forecasts, we need
+the following results: 
+\begin{eqnarray*}
+E_{t}\left[ x_{t+\tau }\right] &=&\mu +\exp \left( -\kappa \tau \right)
+\left( x_{t}-\mu \right) \\
+E_{t}\left[ v_{t+\tau }\right] &=&\mu _{v}+\exp \left( -\kappa _{v}\tau
+\right) \left( v_{t}-\mu _{v}\right) \\
+E_{t}\left[ \delta _{t+\tau }\right] &=&\mu _{\delta }+\exp \left( -\kappa
+_{\delta }\tau \right) \left( \delta _{t}-\mu _{\delta }\right)
+\end{eqnarray*}%
+Next we calculate, $E_{t}\left[ s_{t+\tau }\right] $. Note that 
+\begin{eqnarray*}
+ds_{t} &=&\left( \phi _{0}+\phi _{x}^{\prime }x_{t}+\phi _{v}v_{t}+\phi
+_{\delta }\delta _{t}+\phi _{s}s_{t}\right) dt+\sigma _{s}dW_{\delta ,t} \\
+d\left[ \exp \left( -\phi _{s}t\right) s_{t}\right] &=&\exp \left( -\phi
+_{s}t\right) \left[ \left( \phi _{0}+\phi _{x}^{\prime }x_{t}+\phi
+_{v}v_{t}+\phi _{\delta }\delta _{t}\right) dt+\sigma _{s}dW_{\delta ,t}%
+\right]
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+&&\exp \left( -\phi _{s}\left( t+\tau \right) \right) s_{t+\tau }-\exp
+\left( -\phi _{s}t\right) s_{t} \\
+&=&\int_{t}^{t+\tau }\exp \left( -\phi _{s}u\right) \left( \phi _{0}+\phi
+_{x}^{\prime }x_{u}+\phi _{v}v_{u}+\phi _{\delta }\delta _{u}\right) du+\exp
+\left( -\phi _{s}u\right) \sigma _{s}dW_{\delta ,u}
+\end{eqnarray*}%
+implying%
+\begin{eqnarray*}
+&&\exp \left( -\phi _{s}\left( t+\tau \right) \right) E_{t}\left[ s_{t+\tau }%
+\right] -\exp \left( -\phi _{s}t\right) s_{t} \\
+&=&\int_{t}^{t+\tau }\exp \left( -\phi _{s}u\right) \left( 
+\begin{array}{c}
+\phi _{0}+\phi _{x}^{\prime }\left( \left[ \mu +\exp \left( -\kappa \left(
+u-t\right) \right) \left( x_{t}-\mu \right) \right] \right) \\ 
++\phi _{v}\left( \left[ \mu _{v}+\exp \left( -\kappa _{v}\left( u-t\right)
+\right) \left( v_{t}-\mu _{v}\right) \right] \right) \\ 
++\phi _{\delta }\left( \left[ \mu _{\delta }+\exp \left( -\kappa _{\delta
+}\left( u-t\right) \right) \left( \delta _{t}-\mu _{\delta }\right) \right]
+\right)%
+\end{array}%
+\right) du \\
+&=&\frac{1}{\phi _{s}}\left( \exp \left( -\phi _{s}t\right) -\exp \left(
+-\phi _{s}\left( t+\tau \right) \right) \right) \left( \phi _{0}+\phi
+_{x}^{\prime }\mu +\phi _{v}\mu _{v}+\phi _{\delta }\mu _{\delta }\right) \\
+&&+\exp \left( -\phi _{s}t\right) \phi _{x}^{\prime }\left( \kappa +\phi
+_{s}I\right) ^{-1}\left( I-\exp \left( -\left( \kappa +\phi _{s}I\right)
+\tau \right) \right) \left( x_{t}-\mu \right) \\
+&&+\exp \left( -\phi _{s}t\right) \phi _{v}\left( \kappa _{v}+\phi
+_{s}\right) ^{-1}\left( 1-\exp \left( -\left( \kappa _{v}+\phi _{s}\right)
+\tau \right) \right) \left( v_{t}-\mu _{v}\right) \\
+&&+\exp \left( -\phi _{s}t\right) \phi _{\delta }\left( \kappa _{\delta
+}+\phi _{s}\right) ^{-1}\left( 1-\exp \left( -\left( \kappa _{\delta }+\phi
+_{s}\right) \tau \right) \right) \left( \delta _{t}-\mu _{\delta }\right)
+\end{eqnarray*}%
+or%
+\begin{eqnarray*}
+&&E_{t}\left[ s_{t+\tau }\right] \\
+&=&\exp \left( \phi _{s}\tau \right) s_{t}+\frac{1}{\phi _{s}}\left( \exp
+\left( \phi _{s}\tau \right) -1\right) \left( \phi _{0}+\phi _{x}^{\prime
+}\mu +\phi _{v}\mu _{v}+\phi _{\delta }\mu _{\delta }\right) \\
+&&+\phi _{x}^{\prime }\left( \kappa +\phi _{s}I\right) ^{-1}\left( \exp
+\left( \phi _{s}\tau \right) I-\exp \left( -\kappa \tau \right) \right)
+\left( x_{t}-\mu \right) \\
+&&+\phi _{v}\left( \kappa _{v}+\phi _{s}\right) ^{-1}\left( \exp \left( \phi
+_{s}\tau \right) -\exp \left( -\kappa _{v}\tau \right) \right) \left(
+v_{t}-\mu _{v}\right) \\
+&&+\phi _{\delta }\left( \kappa _{\delta }+\phi _{s}\right) ^{-1}\left( \exp
+\left( \phi _{s}\tau \right) -\exp \left( -\kappa _{\delta }\tau \right)
+\right) \left( \delta _{t}-\mu _{\delta }\right)
+\end{eqnarray*}%
+and%
+\begin{equation*}
+Var_{t}\left[ s_{t+\tau }\right] =E_{t}\left[ \int_{-\tau }^{0}\exp \left(
+-2\phi _{s}u\right) \sigma _{s}^{2}du\right] =\frac{1}{2\phi _{s}}\left(
+\exp \left( 2\phi _{s}\tau \right) -1\right) \sigma _{s}^{2}
+\end{equation*}
+
+Therefore,
+
+\begin{eqnarray*}
+E_{t}^{svy}\left[ y_{t+\tau ,3m}^{N}\right] &=&E_{t}^{mkt}\left[ y_{t+\tau
+,3m}^{N}\right] +\epsilon _{t,\tau }^{f} \\
+&=&E_{t}\left[ a_{3m}^{N}+b_{3m}^{N\prime }x_{t+\tau }+c_{3m}^{N}v_{t+\tau
+}+d_{3m}^{N}\delta _{t+\tau }+e_{3m}^{N}s_{t+\tau }\right] +\epsilon
+_{t,\tau }^{f} \\
+&=&a_{3m}^{N}+b_{3m}^{N\prime }\left[ \mu +\exp \left( -\kappa \tau \right)
+\left( x_{t}-\mu \right) \right] \\
+&&+c_{3m}^{N}\left[ \mu _{v}+\exp \left( -\kappa _{v}\tau \right) \left(
+v_{t}-\mu _{v}\right) \right] \\
+&&+d_{3m}^{N}\left[ \mu _{\delta }+\exp \left( -\kappa _{\delta }\tau
+\right) \left( \delta _{t}-\mu _{\delta }\right) \right] \\
+&&+e_{3m}^{N}\left[ 
+\begin{array}{c}
+\exp \left( \phi _{s}\tau \right) s_{t}+\frac{1}{\phi _{s}}\left( \exp
+\left( \phi _{s}\tau \right) -1\right) \left( \phi _{0}+\phi _{x}^{\prime
+}\mu +\phi _{v}\mu _{v}+\phi _{\delta }\mu _{\delta }\right) \\ 
++\phi _{x}^{\prime }\left( \kappa +\phi _{s}I\right) ^{-1}\left( \exp \left(
+\phi _{s}\tau \right) I-\exp \left( -\kappa \tau \right) \right) \left(
+x_{t}-\mu \right) \\ 
++\phi _{v}\left( \kappa _{v}+\phi _{s}\right) ^{-1}\left( \exp \left( \phi
+_{s}\tau \right) -\exp \left( -\kappa _{v}\tau \right) \right) \left(
+v_{t}-\mu _{v}\right) \\ 
++\phi _{\delta }\left( \kappa _{\delta }+\phi _{s}\right) ^{-1}\left( \exp
+\left( \phi _{s}\tau \right) -\exp \left( -\kappa _{\delta }\tau \right)
+\right) \left( \delta _{t}-\mu _{\delta }\right)%
+\end{array}%
+\right] +\epsilon _{t,\tau }^{f} \\
+&\equiv &a_{\tau }^{f}+b_{\tau }^{f\prime }x_{t}+c_{\tau }^{f}v_{t}+d_{\tau
+}^{f}\delta _{t}+e_{\tau }^{f}s_{t}+\epsilon _{t,\tau }^{f}
+\end{eqnarray*}%
+where%
+\begin{eqnarray*}
+a_{\tau }^{f} &=&a_{3m}^{N}+b_{3m}^{N\prime }\left[ I-\exp \left( -\kappa
+\tau \right) \right] \mu +c_{3m}^{N}\left[ 1-\exp \left( -\kappa _{v}\tau
+\right) \right] \mu _{v}+d_{3m}^{N}\left[ 1-\exp \left( -\kappa _{\delta
+}\tau \right) \right] \mu _{\delta } \\
+&&+e_{3m}^{N}\left[ 
+\begin{array}{c}
+\frac{1}{\phi _{s}}\left( \exp \left( \phi _{s}\tau \right) -1\right) \left(
+\phi _{0}+\phi _{x}^{\prime }\mu +\phi _{v}\mu _{v}+\phi _{\delta }\mu
+_{\delta }\right) \\ 
+-\phi _{x}^{\prime }\left( \kappa +\phi _{s}I\right) ^{-1}\left( \exp \left(
+\phi _{s}\tau \right) I-\exp \left( -\kappa \tau \right) \right) \mu \\ 
+-\phi _{v}\left( \kappa _{v}+\phi _{s}\right) ^{-1}\left( \exp \left( \phi
+_{s}\tau \right) -\exp \left( -\kappa _{v}\tau \right) \right) \mu _{v} \\ 
+-\phi _{\delta }\left( \kappa _{\delta }+\phi _{s}\right) ^{-1}\left( \exp
+\left( \phi _{s}\tau \right) -\exp \left( -\kappa _{\delta }\tau \right)
+\right) \mu _{\delta }%
+\end{array}%
+\right]
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+b_{\tau }^{f\prime } &=&b_{3m}^{N\prime }\exp \left( -\kappa \tau \right)
++e_{3m}^{N}\phi _{x}^{\prime }\left( \kappa +\phi _{s}I\right) ^{-1}\left(
+\exp \left( \phi _{s}\tau \right) I-\exp \left( -\kappa \tau \right) \right)
+\\
+c_{\tau }^{f} &=&c_{3m}^{N}\exp \left( -\kappa _{v}\tau \right)
++e_{3m}^{N}\phi _{v}\left( \kappa _{v}+\phi _{s}\right) ^{-1}\left( \exp
+\left( \phi _{s}\tau \right) -\exp \left( -\kappa _{v}\tau \right) \right) \\
+d_{\tau }^{f} &=&d_{3m}^{N}\exp \left( -\kappa _{\delta }\tau \right)
++e_{3m}^{N}\phi _{\delta }\left( \kappa _{\delta }+\phi _{s}\right)
+^{-1}\left( \exp \left( \phi _{s}\tau \right) -\exp \left( -\kappa _{\delta
+}\tau \right) \right) \\
+e_{\tau }^{f} &=&e_{3m}^{N}\exp \left( \phi _{s}\tau \right)
+\end{eqnarray*}
+
+Lastly, we turn to the long-range forecast:\ $E_{t}^{mkt}\left[ \overline{y}%
+_{3m,T_{1},T_{2}}^{N}\right] $ as follows. Note that%
+\begin{eqnarray*}
+&&E_{t}\left[ \frac{1}{T_{2}-T_{1}}\int_{t+T_{1}}^{t+T_{2}}s_{u}du\right]  \\
+&=&\frac{1}{T_{2}-T_{1}}\int_{T_{1}}^{T_{2}}\left[ 
+\begin{array}{c}
+\exp \left( \phi _{s}u\right) s_{t}+\frac{1}{\phi _{s}}\left( \exp \left(
+\phi _{s}u\right) -1\right) \left( \phi _{0}+\phi _{x}^{\prime }\mu +\phi
+_{v}\mu _{v}+\phi _{\delta }\mu _{\delta }\right)  \\ 
++\phi _{x}^{\prime }\left( \kappa +\phi _{s}I\right) ^{-1}\left( \exp \left(
+\phi _{s}u\right) I-\exp \left( -\kappa u\right) \right) \left( x_{t}-\mu
+\right)  \\ 
++\phi _{v}\left( \kappa _{v}+\phi _{s}\right) ^{-1}\left( \exp \left( \phi
+_{s}u\right) -\exp \left( -\kappa _{v}u\right) \right) \left( v_{t}-\mu
+_{v}\right)  \\ 
++\phi _{\delta }\left( \kappa _{\delta }+\phi _{s}\right) ^{-1}\left( \exp
+\left( \phi _{s}u\right) -\exp \left( -\kappa _{\delta }u\right) \right)
+\left( \delta _{t}-\mu _{\delta }\right) 
+\end{array}%
+\right] du \\
+&=&W_{T_{1},T_{2}}^{s}s_{t}+\frac{1}{\phi _{s}}\left(
+W_{T_{1},T_{2}}^{s}-1\right) \left( \phi _{0}+\phi _{x}^{\prime }\mu +\phi
+_{v}\mu _{v}+\phi _{\delta }\mu _{\delta }\right)  \\
+&&+\phi _{x}^{\prime }\left( \kappa +\phi _{s}I\right) ^{-1}\left(
+W_{T_{1},T_{2}}^{s}I-W_{T_{1},T_{2}}^{x}\right) \left( x_{t}-\mu \right)  \\
+&&+\phi _{v}\left( \kappa _{v}+\phi _{s}\right) ^{-1}\left(
+W_{T_{1},T_{2}}^{s}-W_{T_{1},T_{2}}^{v}\right) \left( v_{t}-\mu _{v}\right) 
+\\
+&&+\phi _{\delta }\left( \kappa _{\delta }+\phi _{s}\right) ^{-1}\left(
+W_{T_{1},T_{2}}^{s}-W_{T_{1},T_{2}}^{\delta }\right) \left( \delta _{t}-\mu
+_{\delta }\right) 
+\end{eqnarray*}%
+where%
+\begin{eqnarray*}
+W_{T_{1},T_{2}}^{x} &=&\frac{1}{T_{2}-T_{1}}\int_{T_{1}}^{T_{2}}\exp \left(
+-\kappa s\right) ds=\frac{1}{T_{2}-T_{1}}\kappa ^{-1}\left( \exp \left(
+-\kappa T_{1}\right) -\exp \left( -\kappa T_{2}\right) \right)  \\
+W_{T_{1},T_{2}}^{v} &=&\frac{1}{T_{2}-T_{1}}\kappa _{v}^{-1}\left( \exp
+\left( -\kappa _{v}T_{1}\right) -\exp \left( -\kappa _{v}T_{2}\right)
+\right)  \\
+W_{T_{1},T_{2}}^{\delta } &=&\frac{1}{T_{2}-T_{1}}\kappa _{\delta
+}^{-1}\left( \exp \left( -\kappa _{\delta }T_{1}\right) -\exp \left( -\kappa
+_{\delta }T_{2}\right) \right)  \\
+W_{T_{1},T_{2}}^{s} &=&\frac{1}{T_{2}-T_{1}}\int_{T_{1}}^{T_{2}}\exp \left(
+\phi _{s}u\right) du=\frac{1}{T_{2}-T_{1}}\phi _{s}^{-1}\left( \exp \left(
+\phi _{s}T_{2}\right) -\exp \left( \phi _{s}T_{1}\right) \right) 
+\end{eqnarray*}
+
+Therefore,%
+\begin{eqnarray*}
+E_{t}^{svy}\left[ \overline{y}_{3m,T_{1},T_{2}}^{N}\right]  &=&E_{t}^{mkt}%
+\left[ \overline{y}_{3m,T_{1},T_{2}}^{N}\right] +\epsilon _{t,LT}^{f}=E_{t}%
+\left[ \frac{1}{T_{2}-T_{1}}\int_{T_{1}}^{T_{2}}y_{s,3m}^{N}ds\right]
++\epsilon _{t,LT}^{f} \\
+&=&E_{t}\left[ \frac{1}{T_{2}-T_{1}}\int_{T_{1}}^{T_{2}}\left(
+a_{3m}^{N}+b_{3m}^{N\prime }x_{s}+c_{3m}^{N}v_{s}+d_{3m}^{N}\delta
+_{s}+e_{3m}^{N}s_{s}\right) ds\right] +\epsilon _{t,LT}^{f} \\
+&=&a_{3m}^{N}+b_{3m}^{N\prime }\left( I-W_{T_{1},T_{2}}\right) \mu
++b_{3m}^{N\prime }W_{T_{1},T_{2}}x_{t} \\
+&&+c_{3m}^{N}\left[ \left( 1-W_{T_{1},T_{2}}^{v}\right) \mu
+_{v}+W_{T_{1},T_{2}}^{v}v_{t}\right] +d_{3m}^{N}\left[ \left(
+1-W_{T_{1},T_{2}}^{\delta }\right) \mu _{\delta }+W_{T_{1},T_{2}}^{\delta
+}\delta _{t}\right]  \\
+&&+e_{3m}^{N}\left[ 
+\begin{array}{c}
+W_{T_{1},T_{2}}^{s}s_{t}+\frac{1}{\phi _{s}}\left(
+W_{T_{1},T_{2}}^{s}-1\right) \left( \phi _{0}+\phi _{x}^{\prime }\mu +\phi
+_{v}\mu _{v}+\phi _{\delta }\mu _{\delta }\right)  \\ 
++\phi _{x}^{\prime }\left( \kappa +\phi _{s}I\right) ^{-1}\left(
+W_{T_{1},T_{2}}^{s}I-W_{T_{1},T_{2}}^{x}\right) \left( x_{t}-\mu \right)  \\ 
++\phi _{v}\left( \kappa _{v}+\phi _{s}\right) ^{-1}\left(
+W_{T_{1},T_{2}}^{s}-W_{T_{1},T_{2}}^{v}\right) \left( v_{t}-\mu _{v}\right) 
+\\ 
++\phi _{\delta }\left( \kappa _{\delta }+\phi _{s}\right) ^{-1}\left(
+W_{T_{1},T_{2}}^{s}-W_{T_{1},T_{2}}^{\delta }\right) \left( \delta _{t}-\mu
+_{\delta }\right) 
+\end{array}%
+\right] +\epsilon _{t,LT}^{f} \\
+&\equiv &a_{LT}^{f}+b_{LT}^{f\prime }x_{t}+c_{LT}^{f}v_{t}+d_{LT}^{f}\delta
+_{t}+\epsilon _{t,LT}^{f}
+\end{eqnarray*}%
+where%
+\begin{eqnarray*}
+a_{LT}^{f} &=&a_{3m}^{N}+b_{3m}^{N\prime }\left(
+I-W_{T_{1},T_{2}}^{x}\right) \mu +c_{3m}^{N}\left(
+1-W_{T_{1},T_{2}}^{v}\right) \mu _{v}+d_{3m}^{N}\left(
+1-W_{T_{1},T_{2}}^{\delta }\right) \mu _{\delta } \\
+&&+e_{3m}^{N}\left[ 
+\begin{array}{c}
+\frac{1}{\phi _{s}}\left( W_{T_{1},T_{2}}^{s}-1\right) \left( \phi _{0}+\phi
+_{x}^{\prime }\mu +\phi _{v}\mu _{v}+\phi _{\delta }\mu _{\delta }\right)
+-\phi _{x}^{\prime }\left( \kappa +\phi _{s}I\right) ^{-1}\left(
+W_{T_{1},T_{2}}^{s}I-W_{T_{1},T_{2}}^{x}\right) \mu  \\ 
+-\phi _{v}\left( \kappa _{v}+\phi _{s}\right) ^{-1}\left(
+W_{T_{1},T_{2}}^{s}-W_{T_{1},T_{2}}^{v}\right) \mu _{v}-\phi _{\delta
+}\left( \kappa _{\delta }+\phi _{s}\right) ^{-1}\left(
+W_{T_{1},T_{2}}^{s}-W_{T_{1},T_{2}}^{\delta }\right) \mu _{\delta }%
+\end{array}%
+\right] 
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+b_{LT}^{f\prime } &=&b_{3m}^{N\prime }W_{T_{1},T_{2}}^{x}+e_{3m}^{N}\phi
+_{x}^{\prime }\left( \kappa +\phi _{s}I\right) ^{-1}\left(
+W_{T_{1},T_{2}}^{s}I-W_{T_{1},T_{2}}^{x}\right)  \\
+c_{LT}^{f} &=&c_{3m}^{N}W_{T_{1},T_{2}}^{v}+e_{3m}^{N}\phi _{v}\left( \kappa
+_{v}+\phi _{s}\right) ^{-1}\left(
+W_{T_{1},T_{2}}^{s}-W_{T_{1},T_{2}}^{v}\right)  \\
+d_{LT}^{f} &=&d_{3m}^{N}W_{T_{1},T_{2}}^{\delta }+e_{3m}^{N}\phi _{\delta
+}\left( \kappa _{\delta }+\phi _{s}\right) ^{-1}\left(
+W_{T_{1},T_{2}}^{s}-W_{T_{1},T_{2}}^{\delta }\right)  \\
+e_{LT}^{f} &=&e_{3m}^{N}W_{T_{1},T_{2}}^{s}
+\end{eqnarray*}
+
+\subsection{Dynamics under the Forward Measure and Inflation Option Pricing}
+
+Under the forward measure, we have%
+\begin{equation*}
+\left( \frac{d\mathbb{\tilde{P}}}{d\mathbb{P}^{\ast }}\right) _{t,T}=\frac{%
+\exp \left( -\int_{t}^{T}r_{s}^{N}ds\right) }{P_{t,\tau }^{N}}
+\end{equation*}%
+and%
+\begin{equation*}
+\Psi _{t}\equiv E_{t}^{\mathbb{P}^{\ast }}\left[ \left( \frac{d\mathbb{%
+\tilde{P}}}{d\mathbb{P}^{\ast }}\right) _{0,T}\right] =E_{t}^{\mathbb{P}%
+^{\ast }}\left[ \frac{\exp \left( -\int_{0}^{T}r_{s}^{N}ds\right) }{%
+P_{0,T}^{N}}\right] =\frac{P_{t,\tau }^{N}}{P_{0,T}^{N}}\exp \left(
+-\int_{0}^{t}r_{s}^{N}ds\right)
+\end{equation*}%
+We have%
+\begin{eqnarray*}
+d\Psi _{t} &=&\frac{\exp \left( -\int_{0}^{t}r_{s}^{N}ds\right) }{P_{0,T}^{N}%
+}\left[ dP_{t,\tau }^{N}-r_{t}^{N}P_{t,\tau }^{N}dt\right] \\
+&=&\Psi _{t}\left[ B_{\tau }^{N\prime }\Sigma dW_{x,t}+C_{\tau }^{N}\sigma
+_{v}\sqrt{v_{t}}\left( \sqrt{1-\rho ^{2}}dW_{v,t}+\rho dW_{\bot ,t}\right)
++\left( D_{\tau }^{N}\sigma _{\delta }+E_{\tau }^{N}\sigma _{s}\right)
+dW_{\delta ,t}\right]
+\end{eqnarray*}%
+By Girsanov's Theorem, we have%
+\begin{equation*}
+d\tilde{W}_{t}=dW_{t}^{\ast }-\frac{d\Psi _{t}}{\Psi _{t}}\cdot dW_{t}^{\ast
+}
+\end{equation*}%
+or%
+\begin{eqnarray*}
+d\tilde{W}_{x,t} &=&dW_{t}^{\ast }-\Sigma ^{\prime }B_{\tau }^{N}dt \\
+d\tilde{W}_{v,t} &=&dW_{v,t}^{\ast }-\sqrt{1-\rho ^{2}}\sigma _{v}C_{\tau
+}^{N}\sqrt{v_{t}}dt \\
+d\tilde{W}_{\bot ,t} &=&dW_{\bot ,t}^{\ast }-\rho \sigma _{v}C_{\tau }^{N}%
+\sqrt{v_{t}}dt. \\
+d\tilde{W}_{\delta ,t} &=&dW_{\delta ,t}^{\ast }-\left( \sigma _{\delta
+}D_{\tau }^{N}+\sigma _{s}E_{\tau }^{N}\right) dt
+\end{eqnarray*}
+
+The dynamics of the state variables under the risk neutral measure is given
+by%
+\begin{eqnarray*}
+dx_{t} &=&\left[ \mathcal{K}^{\ast }\left( \mu ^{\ast }-x_{t}\right) \right]
+dt+\Sigma dW_{x,t}^{\ast } \\
+dv_{t} &=&\kappa _{v}^{\ast }\left( \mu _{v}^{\ast }-v_{t}\right) dt+\sigma
+_{v}\sqrt{v_{t}}\left( \sqrt{1-\rho ^{2}}dW_{v,t}^{\ast }+\rho dW_{\bot
+,t}^{\ast }\right)  \\
+dq_{t} &=&\left( \rho _{0}^{\pi \ast }+\rho _{x}^{\pi \ast \prime
+}x_{t}+\rho _{v}^{\pi \ast }v_{t}+\rho _{\delta }^{\pi \ast }v_{t}\right)
+dt+\sigma _{q}^{\prime }dW_{x,t}^{\ast }+\sqrt{v_{t}}dW_{\bot ,t}^{\ast } \\
+d\delta _{t} &=&\kappa _{\delta }^{\ast }\left( \mu _{\delta }^{\ast
+}-\delta _{t}\right) dt+\sigma _{\delta }dW_{\delta ,t}^{\ast }
+\end{eqnarray*}%
+Therefore,%
+\begin{eqnarray*}
+d\delta _{t} &=&\kappa _{\delta }^{\ast }\left( \mu _{\delta }^{\ast
+}-\delta _{t}\right) dt+\sigma _{\delta }dW_{\delta ,t}^{\ast } \\
+&=&\kappa _{\delta }^{\ast }\left( \mu _{\delta }^{\ast }-\delta _{t}\right)
+dt+\sigma _{\delta }\left( d\tilde{W}_{\delta ,t}+\left( \sigma _{\delta
+}D_{\tau }^{N}+\sigma _{s}E_{\tau }^{N}\right) dt\right)  \\
+&=&\left( \kappa _{\delta }^{\ast }\mu _{\delta }^{\ast }+\sigma _{\delta
+}\left( \sigma _{\delta }D_{\tau }^{N}+\sigma _{s}E_{\tau }^{N}\right)
+-\kappa _{\delta }^{\ast }\delta _{t}\right) dt+\sigma _{\delta }d\tilde{W}%
+_{\delta ,t} \\
+&\equiv &\tilde{\kappa}_{\delta }\left( \tilde{\mu}_{\delta }-\delta
+_{t}\right) dt+\sigma _{\delta }d\tilde{W}_{\delta ,t}
+\end{eqnarray*}%
+\begin{eqnarray*}
+dx_{t} &=&\left[ \mathcal{K}^{\ast }\left( \mu ^{\ast }-x_{t}\right) \right]
+dt+\Sigma \left( d\tilde{W}_{x,t}+\Sigma ^{\prime }B_{\tau }^{N}dt\right)  \\
+&=&\left( \mathcal{K}^{\ast }\mu ^{\ast }+\Sigma \Sigma ^{\prime }B_{\tau
+}^{N}-\mathcal{K}^{\ast }x_{t}\right) dt+\Sigma d\tilde{W}_{x,t} \\
+&\equiv &\mathcal{\tilde{K}}\left( \tilde{\mu}-x_{t}\right) dt+\Sigma d%
+\tilde{W}_{x,t},
+\end{eqnarray*}%
+\begin{eqnarray*}
+dv_{t} &=&\kappa _{v}^{\ast }\left( \mu _{v}^{\ast }-v_{t}\right) dt+\sigma
+_{v}\sqrt{v_{t}}\left( \sqrt{1-\rho ^{2}}dW_{v,t}^{\ast }+\rho dW_{\bot
+,t}^{\ast }\right)  \\
+&=&\left[ \kappa _{v}^{\ast }\mu _{v}^{\ast }-\left( \kappa _{v}^{\ast
+}-\sigma _{v}^{2}C_{\tau }^{N}\right) v_{t}\right] dt+\sigma _{v}\sqrt{v_{t}}%
+\left( \sqrt{1-\rho ^{2}}d\tilde{W}_{v,t}+\rho d\tilde{W}_{\bot ,t}\right) 
+\\
+&\equiv &\tilde{\kappa}_{v}\left( \tilde{\mu}_{v}-v_{t}\right) dt+\sigma _{v}%
+\sqrt{v_{t}}\left( \sqrt{1-\rho ^{2}}d\tilde{W}_{v,t}+\rho d\tilde{W}_{\bot
+,t}\right) 
+\end{eqnarray*}%
+\begin{eqnarray*}
+ds_{t} &=&\left( \phi _{0}^{\ast }+\phi _{x}^{\ast \prime }x_{t}+\phi
+_{v}^{\ast }v_{t}+\phi _{\delta }^{\ast }\delta _{t}+\phi _{s}^{\ast
+}s_{t}\right) dt+\sigma _{s}dW_{\delta ,t}^{\ast } \\
+&=&\left( \phi _{0}^{\ast }+\phi _{x}^{\ast \prime }x_{t}+\phi _{v}^{\ast
+}v_{t}+\phi _{\delta }^{\ast }\delta _{t}+\phi _{s}^{\ast }s_{t}\right)
+dt+\sigma _{s}\left( d\tilde{W}_{\delta ,t}+\left( \sigma _{\delta }D_{\tau
+}^{N}+\sigma _{s}E_{\tau }^{N}\right) dt\right)  \\
+&=&\left( \left[ \phi _{0}^{\ast }+\sigma _{s}\left( \sigma _{\delta
+}D_{\tau }^{N}+\sigma _{s}E_{\tau }^{N}\right) \right] +\phi _{x}^{\ast
+\prime }x_{t}+\phi _{v}^{\ast }v_{t}+\phi _{\delta }^{\ast }\delta _{t}+\phi
+_{s}^{\ast }s_{t}\right) dt+\sigma _{s}d\tilde{W}_{\delta ,t} \\
+&\equiv &\left( \widetilde{\phi }_{0}+\widetilde{\phi }_{x}^{\prime }x_{t}+%
+\widetilde{\phi }_{v}v_{t}+\widetilde{\phi }_{\delta }\delta _{t}+\widetilde{%
+\phi }_{s}s_{t}\right) dt+\sigma _{s}d\tilde{W}_{\delta ,t}
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+dq_{t} &=&\left( \rho _{0}^{\pi \ast }+\rho _{x}^{\pi \ast \prime
+}x_{t}+\rho _{v}^{\pi \ast }v_{t}+\rho _{\delta }^{\pi \ast }\delta
+_{t}+\rho _{s}^{\pi \ast }s_{t}\right) dt+\sigma _{q}^{\prime
+}dW_{x,t}^{\ast }+\sqrt{v_{t}}dW_{\bot ,t}^{\ast } \\
+&=&\left( \left[ \rho _{0}^{\pi \ast }+\sigma _{q}^{\prime }\Sigma ^{\prime
+}B_{\tau }^{N}\right] +\rho _{x}^{\pi \ast \prime }x_{t}+\left[ \rho
+_{v}^{\pi \ast }+\rho \sigma _{v}C_{\tau }^{N}\right] v_{t}+\rho _{\delta
+}^{\pi \ast }\delta _{t}+\rho _{s}^{\pi \ast }s_{t}\right) dt+\sigma
+_{q}^{\prime }d\tilde{W}_{x,t}+\sqrt{v_{t}}d\tilde{W}_{\bot ,t} \\
+&\equiv &\left( \widetilde{\rho }_{0}^{\pi }+\widetilde{\rho }_{x}^{\pi
+\prime }x_{t}+\widetilde{\rho }_{v}^{\pi }v_{t}+\widetilde{\rho }_{\delta
+}^{\pi \ast }\delta _{t}+\widetilde{\rho }_{s}^{\pi \ast }s_{t}\right)
+dt+\sigma _{q}^{\prime }d\tilde{W}_{x,t}+\sqrt{v_{t}}d\tilde{W}_{\bot ,t}
+\end{eqnarray*}%
+where 
+\begin{eqnarray*}
+\mathcal{\tilde{K}} &=&\mathcal{K}^{\ast }=\mathcal{K+}\Sigma \lambda
+_{1}^{N}, \\
+\mathcal{\tilde{K}}\tilde{\mu} &=&\mathcal{K}^{\ast }\mu ^{\ast }+\Sigma
+\Sigma ^{\prime }B_{\tau }^{N}=\mathcal{K}\mu \mathcal{-}\Sigma \lambda
+_{0}^{N}+\Sigma \Sigma ^{\prime }B_{\tau }^{N}, \\
+\tilde{\kappa}_{v} &=&\kappa _{v}^{\ast }-\sigma _{v}^{2}C_{\tau
+}^{N}=\kappa _{v}+\sqrt{1-\rho ^{2}}\sigma _{v}\gamma _{v}+\rho \sigma
+_{v}\gamma _{\bot }-\sigma _{v}^{2}C_{\tau }^{N}, \\
+\tilde{\kappa}_{v}\tilde{\mu}_{v} &=&\kappa _{v}^{\ast }\mu _{v}^{\ast
+}=\kappa _{v}\mu _{v}, \\
+\tilde{\kappa}_{\delta } &=&\kappa _{\delta }^{\ast }=\kappa _{\delta
+}+\sigma _{\delta }\lambda _{\delta }^{N} \\
+\tilde{\kappa}_{\delta }\tilde{\mu}_{\delta } &=&\kappa _{\delta }^{\ast
+}\mu _{\delta }^{\ast }+\sigma _{\delta }\left( \sigma _{\delta }D_{\tau
+}^{N}+\sigma _{s}E_{\tau }^{N}\right) =\kappa _{v}\mu _{v}-\sigma _{\delta
+}\lambda _{0,\delta }^{N}+\sigma _{\delta }\left( \sigma _{\delta }D_{\tau
+}^{N}+\sigma _{s}E_{\tau }^{N}\right)  \\
+\tilde{\pi}_{t} &=&\widetilde{\rho }_{0}^{\pi }+\widetilde{\rho }_{x}^{\pi
+\prime }x_{t}+\widetilde{\rho }_{v}^{\pi }v_{t}+\widetilde{\rho }_{\delta
+}^{\pi }\delta _{t}+\widetilde{\rho }_{s}^{\pi }s_{t}, \\
+\widetilde{\rho }_{0}^{\pi } &=&\rho _{0}^{\pi \ast }+\sigma _{q}^{\prime
+}\Sigma ^{\prime }B_{\tau }^{N}=\rho _{0}^{\pi }-\lambda _{0}^{N\prime
+}\sigma _{q}+\sigma _{q}^{\prime }\Sigma ^{\prime }B_{\tau }^{N}, \\
+\widetilde{\rho }_{x}^{\pi } &=&\rho _{x}^{\pi \ast }=\rho _{x}^{\pi
+}-\lambda _{x}^{N\prime }\sigma _{q}, \\
+\widetilde{\rho }_{v}^{\pi } &=&\rho _{v}^{\pi \ast }+\rho \sigma
+_{v}C_{\tau }^{N}=\rho _{v}^{\pi }-\gamma _{\bot }+\rho \sigma _{v}C_{\tau
+}^{N}.\medskip  \\
+\widetilde{\rho }_{\delta }^{\pi \ast } &=&\rho _{\delta }^{\pi \ast }\text{
+and }\widetilde{\rho }_{s}^{\pi \ast }=\rho _{s}^{\pi \ast }\text{ }
+\end{eqnarray*}
+
+Next, we compute the expected values of the state variables over the period $%
+t$ to $t+\tau $ under the forward measure. First, similar to the
+calculations under the risk neutral measure, we have%
+\begin{equation*}
+E_{t}^{\mathbb{\tilde{P}}}\left( x_{s}\right) =\tilde{\mu}+\exp \left( -%
+\mathcal{\tilde{K}}\left( s-t\right) \right) \left( x_{t}-\tilde{\mu}\right) 
+\end{equation*}%
+and%
+\begin{eqnarray*}
+&&\frac{1}{\tau }E_{t}^{\mathbb{\tilde{P}}}\left[ \int_{t}^{t+\tau }x_{s}ds%
+\right] =\frac{1}{\tau }\left[ \int_{t}^{t+\tau }\left( \tilde{\mu}+\exp
+\left( -\mathcal{\tilde{K}}\left( s-t\right) \right) \left( x_{t}-\tilde{\mu}%
+\right) \right) ds\right]  \\
+&=&\tilde{\mu}+\widetilde{W}_{0,\tau }^{x}\left( x_{t}-\tilde{\mu}\right)
+\equiv \tilde{a}_{\tau }^{x}+\tilde{b}_{\tau }^{x}x_{t}
+\end{eqnarray*}%
+where $\widetilde{W}_{T_{1},T_{2}}^{x}$ is defined similarly as $%
+W_{T_{1},T_{2}}^{x}$ except that dynamics under the forward measure is used
+instead, and  
+\begin{equation*}
+\tilde{a}_{\tau }^{x}=\left( I-\widetilde{W}_{0,\tau }^{x}\right) \tilde{\mu}%
+\text{ and }\widetilde{b}_{\tau }^{x}=\widetilde{W}_{0,\tau }^{x}\equiv
+\left( \mathcal{\tilde{K}}\tau \right) ^{-1}\left( I-\exp \left( -\mathcal{%
+\tilde{K}}\tau \right) \right) 
+\end{equation*}%
+Similarly (the results for $\delta _{t}$ are very similar and thus omitted),
+we have 
+
+\begin{eqnarray*}
+E_{t}^{\mathbb{\tilde{P}}}\left( v_{s}\right)  &=&\tilde{\mu}_{v}+\exp
+\left( -\tilde{\kappa}_{v}\left( s-t\right) \right) \left( v_{t}-\tilde{\mu}%
+_{v}\right)  \\
+\frac{1}{\tau }E_{t}^{\mathbb{\tilde{P}}}\left[ \int_{t}^{t+\tau }v_{s}ds%
+\right]  &=&\tilde{\mu}_{v}+\widetilde{W}_{0,\tau }^{v}\left( v_{t}-\tilde{%
+\mu}_{v}\right) \equiv \tilde{a}_{\tau }^{v}+\tilde{b}_{\tau }^{v}v_{t}
+\end{eqnarray*}%
+where 
+\begin{equation*}
+\tilde{a}_{\tau }^{v}=\tilde{\mu}_{v}\left[ 1-\widetilde{W}_{0,\tau }^{v}%
+\right] \text{ and }\tilde{b}_{\tau }^{v}=\widetilde{W}_{0,\tau }^{v}\equiv
+\left( \tilde{\kappa}_{v}\tau \right) ^{-1}\left( 1-\exp \left( -\tilde{%
+\kappa}_{v}\tau \right) \right) .
+\end{equation*}%
+Furthermore,%
+\begin{eqnarray*}
+&&E_{t}^{\mathbb{\tilde{P}}}\left[ s_{s}\right]  \\
+&=&\exp \left( \widetilde{\phi }_{s}\left( s-t\right) \right) s_{t}+\frac{1}{%
+\widetilde{\phi }_{s}}\left( \exp \left( \widetilde{\phi }_{s}\left(
+s-t\right) \right) -1\right) \left( \widetilde{\phi }_{0}+\widetilde{\phi }%
+_{x}^{\prime }\mu +\widetilde{\phi }_{v}\mu _{v}+\widetilde{\phi }_{\delta
+}\mu _{\delta }\right)  \\
+&&+\widetilde{\phi }_{x}^{\prime }\left( \kappa +\widetilde{\phi }%
+_{s}I\right) ^{-1}\left( \exp \left( \widetilde{\phi }_{s}\left( s-t\right)
+\right) I-\exp \left( -\kappa \left( s-t\right) \right) \right) \left(
+x_{t}-\mu \right)  \\
+&&+\widetilde{\phi }_{v}\left( \kappa _{v}+\widetilde{\phi }_{s}\right)
+^{-1}\left( \exp \left( \widetilde{\phi }_{s}\left( s-t\right) \right) -\exp
+\left( -\kappa _{v}\left( s-t\right) \right) \right) \left( v_{t}-\mu
+_{v}\right)  \\
+&&+\widetilde{\phi }_{\delta }\left( \kappa _{\delta }+\widetilde{\phi }%
+_{s}\right) ^{-1}\left( \exp \left( \widetilde{\phi }_{s}\left( s-t\right)
+\right) -\exp \left( -\kappa _{\delta }\left( s-t\right) \right) \right)
+\left( \delta _{t}-\mu _{\delta }\right) 
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+&&E_{t}^{\mathbb{\tilde{P}}}\left[ \frac{1}{T_{2}-T_{1}}%
+\int_{t+T_{1}}^{t+T_{2}}s_{u}du\right]  \\
+&=&\frac{1}{T_{2}-T_{1}}\int_{T_{1}}^{T_{2}}\left[ 
+\begin{array}{c}
+\exp \left( \widetilde{\phi }_{s}u\right) s_{t}+\frac{1}{\widetilde{\phi }%
+_{s}}\left( \exp \left( \widetilde{\phi }_{s}u\right) -1\right) \left( 
+\widetilde{\phi }_{0}+\widetilde{\phi }_{x}^{\prime }\mu +\widetilde{\phi }%
+_{v}\mu _{v}+\widetilde{\phi }_{\delta }\mu _{\delta }\right)  \\ 
++\widetilde{\phi }_{x}^{\prime }\left( \kappa +\widetilde{\phi }_{s}I\right)
+^{-1}\left( \exp \left( \widetilde{\phi }_{s}u\right) I-\exp \left( -\kappa
+u\right) \right) \left( x_{t}-\mu \right)  \\ 
++\widetilde{\phi }_{v}\left( \kappa _{v}+\widetilde{\phi }_{s}\right)
+^{-1}\left( \exp \left( \widetilde{\phi }_{s}u\right) -\exp \left( -\kappa
+_{v}u\right) \right) \left( v_{t}-\mu _{v}\right)  \\ 
++\widetilde{\phi }_{\delta }\left( \kappa _{\delta }+\widetilde{\phi }%
+_{s}\right) ^{-1}\left( \exp \left( \widetilde{\phi }_{s}u\right) -\exp
+\left( -\kappa _{\delta }u\right) \right) \left( \delta _{t}-\mu _{\delta
+}\right) 
+\end{array}%
+\right] du \\
+&=&\widetilde{W}_{T_{1},T_{2}}^{s}s_{t}+\frac{1}{\widetilde{\phi }_{s}}%
+\left( \widetilde{W}_{T_{1},T_{2}}^{s}-1\right) \left( \widetilde{\phi }_{0}+%
+\widetilde{\phi }_{x}^{\prime }\mu +\widetilde{\phi }_{v}\mu _{v}+\widetilde{%
+\phi }_{\delta }\mu _{\delta }\right)  \\
+&&+\widetilde{\phi }_{x}^{\prime }\left( \kappa +\widetilde{\phi }%
+_{s}I\right) ^{-1}\left( \widetilde{W}_{T_{1},T_{2}}^{s}I-\widetilde{W}%
+_{T_{1},T_{2}}^{x}\right) \left( x_{t}-\mu \right)  \\
+&&+\widetilde{\phi }_{v}\left( \kappa _{v}+\widetilde{\phi }_{s}\right)
+^{-1}\left( \widetilde{W}_{T_{1},T_{2}}^{s}-\widetilde{W}_{T_{1},T_{2}}^{v}%
+\right) \left( v_{t}-\mu _{v}\right)  \\
+&&+\widetilde{\phi }_{\delta }\left( \kappa _{\delta }+\widetilde{\phi }%
+_{s}\right) ^{-1}\left( \widetilde{W}_{T_{1},T_{2}}^{s}-\widetilde{W}%
+_{T_{1},T_{2}}^{\delta }\right) \left( \delta _{t}-\mu _{\delta }\right) 
+\end{eqnarray*}%
+implying%
+\begin{equation*}
+E_{t}^{\mathbb{\tilde{P}}}\left[ \frac{1}{\tau }\int_{t}^{t+\tau }s_{u}du%
+\right] \equiv \tilde{a}_{\tau }^{s}+\tilde{b}_{\tau }^{s,x}x_{t}+\widetilde{%
+b}_{\tau }^{s,v}v_{t}+\widetilde{b}_{\tau }^{s,\delta }v_{t}+\widetilde{b}%
+_{\tau }^{s,s}s_{t}
+\end{equation*}%
+where%
+\begin{eqnarray*}
+\widetilde{a}_{\tau }^{s} &\equiv &\frac{1}{\widetilde{\phi }_{s}}\left( 
+\widetilde{W}_{0,\tau }^{s}-1\right) \left( \widetilde{\phi }_{0}+\widetilde{%
+\phi }_{x}^{\prime }\mu +\widetilde{\phi }_{v}\mu _{v}+\widetilde{\phi }%
+_{\delta }\mu _{\delta }\right)  \\
+&&-\widetilde{\phi }_{x}^{\prime }\left( \kappa +\widetilde{\phi }%
+_{s}I\right) ^{-1}\left( \widetilde{W}_{0,\tau }^{s}I-\widetilde{W}_{0,\tau
+}^{x}\right) \mu  \\
+&&-\widetilde{\phi }_{v}\left( \kappa _{v}+\widetilde{\phi }_{s}\right)
+^{-1}\left( \widetilde{W}_{0,\tau }^{s}-\widetilde{W}_{0,\tau }^{v}\right)
+\mu _{v} \\
+&&-\widetilde{\phi }_{\delta }\left( \kappa _{\delta }+\widetilde{\phi }%
+_{s}\right) ^{-1}\left( \widetilde{W}_{0,\tau }^{s}-\widetilde{W}_{0,\tau
+}^{\delta }\right) \mu _{\delta }
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+\tilde{b}_{\tau }^{s,x} &\equiv &\widetilde{\phi }_{x}^{\prime }\left(
+\kappa +\widetilde{\phi }_{s}I\right) ^{-1}\left( \widetilde{W}_{0,\tau
+}^{s}I-\widetilde{W}_{0,\tau }^{x}\right)  \\
+\tilde{b}_{\tau }^{s,v} &\equiv &\widetilde{\phi }_{v}\left( \kappa _{v}+%
+\widetilde{\phi }_{s}\right) ^{-1}\left( \widetilde{W}_{0,\tau }^{s}-%
+\widetilde{W}_{0,\tau }^{v}\right)  \\
+\tilde{b}_{\tau }^{s,\delta } &\equiv &\widetilde{\phi }_{\delta }\left(
+\kappa _{\delta }+\widetilde{\phi }_{s}\right) ^{-1}\left( \widetilde{W}%
+_{0,\tau }^{s}-\widetilde{W}_{0,\tau }^{\delta }\right)  \\
+\tilde{b}_{\tau }^{s,s} &\equiv &\widetilde{W}_{0,\tau }^{s}
+\end{eqnarray*}
+
+We can now calculate inflation expectation and variance as follows:%
+\begin{eqnarray*}
+&&E_{t}^{\mathbb{\tilde{P}}}\left[ \log \left( \frac{Q_{t+\tau }}{Q_{t}}%
+\right) \right] =E_{t}^{\mathbb{\tilde{P}}}\left[ \int_{t}^{t+\tau }\tilde{%
+\pi}_{s}ds\right] =E_{t}^{\mathbb{\tilde{P}}}\left[ \int_{t}^{t+\tau }\left( 
+\widetilde{\rho }_{0}^{\pi }+\widetilde{\rho }_{x}^{\pi \prime }x_{s}+%
+\widetilde{\rho }_{v}^{\pi }v_{s}+\widetilde{\rho }_{\delta }^{\pi }\delta
+_{s}+\widetilde{\rho }_{s}^{\pi }s_{s}\right) ds\right]  \\
+&=&\tau \left( 
+\begin{array}{c}
+\widetilde{\rho }_{0}^{\pi }+\widetilde{\rho }_{x}^{\pi \prime }\left( 
+\tilde{a}_{\tau }^{x}+\tilde{b}_{\tau }^{x}x_{t}\right) +\widetilde{\rho }%
+_{v}^{\pi }\left( \tilde{a}_{\tau }^{v}+\tilde{b}_{\tau }^{v}v_{t}\right) +%
+\widetilde{\rho }_{\delta }^{\pi }\left( \tilde{a}_{\tau }^{\delta }+\tilde{b%
+}_{\tau }^{\delta }\delta _{t}\right)  \\ 
++\widetilde{\rho }_{s}^{\pi }\left( \tilde{a}_{\tau }^{s}+\tilde{b}_{\tau
+}^{s,x}x_{t}+\widetilde{b}_{\tau }^{s,v}v_{t}+\widetilde{b}_{\tau
+}^{s,\delta }\delta _{t}+\widetilde{b}_{\tau }^{s,s}s_{t}\right) 
+\end{array}%
+\right)  \\
+&\equiv &\tau \left( \tilde{a}_{\tau }^{\pi }+\tilde{b}_{\tau }^{\pi \prime
+}x_{t}+\tilde{c}_{\tau }^{\pi }v_{t}+\widetilde{c2}_{\tau }^{\pi }\delta
+_{t}+\widetilde{c3}_{\tau }^{\pi }s_{t}\right) 
+\end{eqnarray*}%
+and%
+\begin{equation*}
+Var_{t}^{\mathbb{\tilde{P}}}\left[ \log \left( \frac{Q_{t+\tau }}{Q_{t}}%
+\right) \right] =E_{t}^{\mathbb{\tilde{P}}}\left[ \int_{t}^{t+\tau }\left(
+\sigma _{q}^{\prime }\sigma _{q}+v_{s}\right) ds\right] =\tau \left( \sigma
+_{q}^{\prime }\sigma _{q}+\tilde{a}_{\tau }^{v}+\tilde{b}_{\tau
+}^{v}v_{t}\right) \equiv \tau \left( \tilde{d}_{\tau }^{\pi }+\tilde{e}%
+_{\tau }^{\pi }v_{t}\right) ,
+\end{equation*}%
+where 
+\begin{eqnarray*}
+\tilde{a}_{\tau }^{\pi } &=&\widetilde{\rho }_{0}^{\pi }+\widetilde{\rho }%
+_{x}^{\pi \prime }\tilde{a}_{\tau }^{x}+\widetilde{\rho }_{v}^{\pi }\tilde{a}%
+_{\tau }^{v}+\widetilde{\rho }_{\delta }^{\pi }\tilde{a}_{\tau }^{\delta }+%
+\widetilde{\rho }_{s}^{\pi }\tilde{a}_{\tau }^{s}, \\
+\tilde{b}_{\tau }^{\pi } &=&\tilde{b}_{\tau }^{x\prime }\widetilde{\rho }%
+_{x}^{\pi }+\tilde{b}_{\tau }^{s,x\prime }\widetilde{\rho }_{s}^{\pi }, \\
+\tilde{c}_{\tau }^{\pi } &=&\widetilde{\rho }_{v}^{\pi }\tilde{b}_{\tau
+}^{v}+\widetilde{\rho }_{s}^{\pi }\widetilde{b}_{\tau }^{s,v}, \\
+\widetilde{c2}_{\tau }^{\pi } &=&\widetilde{\rho }_{\delta }^{\pi }\tilde{b}%
+_{\tau }^{\delta }+\widetilde{\rho }_{s}^{\pi }\widetilde{b}_{\tau
+}^{s,\delta } \\
+\widetilde{c3}_{\tau }^{\pi } &=&\widetilde{\rho }_{s}^{\pi }\widetilde{b}%
+_{\tau }^{s,s} \\
+\tilde{d}_{\tau }^{\pi } &=&\sigma _{q}^{\prime }\sigma _{q}+\tilde{a}_{\tau
+}^{v} \\
+\tilde{e}_{\tau }^{\pi } &=&\tilde{b}_{\tau }^{v}.
+\end{eqnarray*}
+
+Finally, we turn to inflation option pricing. The price of a $\tau $%
+-maturity inflation cap with strike $K$ is given by%
+\begin{eqnarray*}
+P_{t,\tau ,K}^{CAP} &=&\exp \left( -\tau y_{t,\tau }^{N}\right) E_{t}^{%
+\mathbb{\tilde{P}}}\left[ \left( \frac{Q_{t+\tau }}{Q_{t}}-\left( 1+K\right)
+^{\tau }\right) ^{+}\right] \\
+&=&\exp \left( -\tau y_{t,\tau }^{N}\right) E_{t}^{\mathbb{\tilde{P}}}\left[
+\left( \exp \left( \log \left( \frac{Q_{t+\tau }}{Q_{t}}\right) \right)
+-\left( 1+K\right) ^{\tau }\right) ^{+}\right] \\
+&=&\exp \left( -\tau y_{t,\tau }^{N}\right) \left[ \exp \left( \tau \left(
+\left( \tilde{a}_{\tau }^{\pi }+\frac{\tilde{d}_{\tau }^{\pi }}{2}\right) +%
+\tilde{b}_{\tau }^{\pi \prime }x_{t}+\left( \tilde{c}_{\tau }^{\pi }+\frac{%
+\tilde{e}_{\tau }^{\pi }}{2}\right) v_{t}+\widetilde{c2}_{\tau }^{\pi
+}\delta _{t}+\widetilde{c3}_{\tau }^{\pi }s_{t}\right) \right) \right. \\
+&&\times \Phi \left( \frac{\tau }{\sigma }\left[ -\ln \left( 1+K\right)
++\left( \tilde{a}_{\tau }^{\pi }+\tilde{d}_{\tau }^{\pi }\right) +\tilde{b}%
+_{\tau }^{\pi \prime }x_{t}+\left( \tilde{c}_{\tau }^{\pi }+\tilde{e}_{\tau
+}^{\pi }\right) v_{t}+\widetilde{c2}_{\tau }^{\pi }\delta _{t}+\widetilde{c3}%
+_{\tau }^{\pi }s_{t}\right] \right) \\
+&&\left. -\left( 1+K\right) ^{\tau }\Phi \left( \frac{\tau }{\sigma }\left[
+-\ln \left( 1+K\right) +\tilde{a}_{\tau }^{\pi }+\tilde{b}_{\tau }^{\pi
+\prime }x_{t}+\tilde{c}_{\tau }^{\pi }v_{t}+\widetilde{c2}_{\tau }^{\pi
+}\delta _{t}+\widetilde{c3}_{\tau }^{\pi }s_{t}\right] \right) \right] ,
+\end{eqnarray*}%
+and the price of a $\tau $-maturity inflation cap with strike $K$ is given by
+
+\begin{eqnarray*}
+P_{t,\tau ,K}^{FLO} &=&\exp \left( -\tau y_{t,\tau }^{N}\right) E_{t}^{%
+\mathbb{\tilde{P}}}\left[ \left( \left( 1+K\right) ^{\tau }-\frac{Q_{t+\tau }%
+}{Q_{t}}\right) ^{+}\right] \\
+&=&\exp \left( -\tau y_{t,\tau }^{N}\right) E_{t}^{\mathbb{\tilde{P}}}\left[
+\left( \left( 1+K\right) ^{\tau }-\exp \left( \log \left( \frac{Q_{t+\tau }}{%
+Q_{t}}\right) \right) \right) ^{+}\right] \\
+&=&\exp \left( -\tau y_{t,\tau }^{N}\right) \left[ -\exp \left( \tau \left(
+\left( \tilde{a}_{\tau }^{\pi }+\frac{\tilde{d}_{\tau }^{\pi }}{2}\right) +%
+\tilde{b}_{\tau }^{\pi \prime }x_{t}+\left( \tilde{c}_{\tau }^{\pi }+\frac{%
+\tilde{e}_{\tau }^{\pi }}{2}\right) v_{t}\right) \right) \right. \\
+&&\times \Phi \left( -\frac{\tau }{\sigma }\left[ -\ln \left( 1+K\right)
++\left( \tilde{a}_{\tau }^{\pi }+\tilde{d}_{\tau }^{\pi }\right) +\tilde{b}%
+_{\tau }^{\pi \prime }x_{t}+\left( \tilde{c}_{\tau }^{\pi }+\tilde{e}_{\tau
+}^{\pi }\right) v_{t}\right] \right) \\
+&&\left. +\left( 1+K\right) ^{\tau }\Phi \left( -\frac{\tau }{\sigma }\left[
+-\ln \left( 1+K\right) +\tilde{a}_{\tau }^{\pi }+\tilde{b}_{\tau }^{\pi
+\prime }x_{t}+\tilde{c}_{\tau }^{\pi }v_{t}\right] \right) \right]
+\end{eqnarray*}%
+where we used the fact that for a normal random variable $\widetilde{z}\sim
+N\left( \mu ,\sigma ^{2}\right) $,%
+\begin{eqnarray*}
+E\left[ \left( ae^{\widetilde{z}}-b\right) ^{+}\right] &=&a\exp \left( \mu +%
+\frac{\sigma ^{2}}{2}\right) \Phi \left( \frac{\ln \left( a/b\right) +\left(
+\mu +\sigma ^{2}\right) }{\sigma }\right) -b\Phi \left( \frac{\ln \left(
+a/b\right) +\mu }{\sigma }\right) , \\
+E\left[ \left( b-ae^{\widetilde{z}}\right) ^{+}\right] &=&-a\exp \left( \mu +%
+\frac{\sigma ^{2}}{2}\right) \Phi \left( -\frac{\ln \left( a/b\right)
++\left( \mu +\sigma ^{2}\right) }{\sigma }\right) +b\Phi \left( -\frac{\ln
+\left( a/b\right) +\mu }{\sigma }\right) .
+\end{eqnarray*}
+
+\bigskip 
+
+Remark. We can derive option-implied inflation expectations as follows:%
+\begin{eqnarray*}
+&&P_{t,\tau ,K}^{CAP}-P_{t,\tau ,K}^{FLO} \\
+&=&\exp \left( -\tau y_{t,\tau }^{N}\right) E_{t}^{\mathbb{\tilde{P}}}\left[
+\left( \frac{Q_{t+\tau }}{Q_{t}}-\left( 1+K\right) ^{\tau }\right) ^{+}%
+\right] -\exp \left( -\tau y_{t,\tau }^{N}\right) E_{t}^{\mathbb{\tilde{P}}}%
+\left[ \left( \left( 1+K\right) ^{\tau }-\frac{Q_{t+\tau }}{Q_{t}}\right)
+^{+}\right]  \\
+&=&\exp \left( -\tau y_{t,\tau }^{N}\right) E_{t}^{\mathbb{\tilde{P}}}\left[ 
+\frac{Q_{t+\tau }}{Q_{t}}-\left( 1+K\right) ^{\tau }\right] 
+\end{eqnarray*}
+
+\subsection{State Dynamics}
+
+We first consider the discrete-time dynamics of the state variable $q_{t}$
+between time $t-\Delta t$ and $t$. From $dq_{t}=\pi _{t}dt+\sigma
+_{q}^{\prime }dW_{x,t}+\sqrt{v_{t}}dW_{\bot ,t}$, we have%
+\begin{equation*}
+q_{t}=q_{t-\Delta t}+\left( \rho _{0}^{\pi }\Delta t+\left( \rho _{x}^{\pi
+\prime }\Delta t\right) x_{t}+\left( \rho _{v}^{\pi }\Delta t\right)
+v_{t}+\left( \rho _{\delta }^{\pi }\Delta t\right) \delta _{t}+\left( \rho
+_{s}^{\pi }\Delta t\right) s_{t}\right) +\eta _{t}^{q}
+\end{equation*}%
+where $\eta _{t}^{q}\equiv \int_{t-\Delta t}^{t}\left( \sigma _{q}^{\prime
+}dW_{x,s}+\sqrt{v_{s}}dW_{\bot ,s}\right) \sim N\left( 0,\Omega _{t-\Delta
+t}^{q}\right) $ and%
+\begin{eqnarray*}
+\Omega _{t-\Delta t}^{q} &\equiv &Var_{t-\Delta t}\left( \eta
+_{t}^{q}\right) =\sigma _{q}^{\prime }\sigma _{q}\Delta t+E_{t-\Delta t} 
+\left[ \int_{t-\Delta t}^{t}v_{s}ds\right] \\
+&=&\sigma _{q}^{\prime }\sigma _{q}\Delta t+\left[ \int_{0}^{\Delta t}\left(
+\mu _{v}\left( 1-e^{-\kappa _{v}s}\right) +e^{-\kappa _{v}s}v_{t-\Delta
+t}\right) ds\right] \\
+&=&\sigma _{q}^{\prime }\sigma _{q}\Delta t+\mu _{v}\Delta t+\left(
+v_{t-\Delta t}-\mu _{v}\right) \frac{1-\exp \left( -\kappa _{v}\Delta
+t\right) }{\kappa _{v}}.
+\end{eqnarray*}%
+Similarly, for the state variable $x_{t}$ we have%
+\begin{equation*}
+x_{t}=\exp \left( -\mathcal{K}\Delta t\right) x_{t-\Delta t}+\left( I-\exp
+\left( -\mathcal{K}\Delta t\right) \right) \mu +\eta _{t}^{x},
+\end{equation*}%
+where $\eta _{t}^{x}=\int_{0}^{\Delta t}\exp \left( -\kappa s\right) \Sigma
+dW_{x,s}\sim N\left( 0,\Omega _{t-\Delta t}^{x}\right) $ and%
+\begin{equation*}
+\Omega _{t-\Delta t}^{x}\equiv Var_{t-\Delta t}\left( \eta _{t}^{x}\right)
+=\int_{0}^{\Delta t}\exp \left( -\mathcal{K}s\right) \Sigma \Sigma ^{\prime
+}\exp \left( -\mathcal{K}^{\prime }s\right) ds=N\Xi N^{\prime },
+\end{equation*}%
+with $\mathcal{K=}NDN^{-1}$, $D=diag\left( \left[ d_{1},...,d_{N}\right]
+\right) $, and $\Xi _{i,j}=\left[ (N^{-1}\Sigma )(N^{-1}\Sigma )^{\prime }%
+\right] _{i,j}\frac{1-\exp \left[ -\left( d_{i}+d_{j}\right) \mathcal{\Delta 
+}t\right] }{\left( d_{i}+d_{j}\right) }$. The covariance matrix between $%
+\eta _{t}^{x}$ and $\eta _{t}^{q}$ is given by%
+\begin{equation*}
+\Omega _{t-\Delta t}^{xq}=Cov_{t-\Delta t}\left[ \eta _{t}^{x},\eta _{t}^{q}%
+\right] =\int_{0}^{\Delta t}\exp \left( -\mathcal{K}s\right) \Sigma \sigma
+_{q}ds=\mathcal{K}^{-1}\left( I-\exp \left( -\mathcal{K}s\Delta t\right)
+\right) \Sigma \sigma _{q}.
+\end{equation*}%
+where $I$ signifies the identity matrix.
+
+Next, we consider the state variable $v_{t}$. From $dv_{t}=\kappa _{v}\left(
+\mu _{v}-v_{t}\right) dt+\sigma _{v}\sqrt{v_{t}}\left( \sqrt{1-\rho ^{2}}%
+dW_{v,t}+\rho dW_{\bot ,t}\right) $, we have%
+\begin{equation*}
+v_{t}=e^{-\kappa _{v}\Delta t}v_{t-\Delta t}+\mu _{v}\left( 1-e^{-\kappa
+_{v}\Delta t}\right) +\eta _{t}^{v}
+\end{equation*}%
+where $\eta _{t}^{v}=\sigma _{v}\int_{t-\Delta t}^{t}e^{\kappa _{v}\left(
+s-t\right) }\sqrt{v_{s}}\left( \sqrt{1-\rho ^{2}}dB_{s}^{v}+\rho
+dB_{s}^{\bot }\right) \sim N\left( 0,\Omega _{t-1}^{v}\right) $ and%
+\begin{eqnarray*}
+\Omega _{t-\Delta t}^{v} &=&E_{t-\Delta t}\left[ \sigma
+_{v}^{2}\int_{t-\Delta t}^{t}e^{2\kappa _{v}\left( s-t\right) }v_{s}ds\right]
+\\
+&=&\mu _{v}\sigma _{v}^{2}\frac{\left( 1-e^{-\kappa _{v}\Delta t}\right) ^{2}%
+}{2\kappa _{v}}+v_{t-1}\sigma _{v}^{2}\frac{e^{-\kappa _{v}\Delta
+t}-e^{-2\kappa _{v}\Delta t}}{\kappa _{v}}
+\end{eqnarray*}%
+The covariance between $\eta _{t}^{v}$ and $\eta _{t}^{x}$ is zero by
+construction while the covariance between the inflation and volatility
+innovation terms is%
+\begin{eqnarray*}
+\Omega _{t-\Delta t}^{vq} &=&Cov_{t-\Delta t}\left[ \eta _{t}^{v},\eta
+_{t}^{q}\right] =\rho \sigma _{v}E_{t-\Delta t}\left[ \int_{t-\Delta
+t}^{t}e^{\kappa _{v}\left( s-t\right) }v_{s}ds\right]  \\
+&=&\rho \sigma _{v}\left[ \mu _{v}\frac{\left( 1-e^{-\frac{\kappa _{v}}{2}%
+\Delta t}\right) ^{2}}{\kappa _{v}}+v_{t-\Delta t}\frac{e^{-\frac{\kappa _{v}%
+}{2}\Delta t}-e^{-\kappa _{v}\Delta t}}{\kappa _{v}/2}\right] .
+\end{eqnarray*}
+
+Next, we consider the state variable $\delta _{t}$. From $d\delta
+_{t}=\kappa _{\delta }\left( \mu _{\delta }-\delta _{t}\right) dt+\sigma
+_{\delta }dW_{\delta ,t}$, we have%
+\begin{equation*}
+\delta _{t}=e^{-\kappa _{\delta }\Delta t}\delta _{t-\Delta t}+\mu _{\delta
+}\left( 1-e^{-\kappa _{\delta }\Delta t}\right) +\eta _{t}^{\delta }
+\end{equation*}%
+where $\eta _{t}^{\delta }=\sigma _{\delta }\int_{t-\Delta t}^{t}e^{\kappa
+_{\delta }\left( u-t\right) }dW_{\delta ,u}\sim N\left( 0,\Omega _{t-\Delta
+t}^{\delta }\right) $ and%
+\begin{equation*}
+\Omega _{t-\Delta t}^{\delta }=E_{t-\Delta t}\left[ \sigma _{\delta
+}^{2}\int_{t-\Delta t}^{t}e^{2\kappa _{\delta }\left( s-t\right) }ds\right]
+=\sigma _{\delta }^{2}\frac{1-e^{-2\kappa _{\delta }\Delta t}}{2\kappa
+_{\delta }}
+\end{equation*}
+
+Last, we consider the state variable $s_{t}$.%
+\begin{equation*}
+s_{t}-s_{t-\Delta t}=\left( \phi _{0}\Delta t+\left( \phi _{x}\Delta
+t\right) ^{\prime }x_{t-\Delta t}+\phi _{v}\Delta tv_{t-\Delta t}+\phi
+_{\delta }\Delta t\delta _{t-\Delta t}+\phi _{s}\Delta ts_{t-\Delta
+t}\right) +\eta _{t}^{s}
+\end{equation*}%
+where $\eta _{t}^{s}=\sigma _{s}\int_{t-\Delta t}^{t}\exp \left( -\phi
+_{s}\left( u-t\right) \right) dW_{\delta ,u}\sim N\left( 0,\Omega _{t-\Delta
+t}^{s}\right) $ and%
+\begin{equation*}
+\Omega _{t-\Delta t}^{s}=E_{t-\Delta t}\left[ \sigma _{s}^{2}\int_{t-\Delta
+t}^{t}e^{2\left( -\phi _{s}\right) \left( u-t\right) }du\right] =\sigma
+_{s}^{2}\frac{e^{2\phi _{s}\Delta t}-1}{2\phi _{s}}
+\end{equation*}%
+and%
+\begin{eqnarray*}
+\Omega _{t-\Delta t}^{\delta s} &=&\sigma _{\delta }\sigma _{s}E_{t-\Delta t}
+\left[ \int_{t-\Delta t}^{t}e^{\kappa _{\delta }\left( u-t\right)
+}dW_{\delta ,u}\int_{t-\Delta t}^{t}e^{-\phi _{s}\left( u-t\right)
+}dW_{\delta ,u}\,\right]  \\
+&=&\sigma _{\delta }\sigma _{s}E_{t-\Delta t}\left[ \int_{t-\Delta
+t}^{t}e^{\left( \kappa _{\delta }-\phi _{s}\right) \left( u-t\right) }du\,%
+\right]  \\
+&=&\sigma _{\delta }\sigma _{s}\frac{1-e^{-\left( \kappa _{\delta }-\phi
+_{s}\right) \Delta t}}{\kappa _{\delta }-\phi _{s}}
+\end{eqnarray*}
+
+In summary, the dynamics of the state vector $Z_{t}=\left(
+q_{t},x_{t}^{\prime },v_{t},\delta _{t},s_{t}\right) ^{\prime }$ follows the
+VAR process%
+\begin{equation*}
+Z_{t}=\mathcal{A}+\mathcal{B}Z_{t-\Delta t}+\eta _{t}
+\end{equation*}%
+where $\mathcal{A}=\left[ 
+\begin{array}{c}
+\rho _{0}^{\pi }\Delta t \\ 
+\left( I-\exp \left( -\mathcal{K}\Delta t\right) \right) \mu  \\ 
+\left( 1-e^{-\kappa _{v}\Delta t}\right) \mu _{v} \\ 
+\left( 1-e^{-\kappa _{\delta }\Delta t}\right) \mu _{\delta } \\ 
+\phi _{0}\Delta t%
+\end{array}%
+\right] $, $\mathcal{B}=%
+\begin{bmatrix}
+1 & \rho _{x}^{\pi \prime }\Delta t & \rho _{v}^{\pi }\Delta t & \rho
+_{\delta }^{\pi }\Delta t & \rho _{s}^{\pi }\Delta t \\ 
+0 & \exp \left( -\mathcal{K}\Delta t\right)  &  &  &  \\ 
+0 & 0_{1\times 3} & e^{-\kappa _{v}\Delta t} &  &  \\ 
+0 & 0_{1\times 3} & 0 & e^{-\kappa _{\delta }\Delta t} &  \\ 
+0 & \phi _{x}^{\prime }\Delta t & \phi _{v}\Delta t & \phi _{\delta }\Delta t
+& 1+\phi _{s}\Delta t%
+\end{bmatrix}%
+$, $\eta _{t}=\left( 
+\begin{array}{c}
+\eta _{t}^{q} \\ 
+\eta _{t}^{x} \\ 
+\eta _{t}^{v} \\ 
+\eta _{t}^{\delta } \\ 
+\eta _{t}^{s}%
+\end{array}%
+\right) \sim N\left( 0,\Omega _{t-\Delta t}\right) $ and $\Omega _{t-\Delta
+t}=%
+\begin{bmatrix}
+\Omega _{t-\Delta t}^{q} & \Omega _{t-\Delta t}^{xq\prime } & \Omega
+_{t-\Delta t}^{vq} &  &  \\ 
+\Omega _{t-\Delta t}^{xq} & \Omega _{t-\Delta t}^{x} &  &  &  \\ 
+\Omega _{t-\Delta t}^{vq} &  & \Omega _{t-\Delta t}^{v} &  &  \\ 
+&  &  & \Omega _{t-\Delta t}^{\delta } & \Omega _{t-\Delta t}^{\delta s} \\ 
+&  &  & \Omega _{t-\Delta t}^{\delta s} & \Omega _{t-\Delta t}^{s}%
+\end{bmatrix}%
+$.
+
+\bigskip
+
+\bigskip
+
+\end{document}

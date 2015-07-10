@@ -1,0 +1,473 @@
+%2multibyte Version: 5.50.0.2953 CodePage: 1252
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsfonts}
+\usepackage{amsmath}
+
+\setcounter{MaxMatrixCols}{10}
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2953}
+%TCIDATA{Codepage=1252}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Tuesday, May 06, 2008 16:53:02}
+%TCIDATA{LastRevised=Thursday, June 11, 2015 17:59:08}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{ComputeDefs=
+%$n$
+%}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\setlength{\oddsidemargin}{.25in}
+\setlength{\evensidemargin}{.05in}
+\setlength{\textwidth}{6.0in}
+\setlength{\textheight}{8.2in}
+\renewcommand{\topmargin}{0.0in}
+\renewcommand{\baselinestretch}{1.0}
+\input{tcilatex}
+\makeatletter
+\def\@biblabel#1{\hspace*{-\labelsep}}
+\makeatother
+
+\begin{document}
+
+\title{Documentation: MODEL "DKW\_o"}
+\author{Nikolay Gospodinov and Bin Wei}
+\maketitle
+
+\section{Model}
+
+Suppose that there are a vector of four latent variables $x_{t}=\left(
+x_{1t},x_{2t},x_{3t}\right) ^{\prime }$ and $v_{t}$\textbf{\ }that drive
+nominal and real yields as well as inflation. Their dynamics under the
+physical measure is%
+\begin{equation}
+dx_{t}=\mathcal{K}\left( \mu -x_{t}\right) dt+\Sigma dW_{x,t}
+\end{equation}%
+The nominal pricing kernel takes the form%
+\begin{equation}
+dM_{t}^{N}/M_{t}^{N}=-r_{t}^{N}dt-\Lambda _{x,t}^{N\prime }dW_{x,t}
+\end{equation}%
+where the nominal short rate is%
+\begin{equation}
+r_{t}^{N}=\rho _{0}^{N}+\rho _{x}^{N\prime }x_{t}
+\end{equation}%
+and the vector of prices of risk is given by\qquad 
+\begin{equation*}
+\Lambda _{x,t}^{N}=\lambda _{0}^{N}+\lambda _{x}^{N}x_{t}
+\end{equation*}%
+Let $q_{t}\equiv \log Q_{t}$ denote the log price level. The price level
+evolves as follows: 
+\begin{equation}
+dq_{t}=\pi _{t}dt+\sigma _{q}^{\prime }dW_{x,t}+\sigma _{\bot }dW_{\bot ,t}
+\end{equation}%
+where the instantaneous expected inflation rate is given by 
+\begin{equation}
+\pi _{t}=\rho _{0}^{\pi }+\rho _{x}^{\pi \prime }x_{t}
+\end{equation}
+
+\textbf{Real Pricing Kernel.} Based on the observation $%
+M_{t}^{R}=M_{t}^{N}Q_{t}$, we have%
+\begin{eqnarray*}
+dM_{t}^{R}/M_{t}^{R} &=&dM_{t}^{N}/M_{t}^{N}+dQ_{t}/Q_{t}+\left(
+dM_{t}^{N}/M_{t}^{N}\right) \cdot \left( dQ_{t}/Q_{t}\right)  \\
+&=&-r_{t}^{N}dt-\Lambda _{x,t}^{N\prime }dW_{x,t}+\left[ \pi _{t}+\frac{1}{2}%
+\left( \sigma _{q}^{\prime }\sigma _{q}+\left( \sigma _{q}^{\bot }\right)
+^{2}\right) -\sigma _{q}^{\prime }\Lambda _{x,t}^{N}\right] dt+\sigma
+_{q}^{\prime }dW_{x,t} \\
+&\equiv &-r_{t}^{R}dt-\Lambda _{x,t}^{R\prime }dW_{x,t}
+\end{eqnarray*}%
+where 
+\begin{eqnarray*}
+r_{t}^{R} &=&r_{t}^{N}-\left[ \pi _{t}+\frac{1}{2}\left( \sigma _{q}^{\prime
+}\sigma _{q}+\left( \sigma _{q}^{\bot }\right) ^{2}\right) \right] +\sigma
+_{q}^{\prime }\Lambda _{x,t}^{N}\equiv \rho _{0}^{R}+\rho _{x}^{R\prime
+}x_{t} \\
+\Lambda _{x,t}^{R} &=&\Lambda _{x,t}^{N}-\sigma _{q}\equiv \lambda
+_{0}^{R}+\lambda _{x}^{R\prime }x_{t}
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+\rho _{0}^{R} &=&\rho _{0}^{N}-\rho _{0}^{\pi }-\frac{1}{2}\left( \sigma
+_{q}^{\prime }\sigma _{q}+\left( \sigma _{q}^{\bot }\right) ^{2}\right)
++\lambda _{0}^{\prime }\sigma _{q} \\
+\rho _{x}^{R} &=&\rho _{x}^{N}-\rho _{x}^{\pi }+\lambda _{x}^{N\prime
+}\sigma _{q}
+\end{eqnarray*}%
+and 
+\begin{equation*}
+\lambda _{0}^{R}=\lambda _{0}^{N}-\sigma _{q},\text{ and }\lambda
+_{x}^{R}=\lambda _{x}^{N}
+\end{equation*}
+
+\bigskip 
+
+\textbf{Risk-Neutral Measure.} The Radon-Nikodym derivative of the risk
+neutral measure $\mathbb{P}^{\ast }$ with respect to the physical measure $%
+\mathbb{P}$ is given by%
+\begin{equation}
+\left( \frac{d\mathbb{P}^{\ast }}{d\mathbb{P}}\right) _{t,T}=\exp \left[ -%
+\frac{1}{2}\int_{t}^{T}\Lambda _{s}^{N\prime }\Lambda
+_{s}^{N}ds-\int_{t}^{T}\Lambda _{s}^{N\prime }dW_{s}\right] 
+\end{equation}%
+where $\Lambda _{t}^{N}\equiv \Lambda _{x,t}^{N}$ and $W_{t}\equiv W_{x,t}$.
+Then,By the Girsanov theorem, $dW_{t}^{\ast }=dW_{t}+\Lambda _{t}^{N}dt$ is
+a standard Brownian motion under the risk-neutral probability measure $%
+\mathbb{P}^{\ast }$. It implies that under the risk neutral measure, the
+dynamics is given by%
+\begin{eqnarray*}
+dx_{t} &=&\mathcal{K}\left( \mu -x_{t}\right) dt+\Sigma dW_{x,t} \\
+&=&\mathcal{K}\left( \mu -x_{t}\right) dt+\Sigma \left( dW_{x,t}^{\ast
+}-\Lambda _{x,t}^{N}dt\right)  \\
+&=&\left[ \left( \mathcal{K}\mu -\Sigma \lambda _{0}^{N}\right) -\left( 
+\mathcal{K}+\Sigma \lambda _{x}^{N}\right) x_{t}\right] dt+\Sigma
+dW_{x,t}^{\ast } \\
+&\equiv &\mathcal{K}^{\ast }\left( \mu ^{\ast }-x_{t}\right) dt+\Sigma
+dW_{x,t}^{\ast },
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+dq_{t} &=&\pi _{t}dt+\sigma _{q}^{\prime }dW_{x,t}+\sqrt{v_{t}}dW_{\bot ,t}
+\\
+&=&\left( \rho _{0}^{\pi }+\rho _{x}^{\pi \prime }x_{t}\right) dt+\sigma
+_{q}^{\prime }\left( dW_{x,t}^{\ast }-\Lambda _{x,t}^{N}dt\right) +\sigma
+_{q}^{\bot }dW_{\bot ,t}^{\ast } \\
+&=&\left( \rho _{0}^{\pi }+\rho _{x}^{\pi \prime }x_{t}-\sigma _{q}^{\prime
+}\left( \lambda _{0}^{N}+\lambda _{x}^{N}x_{t}\right) \right) dt+\sigma
+_{q}^{\prime }dW_{x,t}^{\ast }+\sigma _{q}^{\bot }dW_{\bot ,t}^{\ast } \\
+&\equiv &\left( \rho _{0}^{\pi \ast }+\rho _{x}^{\pi \ast \prime
+}x_{t}\right) dt+\sigma _{q}^{\prime }dW_{x,t}^{\ast }+\sigma _{q}^{\bot
+}dW_{\bot ,t}^{\ast },
+\end{eqnarray*}%
+where 
+\begin{eqnarray*}
+\mathcal{K}^{\ast } &=&\mathcal{K+}\Sigma \lambda _{x}^{N} \\
+\mathcal{K}^{\ast }\mu ^{\ast } &=&\mathcal{K}\mu \mathcal{-}\Sigma \lambda
+_{0}^{N} \\
+\pi _{t}^{\ast } &=&\rho _{0}^{\pi \ast }+\rho _{x}^{\pi \ast \prime }x_{t}
+\\
+\rho _{0}^{\pi \ast } &=&\rho _{0}^{\pi }-\lambda _{0}^{N\prime }\sigma _{q}
+\\
+\rho _{x}^{\pi \ast } &=&\rho _{x}^{\pi }-\lambda _{x}^{N\prime }\sigma _{q}
+\end{eqnarray*}
+
+\textbf{Forward Measure.} The Radon-Nikodym derivative of the forward
+measure $\mathbb{\tilde{P}}$ with respect to the risk neutral measure $%
+\mathbb{P}^{\ast }$ is given by%
+\begin{equation}
+\left( \frac{d\mathbb{\tilde{P}}}{d\mathbb{P}^{\ast }}\right) _{t,T}=\frac{%
+\exp \left( -\int_{t}^{T}r_{s}^{N}ds\right) }{P_{t,\tau }^{N}}
+\end{equation}%
+and%
+\begin{equation*}
+\Psi _{t}\equiv E_{t}^{\mathbb{P}^{\ast }}\left[ \left( \frac{d\mathbb{%
+\tilde{P}}}{d\mathbb{P}^{\ast }}\right) _{0,T}\right] =E_{t}^{\mathbb{P}%
+^{\ast }}\left[ \frac{\exp \left( -\int_{0}^{T}r_{s}^{N}ds\right) }{%
+P_{0,T}^{N}}\right] =\frac{P_{t,\tau }^{N}}{P_{0,T}^{N}}\exp \left(
+-\int_{0}^{t}r_{s}^{N}ds\right) 
+\end{equation*}%
+We have%
+\begin{equation*}
+d\Psi _{t}=\frac{\exp \left( -\int_{0}^{t}r_{s}^{N}ds\right) }{P_{0,T}^{N}}%
+\left[ dP_{t,\tau }^{N}-r_{t}^{N}P_{t,\tau }^{N}dt\right] =\Psi _{t}B_{\tau
+}^{N\prime }\Sigma dW_{x,t}
+\end{equation*}%
+By Girsanov's Theorem, we have%
+\begin{equation*}
+d\tilde{W}_{t}=dW_{t}^{\ast }-\frac{d\Psi _{t}}{\Psi _{t}}\cdot dW_{t}^{\ast
+}
+\end{equation*}%
+or%
+\begin{equation*}
+d\tilde{W}_{x,t}=dW_{t}^{\ast }-\Sigma ^{\prime }B_{\tau }^{N}dt
+\end{equation*}%
+The dynamics of the state variables under the risk neutral measure is given
+by%
+\begin{eqnarray*}
+dx_{t} &=&\mathcal{K}^{\ast }\left( \mu ^{\ast }-x_{t}\right) +\Sigma
+dW_{x,t}^{\ast } \\
+dq_{t} &=&\left( \rho _{0}^{\pi \ast }+\rho _{x}^{\pi \ast \prime
+}x_{t}+\rho _{v}^{\pi \ast }v_{t}\right) dt+\sigma _{q}^{\prime
+}dW_{x,t}^{\ast }+\sigma _{q}^{\bot }dW_{\bot ,t}^{\ast }.
+\end{eqnarray*}%
+Therefore,%
+\begin{eqnarray*}
+dx_{t} &=&\mathcal{K}^{\ast }\left( \mu ^{\ast }-x_{t}\right) dt+\Sigma
+\left( d\tilde{W}_{x,t}+\Sigma ^{\prime }B_{\tau }^{N}dt\right)  \\
+&=&\left( \mathcal{K}^{\ast }\mu ^{\ast }+\Sigma \Sigma ^{\prime }B_{\tau
+}^{N}-\mathcal{K}^{\ast }x_{t}\right) dt+\Sigma d\tilde{W}_{x,t} \\
+&\equiv &\mathcal{\tilde{K}}\left( \tilde{\mu}-x_{t}\right) dt+\Sigma d%
+\tilde{W}_{x,t},
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+dq_{t} &=&\left( \rho _{0}^{\pi \ast }+\rho _{x}^{\pi \ast \prime
+}x_{t}\right) dt+\sigma _{q}^{\prime }dW_{x,t}^{\ast }+\sigma _{q}^{\bot
+}dW_{\bot ,t}^{\ast } \\
+&=&\left( \left[ \rho _{0}^{\pi \ast }+\sigma _{q}^{\prime }\Sigma ^{\prime
+}B_{\tau }^{N}\right] +\rho _{x}^{\pi \ast \prime }x_{t}\right) dt+\sigma
+_{q}^{\prime }d\tilde{W}_{x,t}+\sigma _{q}^{\bot }d\tilde{W}_{\bot ,t} \\
+&\equiv &\left( \widetilde{\rho }_{0}^{\pi }+\widetilde{\rho }_{x}^{\pi
+\prime }x_{t}\right) dt+\sigma _{q}^{\prime }d\tilde{W}_{x,t}+\sigma
+_{q}^{\bot }d\tilde{W}_{\bot ,t}
+\end{eqnarray*}%
+where 
+\begin{eqnarray*}
+\mathcal{\tilde{K}} &=&\mathcal{K}^{\ast }=\mathcal{K+}\Sigma \lambda
+_{x}^{N} \\
+\mathcal{\tilde{K}}\tilde{\mu} &=&\mathcal{K}^{\ast }\mu ^{\ast }+\Sigma
+\Sigma ^{\prime }B_{\tau }^{N}=\mathcal{K}\mu \mathcal{-}\Sigma \lambda
+_{0}^{N}+\Sigma \Sigma ^{\prime }B_{\tau }^{N} \\
+\tilde{\pi}_{t} &=&\widetilde{\rho }_{0}^{\pi }+\widetilde{\rho }_{x}^{\pi
+\prime }x_{t} \\
+\widetilde{\rho }_{0}^{\pi } &=&\rho _{0}^{\pi \ast }+\sigma _{q}^{\prime
+}\Sigma ^{\prime }B_{\tau }^{N}=\rho _{0}^{\pi }-\lambda _{0}^{N\prime
+}\sigma _{q}+\sigma _{q}^{\prime }\Sigma ^{\prime }B_{\tau }^{N} \\
+\widetilde{\rho }_{x}^{\pi } &=&\rho _{x}^{\pi \ast }=\rho _{x}^{\pi
+}-\lambda _{x}^{N\prime }\sigma _{q}
+\end{eqnarray*}
+
+\textbf{Inflation Options.} Under the put-call parity, we can show that 
+\begin{equation*}
+E_{t}^{\mathbb{\tilde{P}}}\left[ \frac{Q_{t+\tau }}{Q_{t}}\right] =\frac{%
+P_{t,\tau ,K}^{CAP}-P_{t,\tau ,K}^{FLO}}{P_{t,\tau }^{N}}+\left( 1+K\right)
+^{\tau }
+\end{equation*}%
+Note that 
+\begin{eqnarray*}
+\frac{1}{\tau }\log E_{t}^{\mathbb{\tilde{P}}}\left[ \frac{Q_{t+\tau }}{Q_{t}%
+}\right]  &=&\frac{1}{\tau }\left( E_{t}^{\mathbb{\tilde{P}}}\left[
+q_{t+\tau }-q_{t}\right] +\frac{1}{2}Var_{t}^{\mathbb{\tilde{P}}}\left[
+q_{t+\tau }-q_{t}\right] \right)  \\
+&\equiv &\mathcal{IE}_{t,\tau }+\frac{1}{2}\mathcal{IU}_{t,\tau }
+\end{eqnarray*}
+
+We first derive $\mathcal{IE}_{t,\tau }\equiv \frac{1}{\tau }E_{t}^{\mathbb{%
+\tilde{P}}}\left[ q_{t+\tau }-q_{t}\right] $. Note 
+\begin{eqnarray*}
+q_{t+\tau }-q_{t} &=&\int_{t}^{t+\tau }\left[ \left( \widetilde{\rho }%
+_{0}^{\pi }+\widetilde{\rho }_{x}^{\pi \prime }x_{s}\right) ds+\sigma
+_{q}^{\prime }d\widetilde{W}_{x,s}+\sigma _{q}^{\bot }d\widetilde{W}_{\bot
+,s}\right]  \\
+x_{s} &=&\widetilde{\mu }+\exp \left( -\widetilde{\mathcal{K}}\left(
+s-t\right) \right) \left( x_{t}-\widetilde{\mu }\right) +\int_{t}^{s}\exp
+\left( -\widetilde{\mathcal{K}}\left( s-u\right) \right) \Sigma d\widetilde{W%
+}_{x,u}
+\end{eqnarray*}%
+We have%
+\begin{eqnarray*}
+\frac{1}{\tau }\int_{t}^{t+\tau }E_{t}^{\mathbb{\tilde{P}}}\left[ x_{s}%
+\right] ds &=&\frac{1}{\tau }\int_{t}^{t+\tau }\left[ \widetilde{\mu }+\exp
+\left( -\widetilde{\mathcal{K}}\left( s-t\right) \right) \left( x_{t}-%
+\widetilde{\mu }\right) \right] ds \\
+&=&\widetilde{\mu }+\left( \mathcal{\tilde{K}}\tau \right) ^{-1}\left(
+I-\exp \left( -\mathcal{\tilde{K}}\tau \right) \right) \left( x_{t}-%
+\widetilde{\mu }\right)  \\
+&\equiv &\tilde{a}_{\tau }^{x}+\tilde{b}_{\tau }^{x}x_{t}
+\end{eqnarray*}%
+where $\tilde{a}_{\tau }^{x}=\tilde{\mu}\left( I-\tilde{b}_{\tau
+}^{x}\right) $ and $\tilde{b}_{\tau }^{x}=\left( \mathcal{\tilde{K}}\tau
+\right) ^{-1}\left( I-\exp \left( -\mathcal{\tilde{K}}\tau \right) \right) $%
+. Therefore,%
+\begin{eqnarray*}
+\mathcal{IE}_{t,\tau } &\equiv &\frac{1}{\tau }E_{t}^{\mathbb{\tilde{P}}}%
+\left[ q_{t+\tau }-q_{t}\right] =\widetilde{\rho }_{0}^{\pi }+\widetilde{%
+\rho }_{x}^{\pi \prime }\left( \tilde{a}_{\tau }^{x}+\tilde{b}_{\tau
+}^{x}x_{t}\right)  \\
+&\equiv &\tilde{a}_{\tau }^{\pi }+\tilde{b}_{\tau }^{\pi \prime }x_{t}
+\end{eqnarray*}%
+where $\tilde{a}_{\tau }^{\pi }=\widetilde{\rho }_{0}^{\pi }+\widetilde{\rho 
+}_{x}^{\pi \prime }\tilde{a}_{\tau }^{x}$ and $\tilde{b}_{\tau }^{\pi }=%
+\tilde{b}_{\tau }^{x\prime }\widetilde{\rho }_{x}^{\pi }$. 
+
+Next we derive $\mathcal{IU}_{t,\tau }\equiv \frac{1}{\tau }Var_{t}^{\mathbb{%
+\tilde{P}}}\left[ q_{t+\tau }-q_{t}\right] $. Note that:\ 
+\begin{eqnarray*}
+Var_{t}^{\mathbb{\tilde{P}}}\left[ q_{t+\tau }-q_{t}\right]  &=&E_{t}^{%
+\mathbb{\tilde{P}}}\left[ \left( \left[ q_{t+\tau }-q_{t}\right] -E_{t}^{%
+\mathbb{\tilde{P}}}\left[ q_{t+\tau }-q_{t}\right] \right) ^{2}\right]  \\
+&=&E_{t}^{\mathbb{\tilde{P}}}\left[ \left( \int_{t}^{t+\tau }\left[ 
+\widetilde{\rho }_{x}^{\pi \prime }\left( x_{s}-E_{t}^{\mathbb{\tilde{P}}}%
+\left[ x_{s}\right] \right) ds+\sigma _{q}^{\prime }d\widetilde{W}%
+_{x,s}+\sigma _{q}^{\bot }d\widetilde{W}_{\bot ,s}\right] \right) ^{2}\right]
+\\
+&=&E_{t}^{\mathbb{\tilde{P}}}\left[ \left( \int_{t}^{t+\tau }\left[ 
+\widetilde{\rho }_{x}^{\pi \prime }\int_{t}^{s}\exp \left( -\widetilde{%
+\mathcal{K}}\left( s-u\right) \right) \Sigma d\widetilde{W}%
+_{x,u}ds+\int_{t}^{t+\tau }\left[ \sigma _{q}^{\prime }d\widetilde{W}%
+_{x,s}+\sigma _{q}^{\bot }d\widetilde{W}_{\bot ,s}\right] \right] \right)
+^{2}\right]  \\
+&=&E_{t}^{\mathbb{\tilde{P}}}\left[ \left( \widetilde{\rho }_{x}^{\pi \prime
+}\int_{t}^{t+\tau }\int_{t}^{s}\exp \left( -\widetilde{\mathcal{K}}\left(
+s-u\right) \right) \Sigma d\widetilde{W}_{x,u}ds+\int_{t}^{t+\tau }\left[
+\sigma _{q}^{\prime }d\widetilde{W}_{x,s}+\sigma _{q}^{\bot }d\widetilde{W}%
+_{\bot ,s}\right] \right) ^{2}\right]  \\
+&=&E_{t}^{\mathbb{\tilde{P}}}\left[ \left( \widetilde{\rho }_{x}^{\pi \prime
+}\int_{t}^{t+\tau }\int_{u}^{t+\tau }\exp \left( -\widetilde{\mathcal{K}}%
+\left( s-u\right) \right) ds\Sigma d\widetilde{W}_{x,u}+\int_{t}^{t+\tau }%
+\left[ \sigma _{q}^{\prime }d\widetilde{W}_{x,s}+\sigma _{q}^{\bot }d%
+\widetilde{W}_{\bot ,s}\right] \right) ^{2}\right]  \\
+&=&E_{t}^{\mathbb{\tilde{P}}}\left[ \left( \widetilde{\rho }_{x}^{\pi \prime
+}\int_{t}^{t+\tau }\left( \widetilde{\mathcal{K}}\right) ^{-1}\left( I-\exp
+\left( -\widetilde{\mathcal{K}}\left( t+\tau -s\right) \right) \right)
+\Sigma d\widetilde{W}_{x,s}+\int_{t}^{t+\tau }\left[ \sigma _{q}^{\prime }d%
+\widetilde{W}_{x,s}+\sigma _{q}^{\bot }d\widetilde{W}_{\bot ,s}\right]
+\right) ^{2}\right]  \\
+&\equiv &E_{t}^{\mathbb{\tilde{P}}}\left[ \left( \int_{t}^{t+\tau }\left[
+\left( \widehat{\sigma }_{q}-\Sigma ^{\prime }\exp \left( -\widetilde{%
+\mathcal{K}}^{\prime }\left( t+\tau -s\right) \right) \left( \widetilde{%
+\mathcal{K}}^{\prime }\right) ^{-1}\widetilde{\rho }_{x}^{\pi }\right)
+^{\prime }d\widetilde{W}_{x,s}+\sigma _{q}^{\bot }d\widetilde{W}_{\bot ,s}%
+\right] \right) ^{2}\right]  \\
+&=&\int_{t}^{t+\tau }\left( \widehat{\sigma }_{q}-\Sigma ^{\prime }e^{-%
+\mathcal{K}^{\prime }\left( t+\tau -s\right) }\left( \widetilde{\mathcal{K}}%
+^{\prime }\right) ^{-1}\rho _{x}^{\pi }\right) ^{\prime }\left( \widehat{%
+\sigma }_{q}-\Sigma ^{\prime }\exp \left( -\widetilde{\mathcal{K}}^{\prime
+}\left( t+\tau -s\right) \right) \left( \widetilde{\mathcal{K}}^{\prime
+}\right) ^{-1}\widetilde{\rho }_{x}^{\pi }\right) ds+\left( \sigma
+_{q}^{\bot }\right) ^{2}\tau  \\
+&=&\left( \widehat{\sigma }_{q}^{\prime }\widehat{\sigma }_{q}+\left( \sigma
+_{q}^{\bot }\right) ^{2}\right) \tau -2\widehat{\sigma }_{q}^{\prime }\Sigma
+^{\prime }\left[ \int_{t}^{t+\tau }\exp \left( -\widetilde{\mathcal{K}}%
+^{\prime }\left( t+\tau -s\right) \right) ds\right] \left( \widetilde{%
+\mathcal{K}}^{\prime }\right) ^{-1}\widetilde{\rho }_{x}^{\pi } \\
+&&+\rho _{x}^{\pi \prime }\left( \widetilde{\mathcal{K}}\right) ^{-1}\left[
+\int_{t}^{t+\tau }\exp \left( -\widetilde{\mathcal{K}}\left( t+\tau
+-s\right) \right) \Sigma \Sigma ^{\prime }\exp \left( -\widetilde{\mathcal{K}%
+}^{\prime }\left( t+\tau -s\right) \right) ds\right] \left( \widetilde{%
+\mathcal{K}}^{\prime }\right) ^{-1}\widetilde{\rho }_{x}^{\pi }
+\end{eqnarray*}%
+where 
+\begin{equation*}
+\widehat{\sigma }_{q}^{\prime }=\sigma _{q}^{\prime }+\widetilde{\rho }%
+_{x}^{\pi \prime }\left( \mathcal{K}\right) ^{-1}\Sigma \text{ or }\widehat{%
+\sigma }_{q}=\sigma _{q}+\Sigma ^{\prime }\left( \mathcal{K}^{\prime
+}\right) ^{-1}\widetilde{\rho }_{x}^{\pi }
+\end{equation*}%
+and if we denote $\widetilde{\Omega }_{\tau }^{x}\equiv \int_{t}^{t+\tau
+}\exp \left( -\widetilde{\mathcal{K}}\left( t+\tau -s\right) \right) \Sigma
+\Sigma ^{\prime }\exp \left( -\widetilde{\mathcal{K}}^{\prime }\left( t+\tau
+-s\right) \right) ds=\int_{0}^{\tau }\exp \left( -\widetilde{\mathcal{K}}%
+s\right) \Sigma \Sigma ^{\prime }\exp \left( -\widetilde{\mathcal{K}}%
+^{\prime }s\right) ds$, then 
+\begin{equation*}
+vec\left( \widetilde{\Omega }_{\tau }^{x}\right) =-\left[ \left( \widetilde{%
+\mathcal{K}}\otimes I\right) +\left( I\otimes \widetilde{\mathcal{K}}\right) %
+\right] ^{-1}vec\left( \exp \left( -\widetilde{\mathcal{K}}\tau \right)
+\Sigma \Sigma ^{\prime }\exp \left( -\widetilde{\mathcal{K}}^{\prime }\tau
+\right) -\Sigma \Sigma ^{\prime }\right) 
+\end{equation*}
+
+Therefore, 
+\begin{eqnarray*}
+\mathcal{IU}_{t,\tau } &\equiv &\frac{1}{\tau }Var_{t}^{\mathbb{\tilde{P}}}%
+\left[ q_{t+\tau }-q_{t}\right]  \\
+&=&\left( \widehat{\sigma }_{q}^{\prime }\widehat{\sigma }_{q}+\left( \sigma
+_{q}^{\bot }\right) ^{2}\right) -2\widehat{\sigma }_{q}^{\prime }\Sigma
+^{\prime }\left[ \frac{1}{\tau }\int_{t}^{t+\tau }\exp \left( -\widetilde{%
+\mathcal{K}}^{\prime }\left( t+\tau -s\right) \right) ds\right] \left( 
+\widetilde{\mathcal{K}}^{\prime }\right) ^{-1}\widetilde{\rho }_{x}^{\pi } \\
+&&+\rho _{x}^{\pi \prime }\left( \widetilde{\mathcal{K}}\right) ^{-1}\left( 
+\frac{1}{\tau }\widetilde{\Omega }_{\tau }^{x}\right) \left( \widetilde{%
+\mathcal{K}}^{\prime }\right) ^{-1}\widetilde{\rho }_{x}^{\pi } \\
+&=&\left( \widehat{\sigma }_{q}^{\prime }\widehat{\sigma }_{q}+\left( \sigma
+_{q}^{\bot }\right) ^{2}\right) -2\widehat{\sigma }_{q}^{\prime }\Sigma
+^{\prime }\left( \widetilde{\mathcal{K}}^{\prime }\tau \right) ^{-1}\left(
+I-\exp \left( -\widetilde{\mathcal{K}}^{\prime }\tau \right) \right) \left( 
+\widetilde{\mathcal{K}}^{\prime }\right) ^{-1}\widetilde{\rho }_{x}^{\pi } \\
+&&+\rho _{x}^{\pi \prime }\left( \widetilde{\mathcal{K}}\right) ^{-1}\left( 
+\frac{1}{\tau }\widetilde{\Omega }_{\tau }^{x}\right) \left( \widetilde{%
+\mathcal{K}}^{\prime }\right) ^{-1}\widetilde{\rho }_{x}^{\pi }
+\end{eqnarray*}
+
+We now turn to the pricing of inflation options. Under the approximation (or
+exact?) 
+\begin{equation*}
+\left. q_{t+\tau }-q_{t}\right\vert _{\mathcal{F}_{t}}\sim N\left( \tau
+\cdot \mathcal{IE}_{t,\tau },\tau \cdot \mathcal{IU}_{t,\tau }\right) ,
+\end{equation*}
+we can derive the pricing formula for inflation caps and floors:%
+\begin{eqnarray*}
+P_{t,\tau ,K}^{CAP} &=&\exp \left( -\tau y_{t,\tau }^{N}\right) E_{t}^{%
+\mathbb{\tilde{P}}}\left[ \left( \frac{Q_{t+\tau }}{Q_{t}}-\left( 1+K\right)
+^{\tau }\right) ^{+}\right]  \\
+&=&P_{t,\tau }^{N}\left[ 
+\begin{array}{c}
+e^{\tau \left( \mathcal{IE}_{t,\tau }+\frac{1}{2}\mathcal{IU}_{t,\tau
+}\right) }\Phi \left( \frac{-\log \left( 1+K\right) +\left( \mathcal{IE}%
+_{t,\tau }+\mathcal{IU}_{t,\tau }\right) }{\sqrt{\mathcal{IU}_{t,\tau }/\tau 
+}}\right)  \\ 
+-\left( 1+K\right) ^{\tau }\Phi \left( \frac{-\log \left( 1+K\right) +%
+\mathcal{IE}_{t,\tau }}{\sqrt{\mathcal{IU}_{t,\tau }/\tau }}\right) 
+\end{array}%
+\right] 
+\end{eqnarray*}%
+and%
+\begin{eqnarray*}
+P_{t,\tau ,K}^{FLO} &=&\exp \left( -\tau y_{t,\tau }^{N}\right) E_{t}^{%
+\mathbb{\tilde{P}}}\left[ \left( \left( 1+K\right) ^{\tau }-\frac{Q_{t+\tau }%
+}{Q_{t}}\right) ^{+}\right]  \\
+&=&P_{t,\tau }^{N}\left[ 
+\begin{array}{c}
+-e^{\tau \left( \mathcal{IE}_{t,\tau }+\frac{1}{2}\mathcal{IU}_{t,\tau
+}\right) }\Phi \left( -\frac{-\log \left( 1+K\right) +\left( \mathcal{IE}%
+_{t,\tau }+\mathcal{IU}_{t,\tau }\right) }{\sqrt{\mathcal{IU}_{t,\tau }/\tau 
+}}\right)  \\ 
++\left( 1+K\right) ^{\tau }\Phi \left( -\frac{-\log \left( 1+K\right) +%
+\mathcal{IE}_{t,\tau }}{\sqrt{\mathcal{IU}_{t,\tau }/\tau }}\right) 
+\end{array}%
+\right] 
+\end{eqnarray*}%
+Therefore,%
+\begin{eqnarray}
+p_{t,\tau ,K}^{CAP} &\equiv &\ln \left( P_{t,\tau ,K}^{CAP}\right)   \notag
+\\
+&=&-\tau \left[ a_{\tau }^{N}+b_{\tau }^{N\prime }x_{t}\right] +\ln \left( %
+\left[ \exp \left( h_{0}\left( \tau ,x_{t}\right) \right) \Phi \left(
+h_{1}\left( \tau ,x_{t}\right) \right) -\left( 1+K\right) ^{\tau }\Phi
+\left( h_{2}\left( \tau ,x_{t}\right) \right) \right] \right) 
+\end{eqnarray}%
+where%
+\begin{eqnarray*}
+h_{0} &=&\tau \left( \mathcal{IE}_{t,\tau }+\frac{1}{2}\mathcal{IU}_{t,\tau
+}\right)  \\
+h_{1} &=&\frac{-\log \left( 1+K\right) +\left( \mathcal{IE}_{t,\tau }+%
+\mathcal{IU}_{t,\tau }\right) }{\sqrt{\mathcal{IU}_{t,\tau }/\tau }} \\
+h_{2} &=&\frac{-\log \left( 1+K\right) +\mathcal{IE}_{t,\tau }}{\sqrt{%
+\mathcal{IU}_{t,\tau }/\tau }}
+\end{eqnarray*}%
+implying%
+\begin{eqnarray*}
+h_{0,x} &=&\tau \tilde{b}_{\tau }^{\pi } \\
+h_{1,x} &=&\frac{1}{\sqrt{\mathcal{IU}_{t,\tau }/\tau }}\tau \tilde{b}_{\tau
+}^{\pi } \\
+h_{2,x} &=&\frac{1}{\sqrt{\mathcal{IU}_{t,\tau }/\tau }}\tau \tilde{b}_{\tau
+}^{\pi }
+\end{eqnarray*}
+
+\end{document}

@@ -1,0 +1,178 @@
+%2multibyte Version: 5.50.0.2953 CodePage: 1252
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2953}
+%TCIDATA{Codepage=1252}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Sunday, May 24, 2015 20:51:47}
+%TCIDATA{LastRevised=Sunday, May 24, 2015 21:00:39}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\input{tcilatex}
+\begin{document}
+
+
+\begin{center}
+\textbf{Table 1:\ Parameter Estimates (January 1990 - December 2013)}{\tiny %
+\ \bigskip }
+
+\begin{tabular}{l|l|l}
+\hline\hline
+Parameter & DKW & DKW \\ \hline
+$K_{11}$ & \multicolumn{1}{|c|}{0.8703} & \multicolumn{1}{|c}{0.8703} \\ 
+$K_{22}$ & \multicolumn{1}{|c|}{0.1479} & \multicolumn{1}{|c}{0.1479} \\ 
+$K_{33}$ & \multicolumn{1}{|c|}{1.4440} & \multicolumn{1}{|c}{1.4440} \\ 
+$100\times \Sigma _{21}$ & \multicolumn{1}{|c|}{-0.8048} & 
+\multicolumn{1}{|c}{-0.8048} \\ 
+$100\times \Sigma _{31}$ & \multicolumn{1}{|c|}{-4.4900} & 
+\multicolumn{1}{|c}{-4.4900} \\ 
+$100\times \Sigma _{32}$ & \multicolumn{1}{|c|}{-1.0640} & 
+\multicolumn{1}{|c}{-1.0640} \\ 
+$\rho _{0}^{N}$ & \multicolumn{1}{|c|}{0.0477} & \multicolumn{1}{|c}{0.0477}
+\\ 
+$\rho _{x}^{N}\left( 1\right) $ & \multicolumn{1}{|c|}{3.8341} & 
+\multicolumn{1}{|c}{3.8341} \\ 
+$\rho _{x}^{N}\left( 2\right) $ & \multicolumn{1}{|c|}{0.9357} & 
+\multicolumn{1}{|c}{0.9357} \\ 
+$\rho _{x}^{N}\left( 3\right) $ & \multicolumn{1}{|c|}{0.7287} & 
+\multicolumn{1}{|c}{0.7287} \\ 
+$\rho _{\delta }^{N}$ & \multicolumn{1}{|c|}{NaN} & \multicolumn{1}{|c}{NaN}
+\\ 
+$\lambda _{0}^{N}\left( 1\right) $ & \multicolumn{1}{|c|}{0.2937} & 
+\multicolumn{1}{|c}{0.2937} \\ 
+$\lambda _{0}^{N}\left( 2\right) $ & \multicolumn{1}{|c|}{-0.4078} & 
+\multicolumn{1}{|c}{-0.4078} \\ 
+$\lambda _{0}^{N}\left( 3\right) $ & \multicolumn{1}{|c|}{-1.2989} & 
+\multicolumn{1}{|c}{-1.2989} \\ 
+$\left( \Sigma \lambda _{x}^{N}\right) _{11}$ & \multicolumn{1}{|c|}{-0.7089}
+& \multicolumn{1}{|c}{-0.7089} \\ 
+$\left( \Sigma \lambda _{x}^{N}\right) _{21}$ & \multicolumn{1}{|c|}{2.1353}
+& \multicolumn{1}{|c}{2.1353} \\ 
+$\left( \Sigma \lambda _{x}^{N}\right) _{31}$ & \multicolumn{1}{|c|}{3.1491}
+& \multicolumn{1}{|c}{3.1491} \\ 
+$\left( \Sigma \lambda _{x}^{N}\right) _{12}$ & \multicolumn{1}{|c|}{0.0391}
+& \multicolumn{1}{|c}{0.0391} \\ 
+$\left( \Sigma \lambda _{x}^{N}\right) _{22}$ & \multicolumn{1}{|c|}{-0.1251}
+& \multicolumn{1}{|c}{-0.1251} \\ 
+$\left( \Sigma \lambda _{x}^{N}\right) _{32}$ & \multicolumn{1}{|c|}{-0.3659}
+& \multicolumn{1}{|c}{-0.3659} \\ 
+$\left( \Sigma \lambda _{x}^{N}\right) _{13}$ & \multicolumn{1}{|c|}{-0.0675}
+& \multicolumn{1}{|c}{-0.0675} \\ 
+$\left( \Sigma \lambda _{x}^{N}\right) _{23}$ & \multicolumn{1}{|c|}{0.5580}
+& \multicolumn{1}{|c}{0.5580} \\ 
+$\left( \Sigma \lambda _{x}^{N}\right) _{33}$ & \multicolumn{1}{|c|}{0.0957}
+& \multicolumn{1}{|c}{0.0957} \\ 
+$\rho _{0}^{\pi }$ & \multicolumn{1}{|c|}{0.0267} & \multicolumn{1}{|c}{
+0.0267} \\ 
+$\rho _{x}^{\pi }\left( 1\right) $ & \multicolumn{1}{|c|}{-0.0719} & 
+\multicolumn{1}{|c}{-0.0719} \\ 
+$\rho _{x}^{\pi }\left( 2\right) $ & \multicolumn{1}{|c|}{0.1152} & 
+\multicolumn{1}{|c}{0.1152} \\ 
+$\rho _{x}^{\pi }\left( 3\right) $ & \multicolumn{1}{|c|}{-0.2281} & 
+\multicolumn{1}{|c}{-0.2281} \\ 
+$\rho _{\delta }^{\pi }$ & \multicolumn{1}{|c|}{NaN} & \multicolumn{1}{|c}{
+NaN} \\ 
+$100\times \sigma _{q}\left( 1\right) $ & \multicolumn{1}{|c|}{-0.0731} & 
+\multicolumn{1}{|c}{-0.0731} \\ 
+$100\times \sigma _{q}\left( 2\right) $ & \multicolumn{1}{|c|}{-0.0079} & 
+\multicolumn{1}{|c}{-0.0079} \\ 
+$100\times \sigma _{q}\left( 3\right) $ & \multicolumn{1}{|c|}{-0.0604} & 
+\multicolumn{1}{|c}{-0.0604} \\ 
+$100\times \sigma _{q}^{\perp }$ & \multicolumn{1}{|c|}{0.9063} & 
+\multicolumn{1}{|c}{0.9063} \\ 
+$\kappa _{\delta }^{\ast }$ & \multicolumn{1}{|c|}{NaN} & 
+\multicolumn{1}{|c}{NaN} \\ 
+$100\times \sigma _{\delta }$ & \multicolumn{1}{|c|}{NaN} & 
+\multicolumn{1}{|c}{NaN} \\ 
+$100\times \mu _{\delta }^{\ast }$ & \multicolumn{1}{|c|}{NaN} & 
+\multicolumn{1}{|c}{NaN} \\ \hline
+\end{tabular}%
+\pagebreak 
+\end{center}
+
+{\tiny 
+\begin{tabular}{|l|c|}
+\hline
+& \textbf{pvar} \\ \hline
+\textbf{row 1} & 0.8703 \\ \hline
+\textbf{row 2} & 0.1479 \\ \hline
+\textbf{row 3} & 1.4440 \\ \hline
+\textbf{row 4} & -0.8048 \\ \hline
+\textbf{row 5} & -4.4900 \\ \hline
+\textbf{row 6} & -1.0640 \\ \hline
+\textbf{row 7} & 0.0477 \\ \hline
+\textbf{row 8} & 3.8341 \\ \hline
+\textbf{row 9} & 0.9357 \\ \hline
+\textbf{row 10} & 0.7287 \\ \hline
+\textbf{row 11} & NaN \\ \hline
+\textbf{row 12} & 0.2937 \\ \hline
+\textbf{row 13} & -0.4078 \\ \hline
+\textbf{row 14} & -1.2989 \\ \hline
+\textbf{row 15} & -0.7089 \\ \hline
+\textbf{row 16} & 2.1353 \\ \hline
+\textbf{row 17} & 3.1491 \\ \hline
+\textbf{row 18} & 0.0391 \\ \hline
+\textbf{row 19} & -0.1251 \\ \hline
+\textbf{row 20} & -0.3659 \\ \hline
+\textbf{row 21} & -0.0675 \\ \hline
+\textbf{row 22} & 0.5580 \\ \hline
+\textbf{row 23} & 0.0957 \\ \hline
+\textbf{row 24} & 0.0267 \\ \hline
+\textbf{row 25} & -0.0719 \\ \hline
+\textbf{row 26} & 0.1152 \\ \hline
+\textbf{row 27} & -0.2281 \\ \hline
+\textbf{row 28} & NaN \\ \hline
+\textbf{row 29} & -0.0731 \\ \hline
+\textbf{row 30} & -0.0079 \\ \hline
+\textbf{row 31} & -0.0604 \\ \hline
+\textbf{row 32} & 0.9063 \\ \hline
+\textbf{row 33} & NaN \\ \hline
+\textbf{row 34} & NaN \\ \hline
+\textbf{row 35} & NaN \\ \hline
+\textbf{row 36} & NaN \\ \hline
+\textbf{row 37} & NaN \\ \hline
+\textbf{row 38} & NaN \\ \hline
+\textbf{row 39} & 0.1299 \\ \hline
+\textbf{row 40} & 0.0176 \\ \hline
+\textbf{row 41} & 0.0653 \\ \hline
+\textbf{row 42} & -0.0000 \\ \hline
+\textbf{row 43} & 0.0395 \\ \hline
+\textbf{row 44} & 0.0000 \\ \hline
+\textbf{row 45} & 0.0534 \\ \hline
+\textbf{row 46} & 0.5889 \\ \hline
+\textbf{row 47} & 0.4598 \\ \hline
+\textbf{row 48} & 0.4023 \\ \hline
+\textbf{row 49} & 0.1870 \\ \hline
+\textbf{row 50} & 0.3026 \\ \hline
+\textbf{row 51} & NaN \\ \hline
+\end{tabular}
+}
+
+\end{document}
