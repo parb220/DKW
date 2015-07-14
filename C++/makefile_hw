@@ -7,10 +7,12 @@ LAPACK_LIBS = -lblas -llapack
 GSL_LIBS_DIR = /usr/local/lib
 GSL_INCLUDE_DIR = /usr/local/include/gsl
 GSL_LIBS = -lgsl -lgslcblas
+NPSOL_LIB = $(HOME)/npsol/Linux-x86_64/optimized/lib
+NPSOL_LIBS = -lnpsol_f77 -llssol_f77
 
 INCLUDE_DIR := $(INCLUDE_DIR) -I$(GSL_INCLUDE_DIR)
-LIBS_DIR := $(LIBS_DIR) -L$(GSL_LIBS_DIR) -L$(LAPACK_DIR) 
-LIBS := $(LIBS) $(GSL_LIBS) $(LAPACK_LIBS) 
+LIBS_DIR := $(LIBS_DIR) -L$(GSL_LIBS_DIR) -L$(LAPACK_DIR) -L$(NPSOL_LIB) 
+LIBS := $(LIBS) $(GSL_LIBS) $(LAPACK_LIBS) $(NPSOL_LIBS)
 
 # LIBRARIES SUPPORTED
 DW_UTILITIES_BASE = $(HOME)/DW_TZ_GIT/utilities_dw
@@ -40,14 +42,14 @@ SOURCE_DIR = $(PROJECT_DIR)/C++
 EXE_DIR = $(PROJECT_DIR)/work
 BUILD_DIR = $(PROJECT_DIR)/work/build
 
-OBJS := $(OBJS) matrix_operation.o CDate.o CDatedData.o CAR.o  CData_FRBA.o CAR_DKW.o
+OBJS := $(OBJS) matrix_operation.o CDate.o CDatedData.o CAR.o  CData_FRBA.o CAR_DKW.o master_deploy.o slave_computing.o
 
 INCLUDE_DIR := $(INCLUDE_DIR) -I$(DW_UTILITY_INCLUDE) -I$(SOURCE_DIR) 
 VPATH := $(VPATH) $(BUILD_DIR) $(DW_UTILITY_MATRIX) $(SOURCE_DIR) 
 
 # TEST_ALL #####################################################################
-ALL_OBJS = $(OBJS) test.o
-ALL_EFILE = $(EXE_DIR)/test
+ALL_OBJS = $(OBJS) DKW_parallel.o #test.o
+ALL_EFILE = $(EXE_DIR)/DKW_parallel
 
 #################################################################################
 all : $(ALL_EFILE)

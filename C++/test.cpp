@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <iomanip>
 #include "prcsn.h"
 #include "CDate.hpp"
 #include "CData_FRBA.hpp"
@@ -54,8 +55,9 @@ int main(int argc, char **argv)
 	model.SetAsFixed(0.0, string("delta_p")); 
 
 	TDenseVector variable_p(model.NumberVariableParameters(),0.0); 
+	ifstream input_file; 
 	string p_filename("../C++/parameter.txt"); 
-	ifstream input_file(p_filename.c_str()); 
+	input_file.open(p_filename.c_str()); 
 	if (!input_file)
 	{
 		cerr << "Error in opening " << p_filename << endl; 
@@ -63,14 +65,30 @@ int main(int argc, char **argv)
 	}
 	input_file >> variable_p; 
 	input_file.close(); 
-
-	if(!model.SetParameters(variable_p))
+	//variable_p.RandomNormal(); 
+	
+	TDenseMatrix bound(model.NumberVariableParameters(),2,0.0); 
+	string bound_filename("../C++/bound.txt"); 
+	input_file.open(bound_filename.c_str()); 
+	if (!input_file)
 	{
-		cerr << "Error in setting parameters for the model.\n"; 
+		cerr << "Error in opening " << bound_filename << endl; 
 		exit(-1); 
 	}
+	input_file >> bound; 
+	input_file.close(); 
+
 	TDenseVector logLSeries; 
 	TDenseMatrix state; 
-	double log_likelihood = model.LogLikelihood(logLSeries, state); 
-	TDenseVector current_p = model.GetParameters(); 
+	double log_likelihood = model.LogLikelihood(logLSeries, state, variable_p); 
+	cout << setprecision(20) << log_likelihood; 
+	for (int i=0; i<variable_p.Dimension(); i++)
+		cout << "\t" << variable_p[i]; 
+	cout << endl; 
+	
+	double optimal_log_likelihood = model.MaximizeLogLikelihood(variable_p, bound.ColumnVector(0), bound.ColumnVector(1), std::vector<std::string>(0), 10, 1.0, 1); 
+	cout << setprecision(20) << optimal_log_likelihood; 
+	for (int i=0; i<variable_p.Dimension(); i++)
+		cout << "\t" << variable_p[i]; 
+	cout << endl; 
 }
