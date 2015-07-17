@@ -12,14 +12,14 @@ extern "C"
 	void npsol_(int *n, int *nclin, int *ncnln, int *ldA, int *ldJ, int *ldR, double *A, double *bl, double *bu, void *funcon(int *mode, int *ncnln, int *n, int *ldJ, int *needc, double *x, double *c, double *cJac, int *nstate), void *funobj(int *mode, int *n, double *x, double *f, double *g, int *nstate), int *inform, int *iter, int *istate, double *c, double *cJac, double *clamda, double *f, double *g, double *R, double *x, int *iw, int *leniw, double *w, int *lenw);
 }
 
-double CAR::LogLikelihood(TDenseVector &logL_vec, TDenseMatrix &state, const TDenseVector &parameter)
+double CAR::LogLikelihood(TDenseVector &logL_vec, TDenseMatrix &state, TDenseMatrix &model_IE_options, const TDenseVector &parameter)
 {
 	if (!SetParameters(parameter) )
 		return MINUS_INFINITY;  
-	return LogLikelihood(logL_vec, state); 
+	return LogLikelihood(logL_vec, state, model_IE_options); 
 }
 
-double CAR::LogLikelihood(TDenseVector &logL_vec, TDenseMatrix &state)
+double CAR::LogLikelihood(TDenseVector &logL_vec, TDenseMatrix &state, TDenseMatrix &model_IE_options)
 {
 	if (dataP==NULL || dataP->NumberObservations() <=0)
 		 throw dw_exception("CAR::LogLikelihood() : invalid observations");
@@ -28,11 +28,12 @@ double CAR::LogLikelihood(TDenseVector &logL_vec, TDenseMatrix &state)
 	
 	logL_vec.Zeros(dataP->NumberObservations()); 
 	state.Zeros(dataP->NumberObservations(), x0_0.dim); 
+	model_IE_options.Zeros(dataP->NumberObservations(), dataP->MATgrid_options.Dimension()); 
 
 	TDenseVector xtm1_tm1 = x0_0, xt_tm1, yt_tm1; 
 	TDenseMatrix Ptm1_tm1 = P0_0, Pt_tm1, Vt_tm1, Vt_tm1_inverse;   
 
-	TDenseVector et; 
+	TDenseVector et, model_IE_options_vector; 
 	
 	double rcVt, logL=0.0; 
 	for (int j=0; j<dataP->NumberObservations(); j++)
@@ -40,7 +41,9 @@ double CAR::LogLikelihood(TDenseVector &logL_vec, TDenseMatrix &state)
 		xt_tm1 = A + B*xtm1_tm1; 
 		Pt_tm1 = MultiplyTranspose(B*Ptm1_tm1, B) + OMEGA; 
 		
-		ObservationEquation(j); 
+		model_IE_options_vector = ObservationEquation(j, xt_tm1); 
+		if (model_IE_options_vector.Dimension())
+			model_IE_options.InsertRowMatrix(j,0,model_IE_options_vector); 
 		
 		yt_tm1 = a + b*xt_tm1; 
 		Vt_tm1 = MultiplyTranspose(b*Pt_tm1,b) + R; 
@@ -64,14 +67,16 @@ double CAR::LogLikelihood(TDenseVector &logL_vec, TDenseMatrix &state)
 	
 		try {
 			Vt_tm1_inverse = Inverse(Vt_tm1); 
+			TDenseMatrix T = Cholesky(Vt_tm1); 
+			logL_vec[j] = -0.5*(LogAbsDeterminant_Cholesky(T)+InnerProduct(et, et, Vt_tm1_inverse)); 
 		}
 		catch (...)
 		{
 			logL_vec.Zeros(0); 
                         state.Zeros(0,0); 
+			model_IE_options.Zeros(0,0); 
                         return MINUS_INFINITY;
 		}
-		logL_vec[j] = -0.5*(LogAbsDeterminant(Vt_tm1)+InnerProduct(et, et, Vt_tm1_inverse)); 
 		logL += logL_vec[j]; 
 
 		// update prediction of xt
@@ -170,10 +175,11 @@ CAR* CAR_MinusLogLikelihood_NPSOL::model;
 void* CAR_MinusLogLikelihood_NPSOL::function(int *mode, int *n, double *x, double *f, double *g, int *nstate)
 {
 	TDenseVector logL; 
-	TDenseMatrix state; 
+	TDenseMatrix state;
+	TDenseMatrix model_IE_options;  
 	TDenseVector xVec(*n); 
 	memcpy(xVec.vector, x, *n*sizeof(double)); 
-	*f = -1.0 * model->LogLikelihood(logL, state, xVec); 
+	*f = -1.0 * model->LogLikelihood(logL, state, model_IE_options, xVec); 
 }
 
 double CAR::MaximizeLogLikelihood(TDenseVector &x_0, const TDenseVector &lower_x, const TDenseVector &upper_x, const std::vector<std::string> &option, int max_perturbation_iteration, double perturbation_scale, int max_optimization_iteration)
@@ -233,8 +239,9 @@ double CAR::MaximizeLogLikelihood(TDenseVector &x_0, const TDenseVector &lower_x
 	
 	// find an appropriate initial value
 	TDenseVector logL; 
-	TDenseMatrix state; 
-	double _loglikelihood_old =  LogLikelihood(logL, state, x_0), _loglikelihood_new; 
+	TDenseMatrix state;
+	TDenseMatrix model_IE_options;  
+	double _loglikelihood_old =  LogLikelihood(logL, state, model_IE_options, x_0), _loglikelihood_new; 
 	TDenseVector delta(x_0.Dimension()), xPlusDelta; 
 	for (int iter=0; iter<max_optimization_iteration; iter++)
 	{
@@ -242,7 +249,7 @@ double CAR::MaximizeLogLikelihood(TDenseVector &x_0, const TDenseVector &lower_x
 		for (int counter=0; counter < max_perturbation_iteration; counter ++)
 		{
 			xPlusDelta = x_0 + perturbation_scale * delta; 
-			_loglikelihood_new = LogLikelihood(logL, state, xPlusDelta); 
+			_loglikelihood_new = LogLikelihood(logL, state, model_IE_options, xPlusDelta); 
 			if (_loglikelihood_new > _loglikelihood_old)
 			{
 				x_0 = xPlusDelta; 
@@ -285,3 +292,73 @@ double CAR::MaximizeLogLikelihood(TDenseVector &x_0, const TDenseVector &lower_x
 
 	return _loglikelihood_old; 
 }
+
+void InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, const TDenseVector &sigq, double sigqx, double rho0_pi, const TDenseVector &rho1_pi, double Maturity)
+{
+	int Nfac = theta.Dimension(); 
+	TDenseMatrix temp_kron = Inverse(Kron(-1.0*KAPPA, Identity(Nfac))+Kron(Identity(Nfac), -1.0*KAPPA)); 
+
+	TDenseMatrix temp_km = MatrixExp(-Maturity*KAPPA); 
+	TDenseMatrix temp_x = temp_km * SIGMA; 
+	TDenseMatrix before_reshape = MultiplyTranspose(temp_x, temp_x) - MultiplyTranspose(SIGMA, SIGMA); 
+	TDenseVector after_reshape(Nfac*Nfac,0.0); 
+	for (int j=0; j<before_reshape.cols; j++)
+		after_reshape.Insert(j*before_reshape.rows, before_reshape.ColumnVector(j)); 
+	after_reshape = temp_kron * after_reshape; 
+	TDenseMatrix OMEGA_x(Nfac, Nfac, 0.0); 
+	for (int j=0; j<Nfac; j++)
+		OMEGA_x.InsertColumnMatrix(0,j,after_reshape, j*Nfac, (j+1)*Nfac-1); 
+
+	TDenseMatrix _km_inv = Inverse(KAPPA*Maturity); 
+ 	TDenseMatrix bx = _km_inv * (Identity(Nfac)-temp_km); 
+	TDenseVector ax = (Identity(Nfac)-bx) * theta; 
+
+	TDenseMatrix _k_inv = Inverse(KAPPA); 
+	TDenseVector sigq2 = sigq + TransposeMultiply(_k_inv*SIGMA, rho1_pi); 
+	double tempIU_1 = InnerProduct(sigq2,sigq2) + sigqx*sigqx; 
+	double tempIU_2 =  - 2.0*InnerProduct(sigq2, TransposeMultiply(_km_inv*SIGMA, TransposeMultiply(_k_inv*(Identity(Nfac)-temp_km), rho1_pi) ) ); 
+	double tempIU_3 = InnerProduct(rho1_pi, _k_inv*(1.0/Maturity)*OMEGA_x*TransposeMultiply(_k_inv, rho1_pi));
+
+	double tempIU = tempIU_1 + tempIU_2 + tempIU_3; 
+	B = TransposeMultiply(bx, rho1_pi); 
+	A = (rho0_pi + InnerProduct(rho1_pi, ax)) + 0.5*tempIU;  
+}
+
+bool iequals(const std::string& a, const std::string& b)
+{
+    unsigned int sz = a.size();
+    if (b.size() != sz)
+        return false;
+    for (unsigned int i = 0; i < sz; ++i)
+        if (tolower(a[i]) != tolower(b[i]))
+            return false;
+    return true;
+}
+
+TIndex FixedVariableParameter(TDenseMatrix &destination, const TDenseMatrix & source, int offset)
+{
+        TIndex fixed_index; 
+        destination = source; 
+        for (int j=0; j<destination.cols; j++)
+        {
+                for (int i=0; i<destination.rows; i++)
+                {
+                        if (destination(i,j) > MINUS_INFINITY && destination(i,j) < PLUS_INFINITY)
+                                fixed_index += offset + j*destination.rows + i;
+                }
+        }
+        return fixed_index;
+}
+
+TIndex FixedVariableParameter(TDenseVector &destination, const TDenseVector &source, int offset)
+{
+        TIndex fixed_index;
+        destination = source;   
+        for (int j=0; j<destination.Dimension(); j++)
+        {
+                if (destination(j) > MINUS_INFINITY && destination(j) < PLUS_INFINITY)
+                        fixed_index += offset + j;
+        }
+        return fixed_index;
+}
+

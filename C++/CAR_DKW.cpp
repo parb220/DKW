@@ -54,7 +54,7 @@ internal_parameter(right.internal_parameter), if_internal_parameter_set(right.if
 	internal_parameter.CopyContent(right.internal_parameter);
 }
 
-void CAR_DKW::ObservationEquation(int j)
+TDenseVector CAR_DKW::ObservationEquation(int j, const TDenseVector &xt_tm1)
 {
 	// p_vec
 	if (dataP->p_vec(j,0) == MINUS_INFINITY)
@@ -178,6 +178,7 @@ void CAR_DKW::ObservationEquation(int j)
 		for (int i=tmp_R.rows; i<tmp_R.rows+delta_tips.Dimension(); i++)
 			R(i,i) = delta_tips(i-tmp_R.rows)*delta_tips(i-tmp_R.rows); 
 	}
+	return TDenseVector(0); 
 }
 
 int CAR_DKW::NumberParameters() const
@@ -237,6 +238,8 @@ bool CAR_DKW::SetParameters(const TDenseVector &_parameter)
 		return false; 
 	if (!SetParameters_FromVectorToMatrix(current_parameter))
 		return false; 
+	if (!SetParameters_ABOmega())
+		return false; 
 	internal_parameter = current_parameter;
 	if_internal_parameter_set = true; 
 	return true; 
@@ -244,6 +247,9 @@ bool CAR_DKW::SetParameters(const TDenseVector &_parameter)
 
 bool CAR_DKW::SetParameters_FromVectorToMatrix(const TDenseVector &_parameter)
 {
+	if (_parameter.Dimension() < CAR_DKW::NumberParameters())
+		return false; 
+
 	int counter = 0; 
 	if (KAPPA.rows != Nfac || KAPPA.cols != Nfac)
 		KAPPA.Resize(Nfac, Nfac);
@@ -323,14 +329,20 @@ bool CAR_DKW::SetParameters_FromVectorToMatrix(const TDenseVector &_parameter)
 		delta_tips.Resize(dataP->ytips_vec.cols); 
 	delta_tips.Insert(0, _parameter, counter, counter+delta_tips.Dimension()-1); 
 	counter += delta_tips.Dimension(); 
+	return true; 
+}
 
+bool CAR_DKW::SetParameters_ABOmega()
+{
 	TDenseMatrix lambda1 = InverseMultiply(SIGMA, SIGMAlambda1);
         YieldFacLoad(ay, by, KAPPA, SIGMA,theta,rho0,rho1,lambda0,SIGMAlambda1,dataP->MATgrid);
+
         double rho0_R = rho0 - rho0_pi - 0.5*(InnerProduct(sigq, sigq) + sigqx*sigqx) + InnerProduct(lambda0, sigq);
         TDenseVector rho1_R = rho1 - rho1_pi + TransposeMultiply(lambda1, sigq);
         TDenseVector lambda0_R = lambda0 - sigq;
         TDenseMatrix SIGMAlambda1_R = SIGMAlambda1;
         YieldFacLoad(ay_R, by_R, KAPPA,SIGMA,theta,rho0_R,rho1_R,lambda0_R,SIGMAlambda1_R,dataP->TIPSgrid);
+
         TDenseVector ForecastHor(2);
         ForecastHor[0] = 0.5; ForecastHor[1] = 1.0;
         af.Zeros(ForecastHor.Dimension());
@@ -399,9 +411,9 @@ bool CAR_DKW::SetParameters_FromVectorToMatrix(const TDenseVector &_parameter)
 
 TDenseVector CAR_DKW::GetParameters() 
 {
-	int counter =0; 
 	if (!if_internal_parameter_set)
 	{
+		int counter =0; 
 		internal_parameter.Zeros(NumberParameters()); 
 		// KAPPA
 		if (KAPPA.rows != Nfac || KAPPA.cols != Nfac)
@@ -545,44 +557,6 @@ TDenseVector CAR_DKW::GetParameters()
 		if_internal_parameter_set = true; 
 	}
 	return internal_parameter; 
-}
-
-TIndex FixedVariableParameter(TDenseMatrix &destination, const TDenseMatrix & source, int offset)
-{
-	TIndex fixed_index; 
-	destination = source; 
-        for (int j=0; j<destination.cols; j++)
-        {
-        	for (int i=0; i<destination.rows; i++)
-                {
-                	if (destination(i,j) > MINUS_INFINITY && destination(i,j) < PLUS_INFINITY)
-                        	fixed_index += offset + j*destination.rows + i;
-                }
-        }
-	return fixed_index; 
-}
-
-TIndex FixedVariableParameter(TDenseVector &destination, const TDenseVector &source, int offset)
-{
-        TIndex fixed_index;
-	destination = source; 	
-        for (int j=0; j<destination.Dimension(); j++)
-        {
-        	if (destination(j) > MINUS_INFINITY && destination(j) < PLUS_INFINITY)
-                        fixed_index += offset + j;
-        }
-        return fixed_index;
-}
-
-bool iequals(const std::string& a, const std::string& b)
-{
-    unsigned int sz = a.size();
-    if (b.size() != sz)
-        return false;
-    for (unsigned int i = 0; i < sz; ++i)
-        if (tolower(a[i]) != tolower(b[i]))
-            return false;
-    return true;
 }
 
 bool CAR_DKW::SetAsFixed(const TDenseMatrix &M, const std::string &which_one)

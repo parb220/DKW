@@ -5,7 +5,7 @@
 #include "prcsn.h"
 #include "CDate.hpp"
 #include "CData_FRBA.hpp"
-#include "CAR_DKW.hpp"
+#include "CAR_DKWl_o.hpp"
 
 using namespace std; 
 
@@ -41,22 +41,27 @@ int main(int argc, char **argv)
 	}
 
 	int Nfac = 3; 
-	CAR_DKW model(Nfac, &data); 
+	CAR_DKWl_o model(Nfac, &data); 
 	TDenseMatrix _kappa = DiagonalMatrix(MINUS_INFINITY, Nfac, Nfac); 
 	model.SetAsFixed(_kappa, string("KAPPA")); 
+	
 	TDenseMatrix _sigma(Nfac, Nfac, MINUS_INFINITY); 
 	_sigma(0,0) = 0.01; _sigma(0,1) = 0.0; _sigma(0,2) = 0.0; 
 	_sigma(1,1) = 0.01; _sigma(1,2) = 0.0;
 	_sigma(2,2) = 0.01; 
 	model.SetAsFixed(_sigma, string("SIGMA")); 
+
+	model.SetAsFixed(0.01, string("SIGMA_L")); 
+
 	TDenseVector _theta(Nfac,0.0); 
 	model.SetAsFixed(_theta, string("theta")); 
+
 	model.SetAsFixed(0.0075, string("delta_bcfLT")); 
 	model.SetAsFixed(0.0, string("delta_p")); 
 
 	TDenseVector variable_p(model.NumberVariableParameters(),0.0); 
 	ifstream input_file; 
-	string p_filename("../C++/parameter.txt"); 
+	string p_filename("../C++/DKWl_o_parameter.txt"); 
 	input_file.open(p_filename.c_str()); 
 	if (!input_file)
 	{
@@ -65,9 +70,9 @@ int main(int argc, char **argv)
 	}
 	input_file >> variable_p; 
 	input_file.close(); 
-	//variable_p.RandomNormal(); 
+	// variable_p.RandomNormal(); 
 	
-	TDenseMatrix bound(model.NumberVariableParameters(),2,0.0); 
+	/*TDenseMatrix bound(model.NumberVariableParameters(),2,0.0); 
 	string bound_filename("../C++/bound.txt"); 
 	input_file.open(bound_filename.c_str()); 
 	if (!input_file)
@@ -76,17 +81,18 @@ int main(int argc, char **argv)
 		exit(-1); 
 	}
 	input_file >> bound; 
-	input_file.close(); 
+	input_file.close(); */
 
 	TDenseVector logLSeries; 
-	TDenseMatrix state; 
-	double log_likelihood = model.LogLikelihood(logLSeries, state, variable_p); 
+	TDenseMatrix state;
+	TDenseMatrix model_IE_options;  
+	double log_likelihood = model.LogLikelihood(logLSeries, state, model_IE_options, variable_p); 
 	cout << setprecision(20) << log_likelihood; 
 	for (int i=0; i<variable_p.Dimension(); i++)
 		cout << "\t" << variable_p[i]; 
 	cout << endl; 
 	
-	double optimal_log_likelihood = model.MaximizeLogLikelihood(variable_p, bound.ColumnVector(0), bound.ColumnVector(1), std::vector<std::string>(0), 10, 1.0, 1); 
+	double optimal_log_likelihood = model.MaximizeLogLikelihood(variable_p, TDenseVector(), TDenseVector(), std::vector<std::string>(0), 30, 1.0, 10); 
 	cout << setprecision(20) << optimal_log_likelihood; 
 	for (int i=0; i<variable_p.Dimension(); i++)
 		cout << "\t" << variable_p[i]; 

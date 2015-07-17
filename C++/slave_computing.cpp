@@ -52,7 +52,8 @@ void slave_computing(CAR &model, const string &write_directory, const TDenseMatr
 			// initial 
 			TDenseVector logLSeries;
        			TDenseMatrix state;
-        		double log_likelihood = model.LogLikelihood(logLSeries, state, parameter);
+			TDenseMatrix model_IE_options; 
+        		double log_likelihood = model.LogLikelihood(logLSeries, state, model_IE_options, parameter);
 			TDenseVector initial_parameter; 
 			initial_parameter.CopyContent(parameter); 	
 

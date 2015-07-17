@@ -35,11 +35,11 @@ protected:
 	TDenseVector y_obs; 
 	TDenseMatrix R; 
 	
-	virtual void ObservationEquation(int j)=0;  
+	virtual TDenseVector ObservationEquation(int j, const TDenseVector &xt_tm1)=0;  
 
 public:
-	double LogLikelihood(TDenseVector &logL, TDenseMatrix &state); 
-	double LogLikelihood(TDenseVector &logL, TDenseMatrix &state, const TDenseVector &parameter); 
+	double LogLikelihood(TDenseVector &logL, TDenseMatrix &state, TDenseMatrix &model_IE_options); 
+	double LogLikelihood(TDenseVector &logL, TDenseMatrix &state, TDenseMatrix &model_IE_options, const TDenseVector &parameter); 
 
 	virtual int NumberParameters() const = 0; 
 
@@ -60,4 +60,10 @@ void YieldFacLoad(TDenseVector &ay, TDenseMatrix &by, const TDenseMatrix &KAPPA,
 
 void YieldFacLoad_ODE(TDenseVector &A, TDenseMatrix &B, const TDenseVector &TAUgrid, const TDenseVector &k, const TDenseMatrix &K, const TDenseMatrix &H, double rho0, const TDenseVector &rho1);
 
+void InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, const TDenseVector &sigq, double sigqx, double rho0, const TDenseVector &rho1, double maturity); 
+
+TIndex FixedVariableParameter(TDenseMatrix &destination, const TDenseMatrix & source, int offset); 
+TIndex FixedVariableParameter(TDenseVector &destination, const TDenseVector &source, int offset); 
+
+bool iequals(const std::string& a, const std::string& b);
 #endif

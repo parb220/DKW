@@ -26,8 +26,8 @@ protected:
 	double delta_p;
 	TDenseVector delta_tips;
 
-	virtual void ObservationEquation(int j); 
-private:
+	virtual TDenseVector ObservationEquation(int j, const TDenseVector &xt_tm1); 
+	
 	TDenseVector ay; 
 	TDenseMatrix by; 
 	TDenseVector ay_R; 
@@ -40,16 +40,17 @@ private:
 	TDenseVector internal_parameter;
 	bool if_internal_parameter_set;  	
 
-	bool SetParameters_FromVectorToMatrix(const TDenseVector &); 
-	TIndex GetVariableIndex(); 
+	virtual bool SetParameters_FromVectorToMatrix(const TDenseVector &); 
+	virtual bool SetParameters_ABOmega(); 
+	virtual TIndex GetVariableIndex(); 
 
 public:
-	int NumberVariableParameters() const; 
-	int NumberFixedParameters() const; 
+	virtual int NumberVariableParameters() const; 
+	virtual int NumberFixedParameters() const; 
 
-	bool SetAsFixed(const TDenseMatrix &M, const std::string &which_one); 
-	bool SetAsFixed(const TDenseVector &v, const std::string &which_one); 
-	bool SetAsFixed(double v, const std::string &which_one); 
+	virtual bool SetAsFixed(const TDenseMatrix &M, const std::string &which_one); 
+	virtual bool SetAsFixed(const TDenseVector &v, const std::string &which_one); 
+	virtual bool SetAsFixed(double v, const std::string &which_one); 
 
 	virtual int NumberParameters() const; 
 	virtual bool SetParameters(const TDenseVector &parameter); 
