@@ -113,7 +113,7 @@ Nfac(right.Nfac), dataP(right.dataP)
 }
 
 
-void YieldFacLoad(TDenseVector &ay, TDenseMatrix &by, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, double rho0, const TDenseVector &rho1, const TDenseVector &lambda0, const TDenseMatrix &SIGMAlambda1, const TDenseVector &Maturity)
+bool YieldFacLoad(TDenseVector &ay, TDenseMatrix &by, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, double rho0, const TDenseVector &rho1, const TDenseVector &lambda0, const TDenseMatrix &SIGMAlambda1, const TDenseVector &Maturity)
 {
 	int Nfac = theta.Dimension(); 
 	
@@ -122,7 +122,8 @@ void YieldFacLoad(TDenseVector &ay, TDenseMatrix &by, const TDenseMatrix &KAPPA,
 
 	TDenseVector A; 
 	TDenseMatrix B; 
-	YieldFacLoad_ODE(A, B, Maturity, KAPPAtheta_rn, KAPPA_rn, MultiplyTranspose(SIGMA, SIGMA), rho0, rho1);
+	if(!YieldFacLoad_ODE(A, B, Maturity, KAPPAtheta_rn, KAPPA_rn, MultiplyTranspose(SIGMA, SIGMA), rho0, rho1))
+		return false; 
 
 	ay.Zeros(A.Dimension()); 
 	for (int i=0; i<ay.Dimension(); i++)
@@ -134,9 +135,10 @@ void YieldFacLoad(TDenseVector &ay, TDenseMatrix &by, const TDenseMatrix &KAPPA,
 		for (int i=0; i<by.rows; i++)
 			by(i,j) = -B(i,j)/Bx(i,j); 
 	by = Transpose(by); 
+	return true; 
 }
 
-void YieldFacLoad_ODE(TDenseVector &A, TDenseMatrix &B, const TDenseVector &TAUgrid, const TDenseVector &k, const TDenseMatrix &K, const TDenseMatrix &H, double rho0, const TDenseVector &rho1)
+bool YieldFacLoad_ODE(TDenseVector &A, TDenseMatrix &B, const TDenseVector &TAUgrid, const TDenseVector &k, const TDenseMatrix &K, const TDenseMatrix &H, double rho0, const TDenseVector &rho1)
 {
 	int N = k.Dimension(); 
 	int Ntau = TAUgrid.Dimension(); 
@@ -148,9 +150,21 @@ void YieldFacLoad_ODE(TDenseVector &A, TDenseMatrix &B, const TDenseVector &TAUg
 	for (int i=0; i<Ntau; i++)
 		expk[i] = MatrixExp(-TAUgrid(i) * Transpose(K)); 
 
-	TDenseMatrix _KtInv = Inverse(-1.0*Transpose(K)); 
+	TDenseMatrix _KtInv; 
+	try {
+		_KtInv = Inverse(-1.0*Transpose(K)); 
+	}
+	catch(...) {
+		return false; 
+	}
 	TDenseVector tmp = _KtInv * (-rho1); 
-	TDenseMatrix Kkron = Inverse(Kron(-1.0*K, Identity(N))+Kron(Identity(N), -1.0*K));
+	TDenseMatrix Kkron; 
+	try { 
+		Kkron = Inverse(Kron(-1.0*K, Identity(N))+Kron(Identity(N), -1.0*K));
+	}
+	catch(...) {
+		return false; 
+	}
 	for (int i=0; i<Ntau; i++)
 	{
 		B.InsertColumnMatrix(0,i, (expk[i]-Identity(N))*tmp); 
@@ -169,6 +183,7 @@ void YieldFacLoad_ODE(TDenseVector &A, TDenseMatrix &B, const TDenseVector &TAUg
 		TDenseMatrix K1 = H * _KtInv * (expk[i]-Identity(N)); 
 		A(i) = InnerProduct(k, K0) + 0.5*InnerProduct(tmp, tmp, K2-K1-Transpose(K1)+tau*H) - tau*rho0; 
 	} 
+	return true; 
 }
 
 CAR* CAR_MinusLogLikelihood_NPSOL::model; 
@@ -293,10 +308,16 @@ double CAR::MaximizeLogLikelihood(TDenseVector &x_0, const TDenseVector &lower_x
 	return _loglikelihood_old; 
 }
 
-void InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, const TDenseVector &sigq, double sigqx, double rho0_pi, const TDenseVector &rho1_pi, double Maturity)
+bool InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, const TDenseVector &sigq, double sigqx, double rho0_pi, const TDenseVector &rho1_pi, double Maturity)
 {
 	int Nfac = theta.Dimension(); 
-	TDenseMatrix temp_kron = Inverse(Kron(-1.0*KAPPA, Identity(Nfac))+Kron(Identity(Nfac), -1.0*KAPPA)); 
+	TDenseMatrix temp_kron; 
+	try {
+		temp_kron = Inverse(Kron(-1.0*KAPPA, Identity(Nfac))+Kron(Identity(Nfac), -1.0*KAPPA)); 
+	}
+	catch(...) {
+		return false; 
+	}
 
 	TDenseMatrix temp_km = MatrixExp(-Maturity*KAPPA); 
 	TDenseMatrix temp_x = temp_km * SIGMA; 
@@ -309,11 +330,25 @@ void InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const 
 	for (int j=0; j<Nfac; j++)
 		OMEGA_x.InsertColumnMatrix(0,j,after_reshape, j*Nfac, (j+1)*Nfac-1); 
 
-	TDenseMatrix _km_inv = Inverse(KAPPA*Maturity); 
+	TDenseMatrix _km_inv; 
+	try {
+		_km_inv = Inverse(KAPPA*Maturity); 
+	}
+	catch(...) {
+		return false; 
+	}
  	TDenseMatrix bx = _km_inv * (Identity(Nfac)-temp_km); 
 	TDenseVector ax = (Identity(Nfac)-bx) * theta; 
 
-	TDenseMatrix _k_inv = Inverse(KAPPA); 
+	TDenseMatrix _k_inv; 
+	try { 
+		_k_inv = Inverse(KAPPA); 
+	}
+	catch (...)
+	{
+		return false; 
+	}
+
 	TDenseVector sigq2 = sigq + TransposeMultiply(_k_inv*SIGMA, rho1_pi); 
 	double tempIU_1 = InnerProduct(sigq2,sigq2) + sigqx*sigqx; 
 	double tempIU_2 =  - 2.0*InnerProduct(sigq2, TransposeMultiply(_km_inv*SIGMA, TransposeMultiply(_k_inv*(Identity(Nfac)-temp_km), rho1_pi) ) ); 
@@ -322,6 +357,7 @@ void InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const 
 	double tempIU = tempIU_1 + tempIU_2 + tempIU_3; 
 	B = TransposeMultiply(bx, rho1_pi); 
 	A = (rho0_pi + InnerProduct(rho1_pi, ax)) + 0.5*tempIU;  
+	return true; 
 }
 
 bool iequals(const std::string& a, const std::string& b)

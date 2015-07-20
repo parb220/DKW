@@ -131,21 +131,32 @@ bool CAR_DKWl_o :: SetParameters_FromVectorToMatrix(const TDenseVector &_paramet
 bool CAR_DKWl_o:: SetParameters_ABOmega()
 {
 	// ay, by
-	TDenseMatrix lambda1 = InverseMultiply(SIGMA, SIGMAlambda1);
-        YieldFacLoad(ay, by, KAPPA, SIGMA,theta,rho0,rho1,lambda0,SIGMAlambda1,dataP->MATgrid);
+	TDenseMatrix lambda1; 
+	try {
+		lambda1 = InverseMultiply(SIGMA, SIGMAlambda1);
+	}
+	catch(...){
+		return false; 
+	}
+
+        if(!YieldFacLoad(ay, by, KAPPA, SIGMA,theta,rho0,rho1,lambda0,SIGMAlambda1,dataP->MATgrid))
+		return false; 
 
 	// ay_R, by_R
         double rho0_R = rho0 - rho0_pi - 0.5*(InnerProduct(sigq, sigq) + sigqx*sigqx) + InnerProduct(lambda0, sigq);
         TDenseVector rho1_R = rho1 - rho1_pi + TransposeMultiply(lambda1, sigq);
         TDenseVector lambda0_R = lambda0 - sigq;
         TDenseMatrix SIGMAlambda1_R = SIGMAlambda1;
-        YieldFacLoad(ay_R, by_R, KAPPA,SIGMA,theta,rho0_R,rho1_R,lambda0_R,SIGMAlambda1_R,dataP->TIPSgrid);
+        if (!YieldFacLoad(ay_R, by_R, KAPPA,SIGMA,theta,rho0_R,rho1_R,lambda0_R,SIGMAlambda1_R,dataP->TIPSgrid))
+		return false; 
 
 	// ay_TR, by_TR
-	YieldFacLoad(ay_TR, by_TR, KAPPA,SIGMA,theta,rho0_R,rho1_R+rho1_L,lambda0_R,SIGMAlambda1_R,dataP->TIPSgrid);
+	if (!YieldFacLoad(ay_TR, by_TR, KAPPA,SIGMA,theta,rho0_R,rho1_R+rho1_L,lambda0_R,SIGMAlambda1_R,dataP->TIPSgrid))
+		return false; 
 
 	// ay_L, by_L 
-	YieldFacLoad(ay_L, by_L, TDenseMatrix(1,1,KAPPA_L),TDenseMatrix(1,1,SIGMA_L),TDenseVector(1,theta_L),0,TDenseVector(1,rhoL_L),TDenseVector(1,lambda0_L), TDenseMatrix(1,1,SIGMAlambda1_L), dataP->TIPSgrid);
+	if (!YieldFacLoad(ay_L, by_L, TDenseMatrix(1,1,KAPPA_L),TDenseMatrix(1,1,SIGMA_L),TDenseVector(1,theta_L),0,TDenseVector(1,rhoL_L),TDenseVector(1,lambda0_L), TDenseMatrix(1,1,SIGMAlambda1_L), dataP->TIPSgrid))
+		return false; 
 
 	// af, bf
 	TDenseVector ForecastHor(2);
@@ -178,7 +189,13 @@ bool CAR_DKWl_o:: SetParameters_ABOmega()
 	A(Nfac+1) = AL; 
 
 	// Omega
-	TDenseMatrix tmp_kron = Inverse(Kron(-1.0*KAPPA, Identity(Nfac))+Kron(Identity(Nfac), -1.0*KAPPA));
+	TDenseMatrix tmp_kron; 
+	try {
+		tmp_kron = Inverse(Kron(-1.0*KAPPA, Identity(Nfac))+Kron(Identity(Nfac), -1.0*KAPPA));
+	}
+	catch(...) {
+		return false;
+	}
         TDenseMatrix tmp_Omega = MultiplyTranspose(SIGMA, SIGMA);
         TDenseVector tmpVec(tmp_Omega.rows*tmp_Omega.cols);
         for (int i=0; i<tmp_Omega.cols; i++)
@@ -206,7 +223,13 @@ bool CAR_DKWl_o:: SetParameters_ABOmega()
 	OMEGA_ss(Nfac+1,Nfac+1) = OMEGA_L_ss; 
 
 	double OMEGA_q = dataP->Dt*(InnerProduct(sigq, sigq) + sigqx*sigqx);
-	TDenseVector OMEGA_xq=InverseMultiply(KAPPA, (Identity(Nfac)-Bx)*SIGMA*sigq);
+	TDenseVector OMEGA_xq; 
+	try {
+		OMEGA_xq = InverseMultiply(KAPPA, (Identity(Nfac)-Bx)*SIGMA*sigq);
+	}
+	catch(...) {
+		return false; 
+	}
 	OMEGA.Zeros(Nfac+2,Nfac+2); 
 	OMEGA(0,0) = OMEGA_q; 
 	OMEGA.InsertRowMatrix(0,1,OMEGA_xq); 
@@ -222,11 +245,18 @@ bool CAR_DKWl_o:: SetParameters_ABOmega()
 		double MAT = dataP->MATgrid_options(i); 
 		TDenseVector temp_ay; 
 		TDenseMatrix temp_by; 
-		YieldFacLoad(temp_ay, temp_by, KAPPA,SIGMA,theta,rho0,rho1,lambda0,SIGMAlambda1,TDenseVector(1,MAT)); 
+		if (!YieldFacLoad(temp_ay, temp_by, KAPPA,SIGMA,theta,rho0,rho1,lambda0,SIGMAlambda1,TDenseVector(1,MAT)))
+			return false; 
 		TDenseVector temp_by_vector = temp_by.RowVector(0); 
 
 		TDenseMatrix KAPPA_Q = KAPPA+SIGMAlambda1; 
-		TDenseVector theta_Q = InverseMultiply(KAPPA_Q, KAPPA*theta-SIGMA*lambda0+MultiplyTranspose(SIGMA,SIGMA)*temp_by_vector);
+		TDenseVector theta_Q; 
+		try {
+			theta_Q = InverseMultiply(KAPPA_Q, KAPPA*theta-SIGMA*lambda0+MultiplyTranspose(SIGMA,SIGMA)*temp_by_vector);
+		}	
+		catch(...) {
+			return false; 
+		}
 
 		double rho0_Q = rho0_pi - InnerProduct(lambda0, sigq)+InnerProduct(sigq, TransposeMultiply(SIGMA,temp_by_vector));
 		TDenseVector rho1_Q = rho1_pi - TransposeMultiply(lambda1, sigq); 

@@ -1,8 +1,7 @@
 #include "prcsn.h"
 #include "CAR_DKW.hpp"
 #include "CData_FRBA.hpp"
-
-TDenseMatrix MatrixExp(const TDenseMatrix &M); 
+#include "matrix_operation.hpp"
 
 CAR_DKW::CAR_DKW(int _Nfac, CData_FRBA* _dataP) : 
 CAR(_Nfac, _dataP),
@@ -334,14 +333,22 @@ bool CAR_DKW::SetParameters_FromVectorToMatrix(const TDenseVector &_parameter)
 
 bool CAR_DKW::SetParameters_ABOmega()
 {
-	TDenseMatrix lambda1 = InverseMultiply(SIGMA, SIGMAlambda1);
-        YieldFacLoad(ay, by, KAPPA, SIGMA,theta,rho0,rho1,lambda0,SIGMAlambda1,dataP->MATgrid);
+	TDenseMatrix lambda1; 
+	try {
+		lambda1 = InverseMultiply(SIGMA, SIGMAlambda1);
+	}
+	catch (...) {
+		return false; 
+	}
+        if(!YieldFacLoad(ay, by, KAPPA, SIGMA,theta,rho0,rho1,lambda0,SIGMAlambda1,dataP->MATgrid))
+		return false; 
 
         double rho0_R = rho0 - rho0_pi - 0.5*(InnerProduct(sigq, sigq) + sigqx*sigqx) + InnerProduct(lambda0, sigq);
         TDenseVector rho1_R = rho1 - rho1_pi + TransposeMultiply(lambda1, sigq);
         TDenseVector lambda0_R = lambda0 - sigq;
         TDenseMatrix SIGMAlambda1_R = SIGMAlambda1;
-        YieldFacLoad(ay_R, by_R, KAPPA,SIGMA,theta,rho0_R,rho1_R,lambda0_R,SIGMAlambda1_R,dataP->TIPSgrid);
+        if(!YieldFacLoad(ay_R, by_R, KAPPA,SIGMA,theta,rho0_R,rho1_R,lambda0_R,SIGMAlambda1_R,dataP->TIPSgrid))
+		return false; 
 
         TDenseVector ForecastHor(2);
         ForecastHor[0] = 0.5; ForecastHor[1] = 1.0;
@@ -366,7 +373,13 @@ bool CAR_DKW::SetParameters_ABOmega()
 	A(0) = rho0_pi*dataP->Dt;
 	A.Insert(1, Ax); 
 
-	TDenseMatrix tmp_kron = Inverse(Kron(-1.0*KAPPA, Identity(Nfac))+Kron(Identity(Nfac), -1.0*KAPPA)); 
+	TDenseMatrix tmp_kron; 
+	try { 
+		tmp_kron = Inverse(Kron(-1.0*KAPPA, Identity(Nfac))+Kron(Identity(Nfac), -1.0*KAPPA)); 
+	}
+	catch (...) {
+		return false; 
+	}
 	TDenseMatrix tmp_Omega = MultiplyTranspose(SIGMA, SIGMA); 
 	TDenseVector tmpVec(tmp_Omega.rows*tmp_Omega.cols); 
 	for (int i=0; i<tmp_Omega.cols; i++)
@@ -390,7 +403,13 @@ bool CAR_DKW::SetParameters_ABOmega()
 	OMEGA_ss.Insert(1,1,OMEGA_x_ss); 
 
 	double OMEGA_q=dataP->Dt*(InnerProduct(sigq,sigq) + sigqx*sigqx);
-	TDenseVector OMEGA_xq=Inverse(KAPPA)*(Identity(Nfac)-Bx)*SIGMA*sigq;
+	TDenseVector OMEGA_xq; 
+	try {
+		OMEGA_xq =InverseMultiply(KAPPA, (Identity(Nfac)-Bx)*SIGMA*sigq); 
+	}
+	catch(...) {
+		return false; 
+	}
 	OMEGA.Zeros(Nfac+1,Nfac+1); 
 	OMEGA(0,0) = OMEGA_q; 
 	OMEGA.InsertRowMatrix(0,1,OMEGA_xq); 

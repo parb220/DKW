@@ -1,10 +1,12 @@
 #include "matrix_operation.hpp"
 
-
 TDenseMatrix MatrixExp(const TDenseMatrix &M)
 {
 	if (M.rows <=0 || M.cols <= 0 || M.rows != M.cols)
 		throw dw_exception("MatrixExp() : dimension error"); 
+	
+	if (M.IsZeroMatrix())
+		return Identity(M.rows); 
 	
 	TDenseMatrix workM; 
 	if (!M.column_major)
