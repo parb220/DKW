@@ -48,8 +48,8 @@ INCLUDE_DIR := $(INCLUDE_DIR) -I$(DW_UTILITY_INCLUDE) -I$(SOURCE_DIR)
 VPATH := $(VPATH) $(BUILD_DIR) $(DW_UTILITY_MATRIX) $(SOURCE_DIR) 
 
 # TEST_ALL #####################################################################
-ALL_OBJS = $(OBJS) test_DKW.o #_parallel.o #test_DKW.o #test_DKWl_o.o #DKW_parallel.o
-ALL_EFILE = $(EXE_DIR)/test_DKW#_parallel #test_DKW  #test_DKWl_o #DKW_parallel
+ALL_OBJS = $(OBJS) test_DKWl_o.o #_parallel.o #test_DKW.o #test_DKWl_o.o #DKW_parallel.o
+ALL_EFILE = $(EXE_DIR)/test_DKWl_o #_parallel #test_DKW  #test_DKWl_o #DKW_parallel
 
 #################################################################################
 all : $(ALL_EFILE)

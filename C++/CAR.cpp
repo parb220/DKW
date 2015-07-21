@@ -35,7 +35,7 @@ double CAR::LogLikelihood(TDenseVector &logL_vec, TDenseMatrix &state, TDenseMat
 
 	TDenseVector et, model_IE_options_vector; 
 	
-	double rcVt, logL=0.0; 
+	double logL=0.0; // rcVt; 
 	for (int j=0; j<dataP->NumberObservations(); j++)
 	{
 		xt_tm1 = A + B*xtm1_tm1; 
@@ -258,7 +258,7 @@ double CAR::MaximizeLogLikelihood(TDenseVector &x_0, const TDenseVector &lower_x
 	TDenseMatrix model_IE_options;  
 	double _loglikelihood_old =  LogLikelihood(logL, state, model_IE_options, x_0), _loglikelihood_new; 
 	TDenseVector delta(x_0.Dimension()), xPlusDelta; 
-	for (int iter=0; iter<max_optimization_iteration; iter++)
+	for (int iteration=0; iteration<max_optimization_iteration; iteration++)
 	{
 		delta.RandomNormal(); 
 		for (int counter=0; counter < max_perturbation_iteration; counter ++)
