@@ -38,6 +38,7 @@ double CAR::LogLikelihood(TDenseVector &logL_vec, TDenseMatrix &state, TDenseMat
 	double logL=0.0; // rcVt; 
 	for (int j=0; j<dataP->NumberObservations(); j++)
 	{
+		UpdateABOmega(xtm1_tm1); 
 		xt_tm1 = A + B*xtm1_tm1; 
 		Pt_tm1 = MultiplyTranspose(B*Ptm1_tm1, B) + OMEGA; 
 		
@@ -184,6 +185,34 @@ bool YieldFacLoad_ODE(TDenseVector &A, TDenseMatrix &B, const TDenseVector &TAUg
 		A(i) = InnerProduct(k, K0) + 0.5*InnerProduct(tmp, tmp, K2-K1-Transpose(K1)+tau*H) - tau*rho0; 
 	} 
 	return true; 
+}
+
+bool YieldFacLoad_ODE3(TDenseVector &A, TDenseMatrix &B, TDenseVector &C, const TDenseVector &TAUgrid, const TDenseVector &k, const TDenseMatrix &K, double h, const TDenseMatrix &H, double rho0, const TDenseVector &rho1, double rhov, double Kv, double Hv)
+{
+	int Ntau = TAUgrid.Dimension(); 
+
+	TDenseVector A1; 
+	if (!YieldFacLoad_ODE(A1,B,TAUgrid,k,K,H,rho0,rho1))
+		return false; 
+
+	double a = -rhov, b = -Kv, c = 0.5*Hv, ETA; 
+	if (b*b - 4.0*a*c > 0)
+		ETA = sqrt(b*b - 4.0*a*c); 
+	else 
+		return false; 
+	
+	C.Zeros(Ntau); 
+	for (int i=0; i<C.Dimension(); i++)
+		C(i) = 2.0*a*(1.0-exp(-ETA*TAUgrid(i)))/((ETA+b)*exp(-ETA*TAUgrid(i))+(ETA-b));
+
+	TDenseVector A2(Ntau,0.0); 
+	if (a != 0)
+	{
+		for (int i=0; i<A2.Dimension(); i++)
+			A2(i) = h*2.0*a*(TAUgrid(i)/(ETA-b)+2.0/(ETA*ETA-b*b)*log(((ETA+b)*exp(-ETA*TAUgrid(i))+(ETA-b))/(2.0*ETA)));
+	}
+	A = A1+A2; 
+	return true; 	
 }
 
 CAR* CAR_MinusLogLikelihood_NPSOL::model; 
@@ -360,6 +389,60 @@ bool InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const 
 	return true; 
 }
 
+bool InfExpFacLoad_DKWv_option(double &aI, TDenseVector &bI, double &cI, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, double KAPPAv, double SIGMAv, double thetav, const TDenseVector &sigq, double rho0_pi, const TDenseVector &rho1_pi, double rhov_pi, double rho, double Maturity)
+{
+	int Nfac = theta.Dimension();
+	TDenseMatrix tmp_kron; 
+	try {
+		tmp_kron = Inverse(Kron(-1.0*KAPPA,Identity(Nfac))+Kron(Identity(Nfac),-1.0*KAPPA)); 
+	} 	
+	catch(...) {
+		return false; 
+	}
+	TDenseMatrix SIGMA_SIGMA = MultiplyTranspose(SIGMA,SIGMA); 
+	TDenseMatrix tmp_expm = MatrixExp(-Maturity*KAPPA); 
+	TDenseMatrix tmp_X = tmp_expm*SIGMA_SIGMA*Transpose(tmp_expm) - SIGMA_SIGMA; 
+	TDenseVector tmp_X_vector(Nfac*Nfac,0.0); 
+	for (int j=0; j<tmp_X.cols; j++)
+		tmp_X_vector.Insert(j*tmp_X.rows, tmp_X.ColumnVector(j)); 
+	tmp_X_vector = tmp_kron * tmp_X_vector; 
+	TDenseMatrix OMEGA_x(Nfac,Nfac); 
+	for (int j=0; j<Nfac; j++)
+		OMEGA_x.InsertColumnMatrix(0,j,tmp_X_vector,j*Nfac,(j+1)*Nfac-1); 
+
+	TDenseMatrix KAPPA_maturity_inv; 
+	try {
+		KAPPA_maturity_inv = Inverse(Maturity*KAPPA); 
+	}
+	catch(...) {
+		return false; 
+	}
+	TDenseMatrix bx = KAPPA_maturity_inv * (Identity(Nfac)-tmp_expm); 
+	TDenseVector ax = (Identity(Nfac)-bx) * theta; 
+	double bv = 1.0/(KAPPAv*Maturity) * (1.0-exp(-KAPPAv*Maturity)); 
+	double av = (1.0-bv) * thetav; 
+
+	TDenseMatrix KAPPA_inv; 
+	try {
+		KAPPA_inv = Inverse(KAPPA); 
+	}
+	catch(...) {
+		return false; 
+	}
+	TDenseVector sigq2 = sigq + TransposeMultiply(KAPPA_inv*SIGMA, rho1_pi); 
+	double H0 = InnerProduct(sigq2,sigq2) - 2.0*InnerProduct(sigq2, rho1_pi, Transpose(KAPPA_inv*(Identity(Nfac)-tmp_expm)*KAPPA_maturity_inv*SIGMA) ) + InnerProduct(rho1_pi,rho1_pi, KAPPA_inv*(1.0/Maturity)*OMEGA_x*Transpose(KAPPA_inv)); 
+
+	double tmp1 = rhov_pi*SIGMAv/KAPPAv; 
+	double H1 = (1.0+2.0*rho*tmp1+tmp1*tmp1)-2.0*(rho+tmp1)*tmp1/(KAPPAv*Maturity)*(1.0-exp(-KAPPAv*Maturity))+tmp1*tmp1/(2.0*KAPPAv*Maturity)*(1.0-exp(-2*KAPPAv*Maturity));
+	double H2 = exp(-KAPPAv*Maturity)*((1.0+2.0*rho*tmp1+tmp1*tmp1)/(KAPPAv*Maturity)*(exp(KAPPAv*Maturity)-1.0)-2.0*(rho+tmp1)*tmp1+tmp1*tmp1/(KAPPAv*Maturity)*(1.0-exp(-KAPPAv*Maturity)));
+	
+	bI = TransposeMultiply(bx,rho1_pi); 
+	cI = bv*rhov_pi+0.5*H2; 
+	aI = (rho0_pi+InnerProduct(rho1_pi,ax)+rhov_pi*av)+0.5*(H0+thetav*(H1-H2));
+
+	return true; 
+}
+
 bool iequals(const std::string& a, const std::string& b)
 {
     unsigned int sz = a.size();
@@ -397,4 +480,6 @@ TIndex FixedVariableParameter(TDenseVector &destination, const TDenseVector &sou
         }
         return fixed_index;
 }
+
+
 

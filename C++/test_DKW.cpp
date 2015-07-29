@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 
 	TDenseVector variable_p(model.NumberVariableParameters(),0.0); 
 	ifstream input_file; 
-	/*string p_filename("../C++/parameter.txt"); 
+	string p_filename("../C++/DKW_parameter.txt"); 
 	input_file.open(p_filename.c_str()); 
 	if (!input_file)
 	{
@@ -64,11 +64,11 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 	input_file >> variable_p; 
-	input_file.close(); */
-	variable_p.RandomNormal(); 
+	input_file.close();
+	// variable_p.RandomNormal(); 
 	
 	TDenseMatrix bound(model.NumberVariableParameters(),2,0.0); 
-	string bound_filename("../C++/bound.txt"); 
+	string bound_filename("../C++/DKW_bound.txt"); 
 	input_file.open(bound_filename.c_str()); 
 	if (!input_file)
 	{
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 		cout << "\t" << variable_p[i]; 
 	cout << endl; 
 	
-	double optimal_log_likelihood = model.MaximizeLogLikelihood(variable_p, bound.ColumnVector(0), bound.ColumnVector(1), std::vector<std::string>(0), 30, 1.0, 10); 
+	double optimal_log_likelihood = model.MaximizeLogLikelihood(variable_p, bound.ColumnVector(0), bound.ColumnVector(1), std::vector<std::string>(0), 30, 10, 1000); 
 	cout << setprecision(20) << optimal_log_likelihood; 
 	for (int i=0; i<variable_p.Dimension(); i++)
 		cout << "\t" << variable_p[i]; 

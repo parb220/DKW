@@ -25,7 +25,8 @@ protected:
 
 	virtual TDenseVector ObservationEquation(int j, const TDenseVector &xt_tm1);
 	virtual bool SetParameters_FromVectorToMatrix(const TDenseVector &);	
-	virtual bool SetParameters_ABOmega(); 
+	virtual bool SetParameters_InitializeABOmega(); 
+	virtual bool UpdateABOmega(const TDenseVector &xtm1_tm1) { return true; }; 
 public:
 	virtual bool SetAsFixed(const TDenseMatrix &M, const std::string &which_one)
 	{
@@ -35,7 +36,7 @@ public:
         virtual bool SetAsFixed(double v, const std::string &which_one);
 
 	virtual int NumberParameters() const; 	
-	TDenseVector GetParameters(); 
+	virtual TDenseVector GetParameters(); 
 	CAR_DKWl_o(int _Nfac=0, CData_FRBA *_dataP=NULL); 
 	CAR_DKWl_o(const CAR_DKWl_o &right); 
 	~CAR_DKWl_o() {}; 

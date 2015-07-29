@@ -41,8 +41,9 @@ protected:
 	bool if_internal_parameter_set;  	
 
 	virtual bool SetParameters_FromVectorToMatrix(const TDenseVector &); 
-	virtual bool SetParameters_ABOmega(); 
-	virtual TIndex GetVariableIndex(); 
+	virtual bool SetParameters_InitializeABOmega(); 
+	virtual bool UpdateABOmega(const TDenseVector &xtm1_tm1) { return true; }; 
+	TIndex GetVariableIndex(); 
 
 public:
 	virtual int NumberVariableParameters() const; 

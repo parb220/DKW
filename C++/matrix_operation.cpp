@@ -5,8 +5,8 @@ TDenseMatrix MatrixExp(const TDenseMatrix &M)
 	if (M.rows <=0 || M.cols <= 0 || M.rows != M.cols)
 		throw dw_exception("MatrixExp() : dimension error"); 
 	
-	if (M.IsZeroMatrix())
-		return Identity(M.rows); 
+	/*if (M.IsZeroMatrix())
+		return Identity(M.rows); */
 	
 	TDenseMatrix workM; 
 	if (!M.column_major)
@@ -28,16 +28,28 @@ TDenseMatrix MatrixExp(const TDenseMatrix &M)
 	dgpadm_(&ideg, &m, &t, workM.matrix, &ldh, wsp, &lwsp, ipiv, &iexph, &ns, &iflag); 
 	
 	if (iflag < 0)
+	{
+		delete [] wsp; 
+		delete [] ipiv; 
 		throw dw_exception("MatrixExp() : error occurred while calling gdpadm"); 
-
-	TDenseMatrix outputM(workM.rows, workM.cols); 
-	memcpy(outputM.matrix, wsp+iexph-1, sizeof(double)*workM.rows*workM.cols); 
-	delete [] wsp; 
-	delete [] ipiv; 
-	if (!M.column_major)
-		return Transpose(outputM); 
-	else 
-		return outputM; 
+	}
+	else if (iflag == 1) // because M is a zero matrix
+	{
+		delete [] wsp; 
+		delete [] ipiv; 
+		return Identity(M.rows); 
+	}
+	else if (iflag == 0)
+	{
+		TDenseMatrix outputM(workM.rows, workM.cols); 
+		memcpy(outputM.matrix, wsp+iexph-1, sizeof(double)*workM.rows*workM.cols); 
+		delete [] wsp; 
+		delete [] ipiv; 
+		if (!M.column_major)
+			return Transpose(outputM); 
+		else 
+			return outputM; 
+	}
 }
 
 TDenseMatrix RepMat(const TDenseMatrix &M , int m, int n)

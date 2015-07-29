@@ -36,7 +36,8 @@ protected:
 	TDenseMatrix R; 
 	
 	virtual TDenseVector ObservationEquation(int j, const TDenseVector &xt_tm1)=0;  
-
+	virtual bool UpdateABOmega(const TDenseVector &xtm1_tm1) = 0; 
+	virtual bool SetParameters_InitializeABOmega() = 0; 
 public:
 	double LogLikelihood(TDenseVector &logL, TDenseMatrix &state, TDenseMatrix &model_IE_options); 
 	double LogLikelihood(TDenseVector &logL, TDenseMatrix &state, TDenseMatrix &model_IE_options, const TDenseVector &parameter); 
@@ -60,7 +61,12 @@ bool YieldFacLoad(TDenseVector &ay, TDenseMatrix &by, const TDenseMatrix &KAPPA,
 
 bool YieldFacLoad_ODE(TDenseVector &A, TDenseMatrix &B, const TDenseVector &TAUgrid, const TDenseVector &k, const TDenseMatrix &K, const TDenseMatrix &H, double rho0, const TDenseVector &rho1);
 
+bool YieldFacLoad_ODE3(TDenseVector &A, TDenseMatrix &B, TDenseVector &C, const TDenseVector &TAUgrid, const TDenseVector &k, const TDenseMatrix &K, double h, const TDenseMatrix &H, double rho0, const TDenseVector &rho1, double rhov, double Kv, double Hv); 
+ 
+
 bool InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, const TDenseVector &sigq, double sigqx, double rho0, const TDenseVector &rho1, double maturity); 
+
+bool InfExpFacLoad_DKWv_option(double &aI, TDenseVector &bI, double &cI, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, double KAPPAv, double SIGMAv, double thetav, const TDenseVector &sigq, double rho0_pi, const TDenseVector &rho1_pi, double rhov_pi, double rho, double Maturity);
 
 TIndex FixedVariableParameter(TDenseMatrix &destination, const TDenseMatrix & source, int offset); 
 TIndex FixedVariableParameter(TDenseVector &destination, const TDenseVector &source, int offset); 

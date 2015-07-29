@@ -42,14 +42,14 @@ SOURCE_DIR = $(PROJECT_DIR)/C++
 EXE_DIR = $(PROJECT_DIR)/work
 BUILD_DIR = $(PROJECT_DIR)/work/build
 
-OBJS := $(OBJS) matrix_operation.o CDate.o CDatedData.o CAR.o  CData_FRBA.o CAR_DKW.o master_deploy.o slave_computing.o CAR_DKWl_o.o
+OBJS := $(OBJS) matrix_operation.o CDate.o CDatedData.o CAR.o  CData_FRBA.o CAR_DKW.o master_deploy.o slave_computing.o CAR_DKWl_o.o CAR_DKWlv_o.o
 
 INCLUDE_DIR := $(INCLUDE_DIR) -I$(DW_UTILITY_INCLUDE) -I$(SOURCE_DIR) 
 VPATH := $(VPATH) $(BUILD_DIR) $(DW_UTILITY_MATRIX) $(SOURCE_DIR) 
 
 # TEST_ALL #####################################################################
-ALL_OBJS = $(OBJS) test_DKWl_o.o #_parallel.o #test_DKW.o #test_DKWl_o.o #DKW_parallel.o
-ALL_EFILE = $(EXE_DIR)/test_DKWl_o #_parallel #test_DKW  #test_DKWl_o #DKW_parallel
+ALL_OBJS = $(OBJS) DKW_parallel.o #lv_o.o #_parallel.o #test_DKW.o #test_DKWl_o.o #DKW_parallel.o
+ALL_EFILE = $(EXE_DIR)/DKW_parallel #test_DKW  #test_DKWl_o #DKW_parallel
 
 #################################################################################
 all : $(ALL_EFILE)

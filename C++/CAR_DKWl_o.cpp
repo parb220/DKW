@@ -10,7 +10,7 @@ delta_options(),
 KAPPA_L(MINUS_INFINITY), 
 SIGMA_L(MINUS_INFINITY),
 theta_L(MINUS_INFINITY),
-rho1_L(TDenseVector(_Nfac, MINUS_INFINITY)), 
+rho1_L(_Nfac, MINUS_INFINITY), 
 rhoL_L(MINUS_INFINITY),
 lambda0_L(MINUS_INFINITY),
 SIGMAlambda1_L(MINUS_INFINITY), 
@@ -46,45 +46,46 @@ TDenseVector CAR_DKWl_o::GetParameters()
 {
 	if (!if_internal_parameter_set)
 	{
-		internal_parameter.Zeros(NumberParameters()); 
-		internal_parameter.Insert(0, CAR_DKW::GetParameters()); 
+		TDenseVector complete_parameter(NumberParameters(),0.0); 
+		complete_parameter.Insert(0, CAR_DKW::GetParameters()); 
 		int counter = CAR_DKW::NumberParameters(); 
 		if (delta_options.Dimension() != dataP->MATgrid_options.Dimension())
 		{
 			delta_options = TDenseVector(dataP->MATgrid_options.Dimension(), MINUS_INFINITY); 
-			internal_parameter.Insert(counter, Ones(dataP->MATgrid_options.Dimension())*MINUS_INFINITY); 
+			complete_parameter.Insert(counter, Ones(dataP->MATgrid_options.Dimension())*MINUS_INFINITY); 
 		}
 		else 
-			internal_parameter.Insert(counter, delta_options); 
+			complete_parameter.Insert(counter, delta_options); 
 		counter += delta_options.Dimension(); 
 
-		internal_parameter(counter) = KAPPA_L; 
+		complete_parameter(counter) = KAPPA_L; 
 		counter ++; 
 
-		internal_parameter(counter) = SIGMA_L; 
+		complete_parameter(counter) = SIGMA_L; 
 		counter ++; 
 
-		internal_parameter(counter) = theta_L; 
+		complete_parameter(counter) = theta_L; 
 		counter ++; 
 
 		if (rho1_L.Dimension() != Nfac)
 		{
 			rho1_L = TDenseVector(Nfac, MINUS_INFINITY); 
-			internal_parameter.Insert(counter, Ones(Nfac)*MINUS_INFINITY); 
+			complete_parameter.Insert(counter, Ones(Nfac)*MINUS_INFINITY); 
 		}
 		else 
-			internal_parameter.Insert(counter, rho1_L); 
+			complete_parameter.Insert(counter, rho1_L); 
 		counter += Nfac; 
 
-		internal_parameter(counter) = rhoL_L; 
+		complete_parameter(counter) = rhoL_L; 
 		counter ++; 
 
-		internal_parameter(counter) = lambda0_L; 
+		complete_parameter(counter) = lambda0_L; 
 		counter ++; 
 
-		internal_parameter(counter) = SIGMAlambda1_L; 
+		complete_parameter(counter) = SIGMAlambda1_L; 
 		counter ++; 
 	
+		internal_parameter.CopyContent(complete_parameter); 
 		if_internal_parameter_set = true; 
 	}
 	return internal_parameter; 	
@@ -128,7 +129,7 @@ bool CAR_DKWl_o :: SetParameters_FromVectorToMatrix(const TDenseVector &_paramet
 	return true; 
 }
 
-bool CAR_DKWl_o:: SetParameters_ABOmega()
+bool CAR_DKWl_o:: SetParameters_InitializeABOmega()
 {
 	// ay, by
 	TDenseMatrix lambda1; 

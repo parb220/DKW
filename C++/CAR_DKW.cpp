@@ -237,7 +237,7 @@ bool CAR_DKW::SetParameters(const TDenseVector &_parameter)
 		return false; 
 	if (!SetParameters_FromVectorToMatrix(current_parameter))
 		return false; 
-	if (!SetParameters_ABOmega())
+	if (!SetParameters_InitializeABOmega())
 		return false; 
 	internal_parameter = current_parameter;
 	if_internal_parameter_set = true; 
@@ -331,7 +331,7 @@ bool CAR_DKW::SetParameters_FromVectorToMatrix(const TDenseVector &_parameter)
 	return true; 
 }
 
-bool CAR_DKW::SetParameters_ABOmega()
+bool CAR_DKW::SetParameters_InitializeABOmega()
 {
 	TDenseMatrix lambda1; 
 	try {
