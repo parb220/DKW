@@ -12,7 +12,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-
+	// command line options
 	static struct option long_options[] =
         {
                 {"initial parameter file", required_argument, 0, 'p'},
@@ -50,7 +50,8 @@ int main(int argc, char **argv)
                                 break;
                 }
         }
-
+	
+	// data 
 	vector<string> data_file(13); 
 	data_file[0] = string("../data/FMAyield.txt"); 
 	data_file[1] = string("../data/FMAtips.txt"); 
@@ -79,9 +80,12 @@ int main(int argc, char **argv)
 		cerr << "Error in loading data series " << endl; 
 		exit(-1); 
 	}
-
+	
+	// model
 	int Nfac = 3; 
 	CAR_DKWlv_o model(Nfac, &data); 
+
+	// Set as fixed parameters
 	TDenseMatrix _kappa = DiagonalMatrix(MINUS_INFINITY, Nfac, Nfac); 
 	model.SetAsFixed(_kappa, string("KAPPA")); 
 	

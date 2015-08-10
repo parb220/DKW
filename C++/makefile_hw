@@ -18,10 +18,17 @@ LIBS := $(LIBS) $(GSL_LIBS) $(LAPACK_LIBS) $(NPSOL_LIBS)
 DW_UTILITIES_BASE = $(HOME)/DW_TZ_GIT/utilities_dw
 DW_MATRIX_DIR = $(DW_UTILITIES_BASE)/matrix
 DW_STAT_DIR = $(DW_UTILITIES_BASE)/stat
+DW_MATH_DIR = $(DW_UTILITIES_BASE)/math
+DW_ARRAY_DIR = $(DW_UTILITIES_BASE)/arrays
+DW_ASCII_DIR = $(DW_UTILITIES_BASE)/ascii
+DW_ASCIICPLUS_DIR = $(DW_UTILITIES_BASE)/ascii_c++
+DW_SORT_DIR = $(DW_UTILITIES_BASE)/sort
+DW_ELLIPTICAL_DIR = $(DW_UTILITIES_BASE)/elliptical
+DW_ERROR_DIR = $(DW_UTILITIES_BASE)/error
 EXPOKIT_DIR = $(HOME)/library-download/expokit_download/expokit/fortran #matrix exponential
 
-VPATH := $(VPATH) $(EXPOKIT_DIR) $(DW_MATRIX_DIR) $(DW_STAT_DIR)
-OBJS := $(OBJS) expokit.o dw_dense_matrix.o dw_rand_gsl.o
+VPATH := $(VPATH) $(EXPOKIT_DIR) $(DW_MATRIX_DIR) $(DW_STAT_DIR) $(DW_MATH_DIR) $(DW_ARRAY_DIR) $(DW_ASCII_DIR) $(DW_ASCIICPLUS_DIR) $(DW_SORT_DIR) $(DW_ELLIPTICAL_DIR) $(DW_ERROR_DIR)
+OBJS := $(OBJS) expokit.o dw_dense_matrix.o dw_rand_gsl.o dw_math.o dw_matrix.o mdd_function.o dw_array.o dw_matrix_array.o dw_matrix_rand.o dw_ascii.o  dw_parse_cmd.o dw_ascii_cpp.o dw_matrix_sort.o dw_elliptical.o dw_error.o bmatrix.o
 INCLUDE_DIR := $(INCLUDE_DIR) -I$(DW_UTILITIES_BASE)/include 
 
 CC = gcc
@@ -34,22 +41,26 @@ LIBS := $(LIBS) -lmpi -lrt -lpthread -DAE_CPU=AE_INTEL -lgfortran
 
 #################################################################################
 # PROJECT PATHS
-DW_UTILITY = $(HOME)/utilities_dw
-DW_UTILITY_INCLUDE = $(DW_UTILITY)/include
-DW_UTILITY_MATRIX = $(DW_UTILITY)/matrix
+EQUI_ENERGY_DIR = $(HOME)/equal_energy_generic_interface/EquiEnergyCPP
+TASK_SCHEDULING_DIR = $(HOME)/equal_energy_generic_interface/TaskSchedulingCPP
+
 PROJECT_DIR = $(HOME)/MATLAB_FRBA_BIN
 SOURCE_DIR = $(PROJECT_DIR)/C++
 EXE_DIR = $(PROJECT_DIR)/work
 BUILD_DIR = $(PROJECT_DIR)/work/build
 
-OBJS := $(OBJS) matrix_operation.o CDate.o CDatedData.o CAR.o  CData_FRBA.o CAR_DKW.o master_deploy.o slave_computing.o CAR_DKWl_o.o CAR_DKWlv_o.o
+EQUI_ENERGY_OBJS = CPutGetBin.o CSampleIDWeight.o CStorageHead.o CEESParameter.o CMetropolis.o CEquiEnergyModel.o CEquiEnergyModel_Initialize.o CEquiEnergyModel_HillClimb.o Glob.o CEquiEnergyModel_CAR.o
 
-INCLUDE_DIR := $(INCLUDE_DIR) -I$(DW_UTILITY_INCLUDE) -I$(SOURCE_DIR) 
-VPATH := $(VPATH) $(BUILD_DIR) $(DW_UTILITY_MATRIX) $(SOURCE_DIR) 
+SIMULATION_OBJS = DispatchSimulation.o DispatchTuneSimulation.o ExecutingSimulationTask.o ExecutingTuningTask.o GetCommunicationParameter.o master_deploying.o slave_computing.o DispatchHillClimbTask.o EstimateLogMDD.o HighestPlus1Stage.o master_mode_finding_deploying.o slave_mode_finding_computing.o
+
+OBJS := $(OBJS) matrix_operation.o CDate.o CDatedData.o CAR.o CData_FRBA.o CAR_DKW.o CAR_DKWl_o.o CAR_DKWlv_o.o WriteBlockScheme.o
+
+INCLUDE_DIR := $(INCLUDE_DIR) -I$(EQUI_ENERGY_DIR) -I$(TASK_SCHEDULING_DIR) -I$(SOURCE_DIR) 
+VPATH := $(VPATH) $(BUILD_DIR) $(EQUI_ENERGY_DIR) $(TASK_SCHEDULING_DIR) $(SOURCE_DIR) 
 
 # TEST_ALL #####################################################################
-ALL_OBJS = $(OBJS) DKW_parallel.o #lv_o.o #_parallel.o #test_DKW.o #test_DKWl_o.o #DKW_parallel.o
-ALL_EFILE = $(EXE_DIR)/DKW_parallel #test_DKW  #test_DKWl_o #DKW_parallel
+ALL_OBJS = $(OBJS) $(EQUI_ENERGY_OBJS) $(SIMULATION_OBJS) DKW_optimization.o #lv_o.o #_parallel.o #test_DKW.o #test_DKWl_o.o #DKW_parallel.o
+ALL_EFILE = $(EXE_DIR)/DKW_optimization #test_DKW  #test_DKWl_o #DKW_parallel
 
 #################################################################################
 all : $(ALL_EFILE)
