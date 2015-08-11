@@ -28,8 +28,6 @@
 
 using namespace std; 
 
-bool WriteBlockScheme(const string &filename, const vector<TIndex> &blocks);
-
 int main(int argc, char **argv)
 {
 	// Parallelization
@@ -240,12 +238,6 @@ int main(int argc, char **argv)
                                 MPI_Send(sMessage, N_MESSAGE, MPI_DOUBLE, i, END_TAG, MPI_COMM_WORLD);
                         delete [] sMessage;
                         exit(1);
-                }
-                string block_scheme_file_name = simulation_model.parameter->storage_dir + simulation_model.parameter->run_id + "/" + simulation_model.parameter->run_id + BLOCK_SCHEME;
-                if (!WriteBlockScheme(block_scheme_file_name, blocks))
-                {
-                        cerr << "Error in writing the block scheme into " << block_scheme_file_name << endl;
-                        abort();
                 }
 		master_deploying(nNode, nInitial, simulation_model, mode, 1);
 	}
