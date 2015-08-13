@@ -52,7 +52,7 @@ public:
 	// construction & destruction
 	CAR(int _Nfac=0, CData_FRBA* _dataP=NULL); 
 	CAR(const CAR &right);  
-	~CAR(){}
+	virtual ~CAR(){}
 
 	friend class CAR_MinusLogLikelihood_NPSOL; 
 }; 

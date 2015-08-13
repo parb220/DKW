@@ -59,7 +59,7 @@ public:
 	
 	CAR_DKW(int _Nfac=0, CData_FRBA* _dataP=NULL); 
 	CAR_DKW(const CAR_DKW &right); 
-	~CAR_DKW() {}; 
+	virtual ~CAR_DKW() {}; 
 };
 
 #endif

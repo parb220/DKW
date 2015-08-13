@@ -48,10 +48,7 @@ protected:
 	virtual bool UpdateABOmega(const TDenseVector &xtm1_tm1);
 
 public: 
-	virtual bool SetAsFixed(const TDenseMatrix &M, const std::string &which_one)
-        {
-                return CAR_DKW::SetAsFixed(M,which_one);
-        }
+	using CAR_DKW:: SetAsFixed; 
         virtual bool SetAsFixed(const TDenseVector &v, const std::string &which_one);
         virtual bool SetAsFixed(double v, const std::string &which_one);
 	
@@ -60,6 +57,6 @@ public:
 
 	CAR_DKWlv_o(int _Nfac=0, CData_FRBA *_dataP=NULL); 
 	CAR_DKWlv_o(const CAR_DKWlv_o &right);
-	~CAR_DKWlv_o() {}; 
+	virtual ~CAR_DKWlv_o() {}; 
 };
 #endif

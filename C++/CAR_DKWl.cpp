@@ -130,14 +130,6 @@ bool CAR_DKWl::SetParameters_InitializeABOmega()
         if (!YieldFacLoad(ay_R, by_R, KAPPA,SIGMA,theta,rho0_R,rho1_R,lambda0_R,SIGMAlambda1_R,dataP->TIPSgrid))
                 return false;
 
-	// ay_TR, by_TR
-	if (!YieldFacLoad(ay_TR, by_TR, KAPPA,SIGMA,theta,rho0_R,rho1_R+rho1_L,lambda0_R,SIGMAlambda1_R,dataP->TIPSgrid))
-                return false;
-
-	// ay_L, by_L
-	if (!YieldFacLoad(ay_L, by_L, TDenseMatrix(1,1,KAPPA_L),TDenseMatrix(1,1,SIGMA_L),TDenseVector(1,theta_L),0,TDenseVector(1,rhoL_L),TDenseVector(1,lambda0_L), TDenseMatrix(1,1,SIGMAlambda1_L), dataP->TIPSgrid))
-                return false;
-
 	// af, bf
 	TDenseVector ForecastHor(2);
         ForecastHor[0] = 0.5; ForecastHor[1] = 1.0;
@@ -226,7 +218,16 @@ bool CAR_DKWl::SetParameters_InitializeABOmega()
         x0_0.Insert(1,theta);
         x0_0(theta.Dimension()+1) = theta_L;
 
-        P0_0 = OMEGA_ss;
+        P0_0 = OMEGA_ss; 
+
+	// ay_TR, by_TR
+	if (!YieldFacLoad(ay_TR, by_TR, KAPPA,SIGMA,theta,rho0_R,rho1_R+rho1_L,lambda0_R,SIGMAlambda1_R,dataP->TIPSgrid))
+                return false;
+
+	// ay_L, by_L
+	if (!YieldFacLoad(ay_L, by_L, TDenseMatrix(1,1,KAPPA_L),TDenseMatrix(1,1,SIGMA_L),TDenseVector(1,theta_L),0,TDenseVector(1,rhoL_L),TDenseVector(1,lambda0_L), TDenseMatrix(1,1,SIGMAlambda1_L), dataP->TIPSgrid))
+                return false;
+
 
         return true;
 }

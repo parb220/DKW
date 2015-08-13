@@ -5,39 +5,20 @@
 #include "CData_FRBA.hpp"
 
 CAR_DKWl_o::CAR_DKWl_o(int _Nfac, CData_FRBA *_dataP) : 
-CAR_DKW(_Nfac, _dataP), 
+CAR_DKWl(_Nfac, _dataP), 
 delta_options(),
-KAPPA_L(MINUS_INFINITY), 
-SIGMA_L(MINUS_INFINITY),
-theta_L(MINUS_INFINITY),
-rho1_L(_Nfac, MINUS_INFINITY), 
-rhoL_L(MINUS_INFINITY),
-lambda0_L(MINUS_INFINITY),
-SIGMAlambda1_L(MINUS_INFINITY), 
-ay_TR(), by_TR(), ay_L(), by_L(), aI_Q(), bI_Q()
+aI_Q(), bI_Q()
 {
 	if(dataP)
 		delta_options = TDenseVector(dataP->MATgrid_options.Dimension(), MINUS_INFINITY); 
 }
 
 CAR_DKWl_o::CAR_DKWl_o(const CAR_DKWl_o &right) :
-CAR_DKW(right),
+CAR_DKWl(right),
 delta_options(right.delta_options),
-KAPPA_L(right.KAPPA_L), 
-SIGMA_L(right.SIGMA_L),
-theta_L(right.theta_L),
-rho1_L(right.rho1_L),
-rhoL_L(right.rhoL_L),
-lambda0_L(right.lambda0_L),
-SIGMAlambda1_L(right.SIGMAlambda1_L), 
-ay_TR(right.ay_TR), by_TR(right.by_TR), ay_L(right.ay_L), by_L(right.by_L), aI_Q(right.aI_Q), bI_Q(right.bI_Q)
+aI_Q(right.aI_Q), bI_Q(right.bI_Q)
 {
 	delta_options.CopyContent(right.delta_options); 
-	rho1_L.CopyContent(right.rho1_L); 
-	ay_TR.CopyContent(right.ay_TR);
-	by_TR.CopyContent(right.by_TR);
-	ay_L.CopyContent(right.ay_L);
-	by_L.CopyContent(right.by_L);
 	aI_Q.CopyContent(right.aI_Q);
 	bI_Q.CopyContent(right.bI_Q);
 }
@@ -47,8 +28,8 @@ TDenseVector CAR_DKWl_o::GetParameters()
 	if (!if_internal_parameter_set)
 	{
 		TDenseVector complete_parameter(NumberParameters(),0.0); 
-		complete_parameter.Insert(0, CAR_DKW::GetParameters()); 
-		int counter = CAR_DKW::NumberParameters(); 
+		complete_parameter.Insert(0, CAR_DKWl::GetParameters()); 
+		int counter = CAR_DKWl::NumberParameters(); 
 		if (delta_options.Dimension() != dataP->MATgrid_options.Dimension())
 		{
 			delta_options = TDenseVector(dataP->MATgrid_options.Dimension(), MINUS_INFINITY); 
@@ -58,33 +39,6 @@ TDenseVector CAR_DKWl_o::GetParameters()
 			complete_parameter.Insert(counter, delta_options); 
 		counter += delta_options.Dimension(); 
 
-		complete_parameter(counter) = KAPPA_L; 
-		counter ++; 
-
-		complete_parameter(counter) = SIGMA_L; 
-		counter ++; 
-
-		complete_parameter(counter) = theta_L; 
-		counter ++; 
-
-		if (rho1_L.Dimension() != Nfac)
-		{
-			rho1_L = TDenseVector(Nfac, MINUS_INFINITY); 
-			complete_parameter.Insert(counter, Ones(Nfac)*MINUS_INFINITY); 
-		}
-		else 
-			complete_parameter.Insert(counter, rho1_L); 
-		counter += Nfac; 
-
-		complete_parameter(counter) = rhoL_L; 
-		counter ++; 
-
-		complete_parameter(counter) = lambda0_L; 
-		counter ++; 
-
-		complete_parameter(counter) = SIGMAlambda1_L; 
-		counter ++; 
-	
 		internal_parameter.CopyContent(complete_parameter); 
 		if_internal_parameter_set = true; 
 	}
@@ -96,42 +50,20 @@ bool CAR_DKWl_o :: SetParameters_FromVectorToMatrix(const TDenseVector &_paramet
 	if (_parameter.Dimension() < CAR_DKWl_o::NumberParameters())
 		return false; 
 
-	if (!CAR_DKW::SetParameters_FromVectorToMatrix(_parameter.SubVector(0,CAR_DKW::NumberParameters()-1)))
+	if (!CAR_DKWl::SetParameters_FromVectorToMatrix(_parameter.SubVector(0,CAR_DKWl::NumberParameters()-1)))
 		return false; 
-	int counter = CAR_DKW::NumberParameters(); 
+	int counter = CAR_DKWl::NumberParameters(); 
 	if (delta_options.Dimension() != dataP->MATgrid_options.Dimension())
 		delta_options.Resize(dataP->MATgrid_options.Dimension()); 
 	delta_options.Insert(0, _parameter, counter, counter+delta_options.Dimension()-1); 
 	counter += delta_options.Dimension(); 
 
-	KAPPA_L = _parameter(counter); 
-	counter ++; 
-
-	SIGMA_L = _parameter(counter); 
-	counter ++; 
-
-	theta_L = _parameter(counter); 
-	counter ++; 
-
-	if (rho1_L.Dimension() != Nfac)
-		rho1_L.Resize(Nfac); 
-	rho1_L.Insert(0, _parameter, counter, counter+rho1_L.Dimension()-1); 
-	counter += rho1_L.Dimension(); 
-	
-	rhoL_L = _parameter(counter); 
-	counter ++; 
-
-	lambda0_L = _parameter(counter); 
-	counter ++; 
-
-	SIGMAlambda1_L = _parameter(counter); 
-	counter ++; 
 	return true; 
 }
 
 bool CAR_DKWl_o:: SetParameters_InitializeABOmega()
 {
-	// ay, by
+	/* // ay, by
 	TDenseMatrix lambda1; 
 	try {
 		lambda1 = InverseMultiply(SIGMA, SIGMAlambda1);
@@ -238,6 +170,28 @@ bool CAR_DKWl_o:: SetParameters_InitializeABOmega()
 	OMEGA.Insert(1,1,OMEGA_x); 
 	OMEGA(Nfac+1,Nfac+1) = OMEGA_L; 
 
+	// x0_0, P0_0
+	int i=0;
+        while (i<dataP->p_vec.rows && dataP->p_vec(i,0) == MINUS_INFINITY)
+                i++;
+        x0_0.Zeros(theta.Dimension()+2);
+        x0_0(0) = dataP->p_vec(i,0);
+        x0_0.Insert(1,theta);
+	x0_0(theta.Dimension()+1) = theta_L;
+
+        P0_0 = OMEGA_ss; */
+
+	if (!CAR_DKWl::SetParameters_InitializeABOmega()) 
+		return false;
+
+	TDenseMatrix lambda1; 
+        try {
+                lambda1 = InverseMultiply(SIGMA, SIGMAlambda1);
+        }
+        catch(...){
+                return false; 
+        }
+
 	// aI_Q, bI_Q
 	aI_Q.Zeros(dataP->MATgrid_options.Dimension()); 
 	bI_Q.Zeros(dataP->MATgrid_options.Dimension(), Nfac); 
@@ -270,24 +224,13 @@ bool CAR_DKWl_o:: SetParameters_InitializeABOmega()
 		bI_Q.InsertRowMatrix(i, 0, temp_bI_Q); 
 	}
 
-	// x0_0, P0_0
-	int i=0;
-        while (i<dataP->p_vec.rows && dataP->p_vec(i,0) == MINUS_INFINITY)
-                i++;
-        x0_0.Zeros(theta.Dimension()+2);
-        x0_0(0) = dataP->p_vec(i,0);
-        x0_0.Insert(1,theta);
-	x0_0(theta.Dimension()+1) = theta_L;
-
-        P0_0 = OMEGA_ss;
-
 	return true; 
 }
 
-
 TDenseVector CAR_DKWl_o::ObservationEquation(int j, const TDenseVector &xt_tm1)
 {
-	TDenseVector model_IE_options_vector; 
+	TDenseVector model_IE_options_vector = CAR_DKWl::ObservationEquation(j, xt_tm1); 
+	/*	
 	if (dataP->p_vec(j,0) == MINUS_INFINITY)
 	{
 		b.Zeros(dataP->MATgrid.Dimension(), by.cols+2); 
@@ -404,7 +347,7 @@ TDenseVector CAR_DKWl_o::ObservationEquation(int j, const TDenseVector &xt_tm1)
 		for (int i=0; i<delta_tips.Dimension(); i++)
 			R(i+tmp_R.rows, i+tmp_R.cols) = delta_tips(i)*delta_tips(i); 
 	}
-
+	TDenseVector model_IE_options_vector;*/ 
 	if (dataP->IE_options(j,0) != MINUS_INFINITY)
 	{
 		TDenseMatrix tmp_b(b); 
@@ -450,74 +393,11 @@ bool CAR_DKWl_o::SetAsFixed(const TDenseVector &v, const std::string &which_one)
         	if_variable_index_set = false;
 		return true; 
 	}
-	else if (iequals(which_one, std::string("rho1_L")) )
-	{
-		offset = CAR_DKW::NumberParameters() + dataP->MATgrid_options.Dimension() + 1 + 1 + 1; 
-		local_fixed_index = FixedVariableParameter(rho1_L, v, offset); 
-		FixedIndex.UniqMerge(local_fixed_index);
-        	if_variable_index_set = false;
-		return true; 
-	}
 	else 
-		return CAR_DKW::SetAsFixed(v, which_one); 
-}
-
-bool CAR_DKWl_o::SetAsFixed(double v, const std::string &which_one)
-{
-	TIndex local_fixed_index;
-        if (iequals(which_one, std::string("KAPPA_L"))  )
-        {
-                KAPPA_L = v;
-                local_fixed_index += CAR_DKW::NumberParameters() + dataP->MATgrid_options.Dimension(); 
-		FixedIndex.UniqMerge(local_fixed_index);
-        	if_variable_index_set = false;
-		return true; 
-        }
-	else if (iequals(which_one, std::string("SIGMA_L"))  )
-	{
-		SIGMA_L = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() + dataP->MATgrid_options.Dimension() + 1; 
-		FixedIndex.UniqMerge(local_fixed_index);
-        	if_variable_index_set = false;
-		return true; 
-	}
-	else if (iequals(which_one, std::string("theta_L")) )
-	{
-		theta_L = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() + dataP->MATgrid_options.Dimension() + 1 + 1; 
-		FixedIndex.UniqMerge(local_fixed_index);
-        	if_variable_index_set = false;
-		return true; 
-	}
-	else if(iequals(which_one, std::string("rhoL_L")) )
-	{
-		rhoL_L = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() + dataP->MATgrid_options.Dimension() + 1 + 1 + 1 + Nfac; 
-		FixedIndex.UniqMerge(local_fixed_index);
-        	if_variable_index_set = false;
-		return true; 
-	}
-	else if(iequals(which_one, std::string("lambda0_L")) )
-	{
-		lambda0_L = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() + dataP->MATgrid_options.Dimension() + 1 + 1 + 1 + Nfac + 1; 
-		FixedIndex.UniqMerge(local_fixed_index);
-        	if_variable_index_set = false;
-		return true; 
-	}
-	else if(iequals(which_one, std::string("SIGMAlambda1_L")) )
-	{
-		SIGMAlambda1_L = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() + dataP->MATgrid_options.Dimension() + 1 + 1 + 1 + Nfac + 1 + 1; 
-		FixedIndex.UniqMerge(local_fixed_index);
-        	if_variable_index_set = false;
-		return true; 
-	}
-	else 
-		return CAR_DKW::SetAsFixed(v, which_one);
+		return CAR_DKWl::SetAsFixed(v, which_one); 
 }
 
 int CAR_DKWl_o::NumberParameters() const
 {
-	return CAR_DKW::NumberParameters() + dataP->MATgrid_options.Dimension() + Nfac + 6; 
+	return CAR_DKWl::NumberParameters() + dataP->MATgrid_options.Dimension();  
 }
