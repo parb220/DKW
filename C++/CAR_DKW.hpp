@@ -40,6 +40,9 @@ protected:
 	TDenseVector internal_parameter;
 	bool if_internal_parameter_set;  	
 
+	TDenseMatrix KAPPA_inverse; 
+	TDenseMatrix SIGMA_inverse; 
+
 	virtual bool SetParameters_FromVectorToMatrix(const TDenseVector &); 
 	virtual bool SetParameters_InitializeABOmega(); 
 	virtual bool UpdateABOmega(const TDenseVector &xtm1_tm1) { return true; }; 

@@ -1,10 +1,10 @@
 #ifndef _HEADER_CAR_DKWLV_O_
 #define _HEADER_CAR_DKWLV_O_
 
-#include "CAR_DKW.hpp"
+#include "CAR_DKWl_o.hpp"
 #include "dw_dense_matrix.hpp"
 
-class CAR_DKWlv_o : public CAR_DKW // minus sigqx
+class CAR_DKWlv_o : public CAR_DKWl_o // minus sigqx
 {
 private: 
  	bool position_removed_from_DKW_set; 	
@@ -21,25 +21,10 @@ protected:
 	double gamvx;
 	double rho;
 	
-	TDenseVector delta_options; 
-	double KAPPA_L;
-	double SIGMA_L;
-	double theta_L;
-	TDenseVector rho1_L;
-	double rhoL_L;
-	double lambda0_L;
-	double SIGMAlambda1_L;
-
 	TDenseVector cy; 
 	TDenseVector cy_R; 
-	TDenseVector ay_TR; 
-	TDenseMatrix by_TR; 
 	TDenseVector cy_TR; 
-	TDenseVector ay_L; 
-	TDenseMatrix by_L; 
 	TDenseVector cf; 
-	TDenseVector aI_Q; 
-	TDenseMatrix bI_Q; 
 	TDenseVector cI_Q; 
 	
 	virtual TDenseVector ObservationEquation(int j, const TDenseVector &xt_tm1);
@@ -48,8 +33,8 @@ protected:
 	virtual bool UpdateABOmega(const TDenseVector &xtm1_tm1);
 
 public: 
-	using CAR_DKW:: SetAsFixed; 
-        virtual bool SetAsFixed(const TDenseVector &v, const std::string &which_one);
+	using CAR_DKWl_o:: SetAsFixed; 
+	virtual bool SetAsFixed(const TDenseVector &v, const std::string &which_one); 
         virtual bool SetAsFixed(double v, const std::string &which_one);
 	
 	virtual int NumberParameters() const;

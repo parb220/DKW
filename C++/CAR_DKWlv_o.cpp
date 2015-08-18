@@ -4,50 +4,33 @@
 #include "prcsn.h"
 
 CAR_DKWlv_o::CAR_DKWlv_o(int _Nfac, CData_FRBA *_dataP) : 
-CAR_DKW(_Nfac, _dataP),
+CAR_DKWl_o(_Nfac, _dataP),
 position_removed_from_DKW_set(false), 
 position_removed_from_DKW(),   
 rhov(MINUS_INFINITY), rhov_pi(MINUS_INFINITY), KAPPAv(MINUS_INFINITY), SIGMAv(MINUS_INFINITY), thetav(MINUS_INFINITY), 
 gamv(MINUS_INFINITY), gamvx(MINUS_INFINITY), rho(MINUS_INFINITY), 
-delta_options(), 
-KAPPA_L(MINUS_INFINITY), SIGMA_L(MINUS_INFINITY), theta_L(MINUS_INFINITY), 
-rho1_L(_Nfac, MINUS_INFINITY), 
-rhoL_L(MINUS_INFINITY), lambda0_L(MINUS_INFINITY), SIGMAlambda1_L(MINUS_INFINITY), 
-cy(), cy_R(), ay_TR(), by_TR(), cy_TR(), ay_L(), by_L(), cf(), aI_Q(), bI_Q(), cI_Q()
+cy(), cy_R(),  cy_TR(), cf(), cI_Q()
 {
 	if (dataP)
 	{
-		delta_options = TDenseVector(dataP->MATgrid_options.Dimension(), MINUS_INFINITY); 
 		position_removed_from_DKW = TIndex(Nfac*Nfac + Nfac*Nfac + Nfac + 1 + Nfac + Nfac + Nfac*Nfac + dataP->y_vec.cols + dataP->bcf_vec.cols + 1 + 1 + Nfac + Nfac); 
 		position_removed_from_DKW_set = true; 
 	}
 }
 
 CAR_DKWlv_o::CAR_DKWlv_o(const CAR_DKWlv_o &right) : 
-CAR_DKW(right), 
+CAR_DKWl_o(right), 
 position_removed_from_DKW_set(right.position_removed_from_DKW_set),
 position_removed_from_DKW(right.position_removed_from_DKW), 
 rhov(right.rhov), rhov_pi(right.rhov_pi),  KAPPAv(right.KAPPAv), SIGMAv(right.SIGMAv), thetav(right.thetav), 
 gamv(right.gamv), gamvx(right.gamvx), rho(right.rho), 
-delta_options(right.delta_options), 
-KAPPA_L(right.KAPPA_L), SIGMA_L(right.SIGMA_L), theta_L(right.theta_L), 
-rho1_L(right.rho1_L), 
-rhoL_L(right.rhoL_L), lambda0_L(right.lambda0_L), SIGMAlambda1_L(right.SIGMAlambda1_L), 
-cy(right.cy), cy_R(right.cy_R), ay_TR(right.ay_TR), by_TR(right.by_TR), cy_TR(right.cy_TR),
-ay_L(right.ay_L), by_L(right.by_L), cf(right.cf), aI_Q(right.aI_Q), bI_Q(right.bI_Q), cI_Q(right.cI_Q) 
+cy(right.cy), cy_R(right.cy_R), cy_TR(right.cy_TR),
+cf(right.cf), cI_Q(right.cI_Q) 
 {
-	delta_options.CopyContent(right.delta_options); 
-	rho1_L.CopyContent(right.rho1_L); 
 	cy.CopyContent(right.cy);
 	cy_R.CopyContent(right.cy_R);
-	ay_TR.CopyContent(right.ay_TR);
-	by_TR.CopyContent(right.by_TR);
 	cy_TR.CopyContent(right.cy_TR);
-	ay_L.CopyContent(right.ay_L);
-	by_L.CopyContent(right.by_L);
 	cf.CopyContent(right.cf);
-	aI_Q.CopyContent(right.aI_Q);
-	bI_Q.CopyContent(right.bI_Q);
 	cI_Q.CopyContent(right.cI_Q);
 }
 
@@ -56,14 +39,14 @@ bool CAR_DKWlv_o::SetParameters_FromVectorToMatrix(const TDenseVector &_paramete
 	if (!position_removed_from_DKW_set && !SetParametersNotConsidered())
 		return false; 
 	// for parameters of DKW
-	int DKW_n = CAR_DKW::NumberParameters(); 
+	int DKW_n = CAR_DKWl_o::NumberParameters(); 
 	TDenseVector DKW_x(DKW_n); 
 	TIndex DKW_index(0, DKW_n-1); 
 	DKW_index.UniqSubtract(position_removed_from_DKW); 
 	DKW_x.Insert(DKW_index, _parameter, 0, DKW_n-1-position_removed_from_DKW.size); 
 	for (int i=0; i<position_removed_from_DKW.size; i++)
 		DKW_x(position_removed_from_DKW[i]) = MINUS_INFINITY; 
-	if (!CAR_DKW::SetParameters_FromVectorToMatrix(DKW_x)) 
+	if (!CAR_DKWl_o::SetParameters_FromVectorToMatrix(DKW_x)) 
 		return false; 
 	
 	// DKWlv_o specific parameters
@@ -92,45 +75,19 @@ bool CAR_DKWlv_o::SetParameters_FromVectorToMatrix(const TDenseVector &_paramete
 	rho = _parameter(counter); 
 	counter ++; 
 
-	if (delta_options.Dimension() != dataP->MATgrid_options.Dimension())
-		delta_options.Resize(dataP->MATgrid_options.Dimension()); 
-	delta_options.Insert(0, _parameter, counter, counter+delta_options.Dimension()-1); 
-	counter += delta_options.Dimension(); 
-
-	KAPPA_L = _parameter(counter); 
-	counter ++; 
-
-	SIGMA_L = _parameter(counter); 
-	counter ++; 
-
-	theta_L = _parameter(counter); 
-	counter ++; 
-
-	if (rho1_L.Dimension() != Nfac)
-		rho1_L.Resize(Nfac); 
-	rho1_L.Insert(0, _parameter, counter, counter+rho1_L.Dimension()-1); 
-	counter += rho1_L.Dimension(); 
-
-	rhoL_L = _parameter(counter); 
-	counter ++; 
-
-	lambda0_L = _parameter(counter); 
-	counter ++; 
-
-	SIGMAlambda1_L = _parameter(counter); 
-	counter ++; 
 	return true; 
 }
 
 bool CAR_DKWlv_o::SetParameters_InitializeABOmega()
 {
-	TDenseMatrix lambda1;
-        try {
-                lambda1 = InverseMultiply(SIGMA, SIGMAlambda1);
-        }
-        catch(...){
-                return false;
-        }
+	try {
+		KAPPA_inverse = Inverse(KAPPA); 
+		SIGMA_inverse = Inverse(SIGMA); 
+	}
+	catch (...) {
+		return false; 
+	}
+	TDenseMatrix lambda1 = Multiply(SIGMA_inverse, SIGMAlambda1);
 
 	TDenseMatrix SIGMA_SIGMA =  MultiplyTranspose(SIGMA,SIGMA); 
 	// ay, by, cy
@@ -293,14 +250,7 @@ bool CAR_DKWlv_o::SetParameters_InitializeABOmega()
 	double OMEGA_L = 1.0/(2.0*KAPPA_L)*(1.0-exp(-2.0*KAPPA_L*dataP->Dt))*SIGMA_L*SIGMA_L;
 
 	double OMEGA_q_ss = 1e6;      
-	TDenseMatrix KAPPA_inv; 
-	try {
-		KAPPA_inv = Inverse(KAPPA); 
-	}	
-	catch(...) {
-		return false; 
-	}
-	TDenseVector OMEGA_xq_ss = KAPPA_inv * SIGMA*sigq; 
+	TDenseVector OMEGA_xq_ss = KAPPA_inverse * SIGMA*sigq; 
 	double OMEGA_vq_ss = rho*SIGMAv*thetav/KAPPAv;
 
 	TDenseMatrix OMEGA_ss(Nfac+3,Nfac+3,0.0); 
@@ -326,7 +276,7 @@ bool CAR_DKWlv_o::SetParameters_InitializeABOmega()
         P0_0 = OMEGA_ss;
 
 	// Fixed part of OMEGA
-	TDenseVector OMEGA_xq = KAPPA_inv * (Identity(Nfac)-Bx) * SIGMA * sigq; 
+	TDenseVector OMEGA_xq = KAPPA_inverse * (Identity(Nfac)-Bx) * SIGMA * sigq; 
 	OMEGA.Zeros(Nfac+3,Nfac+3); 
 	OMEGA.InsertRowMatrix(0,1,OMEGA_xq); 
 	OMEGA.InsertColumnMatrix(1,0,OMEGA_xq); 
@@ -413,7 +363,7 @@ TDenseVector CAR_DKWlv_o::ObservationEquation(int j, const TDenseVector &xt_tm1)
 	if (dataP->bcfLT_vec(j,0) != MINUS_INFINITY)
 	{
 		double hor = dataP->horLT(j,0);
-                TDenseMatrix W = 0.2* InverseMultiply(KAPPA, (MatrixExp(-hor*KAPPA)-MatrixExp(-(hor+5.0)*KAPPA)) );
+                TDenseMatrix W = 0.2* Multiply(KAPPA_inverse, (MatrixExp(-hor*KAPPA)-MatrixExp(-(hor+5.0)*KAPPA)) );
 		double Wv = 0.2*(exp(-KAPPAv*hor)-exp(-KAPPAv*(hor+5.0)))/KAPPAv; 
 		double afLT = ay(0) + InnerProduct(by.RowVector(0),theta, Identity(Nfac)-W) + cy(0)*(1-Wv)*thetav; 
 		TDenseVector bfLT = by.RowVector(0)*W; 
@@ -523,11 +473,9 @@ bool CAR_DKWlv_o::SetParametersNotConsidered()
 
 int CAR_DKWlv_o::NumberParameters() const
 {
-	int N = CAR_DKW::NumberParameters(); 
+	int N = CAR_DKWl_o::NumberParameters(); 
 	N -= position_removed_from_DKW.size; // minus parameters of DKW that are not used 
-	N += 14; // rhov, rhov_pi, KAPPAv, SIGMAv, thetav, gamv, gamvx, rho, KAPPA_L, SIGMA_L, theta_L, rhoL_L, lambda0_L, SIGMALAMBDA1_L 
-	N += dataP->MATgrid_options.Dimension(); // delta_options; 
-	N += Nfac; // rho1_L
+	N += 8; // rhov, rhov_pi, KAPPAv, SIGMAv, thetav, gamv, gamvx, rho, 
 	return N; 
 }
 
@@ -536,13 +484,13 @@ TDenseVector CAR_DKWlv_o::GetParameters()
 	if (!if_internal_parameter_set)
 	{
 		TDenseVector complete_parameter(NumberParameters() + position_removed_from_DKW.size,0.0); 
-		complete_parameter.Insert(0, CAR_DKW::GetParameters()); 
+		complete_parameter.Insert(0, CAR_DKWl_o::GetParameters()); 
 
 		TIndex index_cleaned(0,NumberParameters()+position_removed_from_DKW.size-1); 
 		index_cleaned.UniqSubtract(position_removed_from_DKW); 
 		TDenseVector parameter_cleaned = complete_parameter.SubVector(index_cleaned); 
 
-		int counter = CAR_DKW::NumberParameters() - position_removed_from_DKW.size; 
+		int counter = CAR_DKWl_o::NumberParameters() - position_removed_from_DKW.size; 
 		parameter_cleaned(counter) = rhov; 
 		counter ++; 
 
@@ -567,34 +515,6 @@ TDenseVector CAR_DKWlv_o::GetParameters()
 		parameter_cleaned(counter) = rho; 
 		counter ++; 
 
-		if (delta_options.Dimension() != dataP->MATgrid_options.Dimension())
-			delta_options = TDenseVector(dataP->MATgrid_options.Dimension(), MINUS_INFINITY); 
-		parameter_cleaned.Insert(counter, delta_options); 
-		counter += delta_options.Dimension(); 
-
-		parameter_cleaned(counter) = KAPPA_L; 
-		counter ++; 
-
-		parameter_cleaned(counter) = SIGMA_L; 
-		counter ++; 
-			
-		parameter_cleaned(counter) = theta_L; 
-		counter ++; 
-
-		if (rho1_L.Dimension() != Nfac)
-			rho1_L = TDenseVector(Nfac, MINUS_INFINITY); 
-		parameter_cleaned.Insert(counter, rho1_L); 
-		counter += rho1_L.Dimension(); 
-
-		parameter_cleaned(counter) = rhoL_L; 
-		counter ++; 
-
-		parameter_cleaned(counter) = lambda0_L;
-		counter ++; 
-		
-		parameter_cleaned(counter) = SIGMAlambda1_L; 
-		counter ++; 
-		
 		internal_parameter.CopyContent(parameter_cleaned); 
 		if_internal_parameter_set = true;
 	}
@@ -604,134 +524,71 @@ TDenseVector CAR_DKWlv_o::GetParameters()
 
 bool CAR_DKWlv_o::SetAsFixed(const TDenseVector &v, const std::string &which_one)
 {
-	TIndex local_fixed_index;
+       	TIndex local_fixed_index;
         int offset;
-	if (iequals(which_one, std::string("delta_tips")) )	// because delta_tips is after sigqx, which is depleted here
-	{
-		offset = (CAR_DKW::NumberParameters() - position_removed_from_DKW.size) - dataP->ytips_vec.cols;
+       	if (iequals(which_one, std::string("delta_tips")) )     // because delta_tips is after sigqx, which is depleted here
+       	{
+               	offset = (CAR_DKW::NumberParameters() - position_removed_from_DKW.size) - dataP->ytips_vec.cols;
                 local_fixed_index = FixedVariableParameter(delta_options, v, offset);
                 FixedIndex.UniqMerge(local_fixed_index);
                 if_variable_index_set = false;
                 return true;
 
-	}
-        else if (iequals(which_one, std::string("delta_options")) )
-        {
-                offset = CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 8;
-                local_fixed_index = FixedVariableParameter(delta_options, v, offset);
-                FixedIndex.UniqMerge(local_fixed_index);
-                if_variable_index_set = false;
-                return true;
-        }
+       	}
         else if (iequals(which_one, std::string("rho1_L")) )
         {
-                offset = CAR_DKW::NumberParameters() - position_removed_from_DKW.size + dataP->MATgrid_options.Dimension() + 11; 
+                offset = CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 3; 
                 local_fixed_index = FixedVariableParameter(rho1_L, v, offset);
                 FixedIndex.UniqMerge(local_fixed_index);
                 if_variable_index_set = false;
                 return true;
         }
+        else if (iequals(which_one, std::string("delta_options")) )
+        {
+                offset = CAR_DKWl::NumberParameters() - position_removed_from_DKW.size;
+                local_fixed_index = FixedVariableParameter(delta_options, v, offset);
+                FixedIndex.UniqMerge(local_fixed_index);
+                if_variable_index_set = false;
+                return true;
+        }
         else
-		return CAR_DKW::SetAsFixed(v, which_one);
+               return CAR_DKW::SetAsFixed(v, which_one);
 }
 
 bool CAR_DKWlv_o::SetAsFixed(double v, const std::string &which_one)
 {
-	TIndex local_fixed_index; 
-	if (iequals(which_one, std::string("sigqx")) )
-		return false; 
-	else if (iequals(which_one, std::string("delta_p")) ) // because delta_p is after sigqx
-	{
-		delta_p = v; 
-		local_fixed_index += (CAR_DKW::NumberParameters() - position_removed_from_DKW.size) - dataP->ytips_vec.cols -1; 
-		FixedIndex.UniqMerge(local_fixed_index);
+        TIndex local_fixed_index; 
+        if (iequals(which_one, std::string("sigqx")) )
+                return false; 
+       	else if (iequals(which_one, std::string("delta_p")) ) // because delta_p is after sigqx
+       	{
+               	delta_p = v; 
+               	local_fixed_index += (CAR_DKW::NumberParameters() - position_removed_from_DKW.size) - dataP->ytips_vec.cols -1; 
+               	FixedIndex.UniqMerge(local_fixed_index);
                 if_variable_index_set = false;
-                return true;	
-	}
-	else if (iequals(which_one, std::string("rhov")) )
-	{
-		rhov = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size; 
-		FixedIndex.UniqMerge(local_fixed_index);
-                if_variable_index_set = false;
-                return true;
-	}
-	else if (iequals(which_one, std::string("rhov_pi")) )
-	{
-		rhov_pi = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 1; 
-		FixedIndex.UniqMerge(local_fixed_index);
-                if_variable_index_set = false;
-                return true;
-	}
-	else if (iequals(which_one, std::string("KAPPAv")) )
-	{
-		KAPPAv = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 2;
-                FixedIndex.UniqMerge(local_fixed_index);
-                if_variable_index_set = false;
-                return true;
-	}
-	else if (iequals(which_one, std::string("SIGMAv")) )
-	{
-		SIGMAv = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 3;
-                FixedIndex.UniqMerge(local_fixed_index);
-                if_variable_index_set = false;
-                return true;
-	}
-	else if (iequals(which_one, std::string("thetav")) )
-	{
-		thetav = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 4;
-                FixedIndex.UniqMerge(local_fixed_index);
-                if_variable_index_set = false;
-                return true;
-	} 
-	else if (iequals(which_one, std::string("gamv")) )
-	{
-		gamv = v; 
-                local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 5;
-                FixedIndex.UniqMerge(local_fixed_index);
-                if_variable_index_set = false;
-                return true;
-        }
-	else if (iequals(which_one, std::string("gamvx")) )
-	{
-		gamvx = v; 
-                local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 6;
-                FixedIndex.UniqMerge(local_fixed_index);
-                if_variable_index_set = false;
-                return true;
-        }
-	else if (iequals(which_one, std::string("rho")) )
-	{
-		rho = v; 
-                local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 7;
-                FixedIndex.UniqMerge(local_fixed_index);
-                if_variable_index_set = false;
-                return true;
-        }
+                return true;   
+       	}
+	// KAPPA_L, SIGMA_L, theta_L, rhoL_L, lambda0_L, SIGMALAMBDA1_L
 	else if (iequals(which_one, std::string("KAPPA_L")) )
 	{
 		KAPPA_L = v; 
-                local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 8 + dataP->MATgrid_options.Dimension();
-                FixedIndex.UniqMerge(local_fixed_index);
+		local_fixed_index += (CAR_DKW::NumberParameters() - position_removed_from_DKW.size); 
+		FixedIndex.UniqMerge(local_fixed_index);
                 if_variable_index_set = false;
                 return true;
-        }
+	}
 	else if (iequals(which_one, std::string("SIGMA_L")) )
 	{
 		SIGMA_L = v; 
-                local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 8 + dataP->MATgrid_options.Dimension() + 1;
-                FixedIndex.UniqMerge(local_fixed_index);
+		local_fixed_index += (CAR_DKW::NumberParameters() - position_removed_from_DKW.size) + 1; 
+		FixedIndex.UniqMerge(local_fixed_index);
                 if_variable_index_set = false;
                 return true;
-        }
-	else if (iequals(which_one, std::string("theta_L")) )
+	}
+	else if (iequals(which_one, std::string("theta_L")) ) 
 	{
 		theta_L = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 8 + dataP->MATgrid_options.Dimension() + 2;
+		local_fixed_index += (CAR_DKW::NumberParameters() - position_removed_from_DKW.size) + 2;
                 FixedIndex.UniqMerge(local_fixed_index);
                 if_variable_index_set = false;
                 return true;
@@ -739,27 +596,91 @@ bool CAR_DKWlv_o::SetAsFixed(double v, const std::string &which_one)
 	else if (iequals(which_one, std::string("rhoL_L")) )
 	{
 		rhoL_L = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 8 + dataP->MATgrid_options.Dimension() + 2 + Nfac;
-                FixedIndex.UniqMerge(local_fixed_index);
+		local_fixed_index += (CAR_DKW::NumberParameters() - position_removed_from_DKW.size) + 3 + Nfac; 
+		FixedIndex.UniqMerge(local_fixed_index);
                 if_variable_index_set = false;
-                return true;
+                return true; 
 	}
 	else if (iequals(which_one, std::string("lambda0_L")) )
 	{
 		lambda0_L = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 8 + dataP->MATgrid_options.Dimension() + 2 + Nfac +1 ;
+		local_fixed_index += (CAR_DKW::NumberParameters() - position_removed_from_DKW.size) + 3 + Nfac + 1;
                 FixedIndex.UniqMerge(local_fixed_index);
                 if_variable_index_set = false;
                 return true;
 	}
-	else if (iequals(which_one, std::string("SIGMAlambda1_L")) )
+	else if (iequals(which_one, std::string("SIGMAlambda1_L")) ) 
 	{
 		SIGMAlambda1_L = v; 
-		local_fixed_index += CAR_DKW::NumberParameters() - position_removed_from_DKW.size + 8 + dataP->MATgrid_options.Dimension() + 2 + Nfac + 2 ;
+		local_fixed_index += (CAR_DKW::NumberParameters() - position_removed_from_DKW.size) + 3 + Nfac + 2;
+                FixedIndex.UniqMerge(local_fixed_index);
+                if_variable_index_set = false;
+		return true; 
+	}
+	else if (iequals(which_one, std::string("rhov")) )
+	{
+		rhov = v; 
+		local_fixed_index += CAR_DKWl_o::NumberParameters() - position_removed_from_DKW.size; 
+		FixedIndex.UniqMerge(local_fixed_index);
+                if_variable_index_set = false;
+                return true;
+	}
+	else if (iequals(which_one, std::string("rhov_pi")) )
+	{
+		rhov_pi = v; 
+		local_fixed_index += CAR_DKWl_o::NumberParameters() - position_removed_from_DKW.size + 1; 
+		FixedIndex.UniqMerge(local_fixed_index);
+                if_variable_index_set = false;
+                return true;
+	}
+	else if (iequals(which_one, std::string("KAPPAv")) )
+	{
+		KAPPAv = v; 
+		local_fixed_index += CAR_DKWl_o::NumberParameters() - position_removed_from_DKW.size + 2;
                 FixedIndex.UniqMerge(local_fixed_index);
                 if_variable_index_set = false;
                 return true;
 	}
+	else if (iequals(which_one, std::string("SIGMAv")) )
+	{
+		SIGMAv = v; 
+		local_fixed_index += CAR_DKWl_o::NumberParameters() - position_removed_from_DKW.size + 3;
+                FixedIndex.UniqMerge(local_fixed_index);
+                if_variable_index_set = false;
+                return true;
+	}
+	else if (iequals(which_one, std::string("thetav")) )
+	{
+		thetav = v; 
+		local_fixed_index += CAR_DKWl_o::NumberParameters() - position_removed_from_DKW.size + 4;
+                FixedIndex.UniqMerge(local_fixed_index);
+                if_variable_index_set = false;
+                return true;
+	} 
+	else if (iequals(which_one, std::string("gamv")) )
+	{
+		gamv = v; 
+                local_fixed_index += CAR_DKWl_o::NumberParameters() - position_removed_from_DKW.size + 5;
+                FixedIndex.UniqMerge(local_fixed_index);
+                if_variable_index_set = false;
+                return true;
+        }
+	else if (iequals(which_one, std::string("gamvx")) )
+	{
+		gamvx = v; 
+                local_fixed_index += CAR_DKWl_o::NumberParameters() - position_removed_from_DKW.size + 6;
+                FixedIndex.UniqMerge(local_fixed_index);
+                if_variable_index_set = false;
+                return true;
+        }
+	else if (iequals(which_one, std::string("rho")) )
+	{
+		rho = v; 
+                local_fixed_index += CAR_DKWl_o::NumberParameters() - position_removed_from_DKW.size + 7;
+                FixedIndex.UniqMerge(local_fixed_index);
+                if_variable_index_set = false;
+                return true;
+        }
 	else 
 		return CAR_DKW::SetAsFixed(v, which_one);
 }

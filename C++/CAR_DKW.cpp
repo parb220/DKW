@@ -11,7 +11,8 @@ delta_bcfLT(MINUS_INFINITY), rho0_pi(MINUS_INFINITY), rho1_pi(TDenseVector(_Nfac
 delta_p(MINUS_INFINITY), delta_tips(), 
 ay(), by(), ay_R(), by_R(),af(),bf(),
 FixedIndex(), VariableIndex(), if_variable_index_set(false),
-internal_parameter(), if_internal_parameter_set(false)
+internal_parameter(), if_internal_parameter_set(false), 
+KAPPA_inverse(), SIGMA_inverse()
 {
 	if(dataP)
 	{
@@ -31,7 +32,8 @@ rho0_pi(right.rho0_pi), rho1_pi(right.rho1_pi),
 sigq(right.sigq), sigqx(right.sigqx), delta_p(right.delta_p), delta_tips(right.delta_tips), 
 ay(right.ay), by(right.by), ay_R(right.ay_R), by_R(right.by_R),af(right.af),bf(right.bf),
 FixedIndex(right.FixedIndex), VariableIndex(right.VariableIndex), if_variable_index_set(right.if_variable_index_set),
-internal_parameter(right.internal_parameter), if_internal_parameter_set(right.if_internal_parameter_set)
+internal_parameter(right.internal_parameter), if_internal_parameter_set(right.if_internal_parameter_set),
+KAPPA_inverse(right.KAPPA_inverse), SIGMA_inverse(right.SIGMA_inverse)
 {
 	KAPPA.CopyContent(right.KAPPA); 
 	SIGMA.CopyContent(right.SIGMA); 
@@ -51,6 +53,8 @@ internal_parameter(right.internal_parameter), if_internal_parameter_set(right.if
 	af.CopyContent(right.af); 
 	bf.CopyContent(right.bf); 
 	internal_parameter.CopyContent(right.internal_parameter);
+	KAPPA_inverse.CopyContent(right.KAPPA_inverse); 
+	SIGMA_inverse.CopyContent(right.SIGMA_inverse); 
 }
 
 TDenseVector CAR_DKW::ObservationEquation(int j, const TDenseVector &xt_tm1)
@@ -115,7 +119,7 @@ TDenseVector CAR_DKW::ObservationEquation(int j, const TDenseVector &xt_tm1)
 	// bcfLT
 	if (dataP->bcfLT_vec(j,0) != MINUS_INFINITY)
 	{
-		TDenseMatrix W = Inverse(KAPPA) * (MatrixExp(-dataP->horLT(j,0)*KAPPA)-MatrixExp(-(dataP->horLT(j,0)+5.0)*KAPPA)) * (1.0/5.0); 
+		TDenseMatrix W = KAPPA_inverse * (MatrixExp(-dataP->horLT(j,0)*KAPPA)-MatrixExp(-(dataP->horLT(j,0)+5.0)*KAPPA)) * (1.0/5.0); 
 		double afLT = ay(0) + InnerProduct(by.RowVector(0), theta, Identity(Nfac)-W ); 
 		TDenseVector bfLT = by.RowVector(0) * W; 
 		
@@ -333,14 +337,17 @@ bool CAR_DKW::SetParameters_FromVectorToMatrix(const TDenseVector &_parameter)
 
 bool CAR_DKW::SetParameters_InitializeABOmega()
 {
-	TDenseMatrix lambda1; 
 	try {
-		lambda1 = InverseMultiply(SIGMA, SIGMAlambda1);
+		KAPPA_inverse = Inverse(KAPPA); 
+		SIGMA_inverse = Inverse(SIGMA); 
 	}
-	catch (...) {
+	catch(...) {
 		return false; 
 	}
-        if(!YieldFacLoad(ay, by, KAPPA, SIGMA,theta,rho0,rho1,lambda0,SIGMAlambda1,dataP->MATgrid))
+	
+	TDenseMatrix lambda1 = SIGMA_inverse * SIGMAlambda1; 
+        
+	if(!YieldFacLoad(ay, by, KAPPA, SIGMA,theta,rho0,rho1,lambda0,SIGMAlambda1,dataP->MATgrid))
 		return false; 
 
         double rho0_R = rho0 - rho0_pi - 0.5*(InnerProduct(sigq, sigq) + sigqx*sigqx) + InnerProduct(lambda0, sigq);
@@ -404,12 +411,8 @@ bool CAR_DKW::SetParameters_InitializeABOmega()
 
 	double OMEGA_q=dataP->Dt*(InnerProduct(sigq,sigq) + sigqx*sigqx);
 	TDenseVector OMEGA_xq; 
-	try {
-		OMEGA_xq =InverseMultiply(KAPPA, (Identity(Nfac)-Bx)*SIGMA*sigq); 
-	}
-	catch(...) {
-		return false; 
-	}
+	OMEGA_xq =Multiply(KAPPA_inverse, (Identity(Nfac)-Bx)*SIGMA*sigq); 
+	
 	OMEGA.Zeros(Nfac+1,Nfac+1); 
 	OMEGA(0,0) = OMEGA_q; 
 	OMEGA.InsertRowMatrix(0,1,OMEGA_xq); 

@@ -57,7 +57,7 @@ paras_vec=[reshape(KAPPA,Nfac^2,1);reshape(SIGMA,Nfac^2,1);theta;
       sigqx;delta_p;delta_tips;delta_swap;KAPPA_L;SIGMA_L;theta_L;
       rho1_L;rhoL_L;lambda0_L;SIGMAlambda1_L];
 
-load '.\results\pvar_DKWl_9012.mat';
+load './results/pvar_DKWl_9012.mat';
 pvar=[pvar(1:42);0.01;0.01;0.01;pvar(43:end)];
 
 j=1;

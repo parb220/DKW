@@ -110,14 +110,16 @@ bool CAR_DKWl::SetParameters_FromVectorToMatrix(const TDenseVector &_parameter)
 
 bool CAR_DKWl::SetParameters_InitializeABOmega()
 {
+	try {
+		KAPPA_inverse = Inverse(KAPPA); 
+		SIGMA_inverse = Inverse(SIGMA); 
+	}
+	catch(...) {
+		return false; 
+	}
+	
 	// ay, by
-	TDenseMatrix lambda1;
-        try {
-                lambda1 = InverseMultiply(SIGMA, SIGMAlambda1);
-        }
-        catch(...){
-                return false;
-        }
+	TDenseMatrix lambda1 = Multiply(SIGMA_inverse, SIGMAlambda1); 
 
 	if(!YieldFacLoad(ay, by, KAPPA, SIGMA,theta,rho0,rho1,lambda0,SIGMAlambda1,dataP->MATgrid))
                 return false;
@@ -196,13 +198,9 @@ bool CAR_DKWl::SetParameters_InitializeABOmega()
 
         double OMEGA_q = dataP->Dt*(InnerProduct(sigq, sigq) + sigqx*sigqx);
         TDenseVector OMEGA_xq;
-        try {
-                OMEGA_xq = InverseMultiply(KAPPA, (Identity(Nfac)-Bx)*SIGMA*sigq);
-        }
-        catch(...) {
-                return false;
-        }
-        OMEGA.Zeros(Nfac+2,Nfac+2);
+        OMEGA_xq = Multiply(KAPPA_inverse, (Identity(Nfac)-Bx)*SIGMA*sigq);
+        
+	OMEGA.Zeros(Nfac+2,Nfac+2);
 	OMEGA(0,0) = OMEGA_q;
         OMEGA.InsertRowMatrix(0,1,OMEGA_xq);
         OMEGA.InsertColumnMatrix(1,0,OMEGA_xq);
@@ -293,7 +291,7 @@ TDenseVector CAR_DKWl::ObservationEquation(int j, const TDenseVector &xt_tm1)
 	if (dataP->bcfLT_vec(j,0) != MINUS_INFINITY)
         {
                 double hor = dataP->horLT(j,0);
-                TDenseMatrix W = 0.2* InverseMultiply(KAPPA, (MatrixExp(-hor*KAPPA)-MatrixExp(-(hor+5.0)*KAPPA)) );
+                TDenseMatrix W = 0.2* Multiply(KAPPA_inverse, (MatrixExp(-hor*KAPPA)-MatrixExp(-(hor+5.0)*KAPPA)) );
                 double afLT = ay(0) + InnerProduct(by.RowVector(0), theta, Identity(Nfac)-W);
                 TDenseVector bfLT = by.RowVector(0) * W;
 
