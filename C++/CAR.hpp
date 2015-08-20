@@ -57,12 +57,12 @@ public:
 	friend class CAR_MinusLogLikelihood_NPSOL; 
 }; 
 
-bool YieldFacLoad(TDenseVector &ay, TDenseMatrix &by, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, double rho0, const TDenseVector &rho1, const TDenseVector &lambda0, const TDenseMatrix &SIGMAlambda1, const TDenseVector &MATgrid);
 
-bool YieldFacLoad_ODE(TDenseVector &A, TDenseMatrix &B, const TDenseVector &TAUgrid, const TDenseVector &k, const TDenseMatrix &K, const TDenseMatrix &H, double rho0, const TDenseVector &rho1);
+bool YieldFacLoad(TDenseVector &ay, TDenseMatrix &by, const TDenseMatrix &KAPPA_rn, const TDenseMatrix &KAPPA_rn_inv, const TDenseMatrix &Kron_KAPPA_rn, const TDenseMatrix &SIGMA, const TDenseVector &KAPPA_theta, double rho0, const TDenseVector &rho1, const TDenseVector &lambda0, const TDenseVector &Maturity); 
 
-bool YieldFacLoad_ODE3(TDenseVector &A, TDenseMatrix &B, TDenseVector &C, const TDenseVector &TAUgrid, const TDenseVector &k, const TDenseMatrix &K, double h, const TDenseMatrix &H, double rho0, const TDenseVector &rho1, double rhov, double Kv, double Hv); 
- 
+bool YieldFacLoad_ODE(TDenseVector &A, TDenseMatrix &B, const TDenseVector &grid, const TDenseVector &k, const TDenseMatrix &K, const TDenseMatrix &K_inv, const TDenseMatrix &K_kron, const TDenseMatrix &H, double rho0, const TDenseVector &rho1); 
+
+bool YieldFacLoad_ODE3(TDenseVector &A, TDenseMatrix &B, TDenseVector &C, const TDenseVector &TAUgrid, const TDenseVector &k, const TDenseMatrix &K, const TDenseMatrix &K_inv, const TDenseMatrix &K_kron, double h, const TDenseMatrix &H, double rho0, const TDenseVector &rho1, double rhov, double Kv, double Hv);  
 
 bool InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, const TDenseVector &sigq, double sigqx, double rho0, const TDenseVector &rho1, double maturity); 
 

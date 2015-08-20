@@ -80,9 +80,12 @@ bool CAR_DKWlv_o::SetParameters_FromVectorToMatrix(const TDenseVector &_paramete
 
 bool CAR_DKWlv_o::SetParameters_InitializeABOmega()
 {
+	KAPPA_rn = KAPPA + SIGMAlambda1; 
 	try {
 		KAPPA_inverse = Inverse(KAPPA); 
 		SIGMA_inverse = Inverse(SIGMA); 
+		Inv_KAPPA_rn = Inverse(KAPPA_rn); 
+		Inv_Kron_KAPPA_rn = Inverse(Kron(-1.0*KAPPA_rn, Identity(Nfac))+Kron(Identity(Nfac), -1.0*KAPPA_rn));
 	}
 	catch (...) {
 		return false; 
@@ -91,10 +94,9 @@ bool CAR_DKWlv_o::SetParameters_InitializeABOmega()
 
 	TDenseMatrix SIGMA_SIGMA =  MultiplyTranspose(SIGMA,SIGMA); 
 	// ay, by, cy
-	TDenseMatrix KAPPA_rn = KAPPA + SIGMAlambda1; 
 	TDenseVector KAPPAtheta_rn=KAPPA*theta - SIGMA*lambda0; 
 	double KAPPAv_rn = KAPPAv+sqrt(1.0-rho*rho)*SIGMAv*gamv+rho*SIGMAv*gamvx;
-	if (!YieldFacLoad_ODE3(ay,by,cy, dataP->MATgrid,KAPPAtheta_rn,KAPPA_rn,KAPPAv*thetav,SIGMA_SIGMA,rho0,rho1,rhov,KAPPAv_rn,SIGMAv*SIGMAv))
+	if (!YieldFacLoad_ODE3(ay,by,cy, dataP->MATgrid, KAPPAtheta_rn, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, KAPPAv*thetav, SIGMA_SIGMA, rho0, rho1, rhov, KAPPAv_rn, SIGMAv*SIGMAv))
 		return false; 
 	for (int i=0; i<ay.Dimension(); i++)
 		ay(i) = -ay(i) / dataP->MATgrid(i); 
@@ -113,9 +115,8 @@ bool CAR_DKWlv_o::SetParameters_InitializeABOmega()
 	TDenseVector lambda0_R = lambda0 - sigq;
 	TDenseMatrix lambda1_R = lambda1; 
 	TDenseMatrix SIGMAlambda1_R = SIGMA*lambda1_R;
-	TDenseMatrix KAPPA_rn_R = KAPPA + SIGMAlambda1_R;
 	TDenseVector KAPPAtheta_rn_R = KAPPA*theta - SIGMA*lambda0_R;
-	if (!YieldFacLoad_ODE3(ay_R,by_R,cy_R, dataP->TIPSgrid,KAPPAtheta_rn_R,KAPPA_rn_R,KAPPAv*thetav,SIGMA_SIGMA,rho0_R,rho1_R,rhov_R,KAPPAv_rn,SIGMAv*SIGMAv))
+	if (!YieldFacLoad_ODE3(ay_R,by_R,cy_R, dataP->TIPSgrid, KAPPAtheta_rn_R, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, KAPPAv*thetav, SIGMA_SIGMA, rho0_R, rho1_R, rhov_R, KAPPAv_rn, SIGMAv*SIGMAv))
 		return false; 
 	for (int i=0; i<ay_R.Dimension(); i++)
 		ay_R(i) = -ay_R(i)/dataP->TIPSgrid(i); 
@@ -128,7 +129,7 @@ bool CAR_DKWlv_o::SetParameters_InitializeABOmega()
 		cy_R(i) = -cy_R(i)/dataP->TIPSgrid(i); 
 
 	// ay_TR, by_TR, cy_TR
-	if (!YieldFacLoad_ODE3(ay_TR,by_TR,cy_TR, dataP->TIPSgrid,KAPPAtheta_rn_R,KAPPA_rn_R,KAPPAv*thetav,SIGMA_SIGMA,rho0_R,rho1_R+rho1_L,rhov_R,KAPPAv_rn,SIGMAv*SIGMAv))
+	if (!YieldFacLoad_ODE3(ay_TR,by_TR,cy_TR, dataP->TIPSgrid, KAPPAtheta_rn_R, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, KAPPAv*thetav, SIGMA_SIGMA,rho0_R,rho1_R+rho1_L,rhov_R,KAPPAv_rn,SIGMAv*SIGMAv))
 		return false; 
 	for (int i=0; i<ay_TR.Dimension(); i++)
 		ay_TR(i) = -ay_TR(i)/dataP->TIPSgrid(i); 
@@ -141,8 +142,10 @@ bool CAR_DKWlv_o::SetParameters_InitializeABOmega()
 
 	// ay_L, by_L
 	double KAPPA_L_rn = KAPPA_L + SIGMAlambda1_L; 
+	double Inv_KAPPA_L_rn = 1.0/KAPPA_L_rn; 
+	double Inv_Kron_KAPPA_L_rn = 1.0/((-1.0*KAPPA_L_rn)+(-1.0*KAPPA_L_rn)); 
 	double KAPPAtheta_L_rn=KAPPA_L*theta_L - SIGMA_L*lambda0_L; 
-	if (!YieldFacLoad_ODE(ay_L,by_L, dataP->TIPSgrid, TDenseVector(1,KAPPAtheta_L_rn),TDenseMatrix(1,1,KAPPA_L_rn),TDenseMatrix(1,1,SIGMA_L*SIGMA_L), 0, TDenseVector(1,rhoL_L)))
+	if (!YieldFacLoad_ODE(ay_L,by_L, dataP->TIPSgrid, TDenseVector(1,KAPPAtheta_L_rn), TDenseMatrix(1,1,KAPPA_L_rn), TDenseMatrix(1,1,Inv_KAPPA_L_rn), TDenseMatrix(1,1,Inv_Kron_KAPPA_L_rn), TDenseMatrix(1,1,SIGMA_L*SIGMA_L), 0, TDenseVector(1,rhoL_L)))
 		return false; 
 	for (int i=0; i<ay_L.Dimension(); i++)
 		ay_L(i) = -ay_L(i)/dataP->TIPSgrid(i); 
@@ -204,7 +207,7 @@ bool CAR_DKWlv_o::SetParameters_InitializeABOmega()
 	for (int i=0; i<dataP->MATgrid_options.Dimension(); i++)
 	{
 		MAT = dataP->MATgrid_options(i); 
-		if (!YieldFacLoad_ODE3(tmp_ay,tmp_by,tmp_cy, TDenseVector(1,MAT),KAPPAtheta_rn,KAPPA_rn,KAPPAv*thetav,SIGMA_SIGMA,rho0,rho1,rhov,KAPPAv_rn,SIGMAv*SIGMAv))
+		if (!YieldFacLoad_ODE3(tmp_ay,tmp_by,tmp_cy, TDenseVector(1,MAT),KAPPAtheta_rn, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, KAPPAv*thetav,SIGMA_SIGMA,rho0,rho1,rhov,KAPPAv_rn,SIGMAv*SIGMAv))
 			return false; 	
 		theta_Q = KAPPA_Q_inv * (KAPPA*theta-SIGMA*lambda0+SIGMA_SIGMA*tmp_by.ColumnVector(0));
 		KAPPAv_Q = KAPPAv + sqrt(1.0-rho*rho)*SIGMAv*gamv + rho*SIGMAv*gamvx - SIGMAv*SIGMAv*tmp_cy(0);

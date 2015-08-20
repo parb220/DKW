@@ -114,22 +114,20 @@ Nfac(right.Nfac), dataP(right.dataP)
 }
 
 
-bool YieldFacLoad(TDenseVector &ay, TDenseMatrix &by, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, double rho0, const TDenseVector &rho1, const TDenseVector &lambda0, const TDenseMatrix &SIGMAlambda1, const TDenseVector &Maturity)
+bool YieldFacLoad(TDenseVector &ay, TDenseMatrix &by, const TDenseMatrix &KAPPA_rn, const TDenseMatrix &KAPPA_rn_inv, const TDenseMatrix &Kron_KAPPA_rn, const TDenseMatrix &SIGMA, const TDenseVector &KAPPA_theta, double rho0, const TDenseVector &rho1, const TDenseVector &lambda0, const TDenseVector &Maturity)
 {
-	int Nfac = theta.Dimension(); 
-	
-	TDenseMatrix KAPPA_rn = KAPPA + SIGMAlambda1; 
-	TDenseVector KAPPAtheta_rn = KAPPA*theta - SIGMA*lambda0;  
+	TDenseVector KAPPAtheta_rn = KAPPA_theta - SIGMA*lambda0;  
 
 	TDenseVector A; 
 	TDenseMatrix B; 
-	if(!YieldFacLoad_ODE(A, B, Maturity, KAPPAtheta_rn, KAPPA_rn, MultiplyTranspose(SIGMA, SIGMA), rho0, rho1))
+	if(!YieldFacLoad_ODE(A, B, Maturity, KAPPAtheta_rn, KAPPA_rn, KAPPA_rn_inv, Kron_KAPPA_rn, MultiplyTranspose(SIGMA, SIGMA), rho0, rho1))
 		return false; 
 
 	ay.Zeros(A.Dimension()); 
 	for (int i=0; i<ay.Dimension(); i++)
 		ay(i) = -A(i)/Maturity(i); 
 
+	int Nfac = KAPPA_theta.Dimension(); 
 	TDenseMatrix  Bx = RepRowVector(Maturity, Nfac, 1); 
 	by.Zeros(B.rows, B.cols); 
 	for (int j=0; j<by.cols; j++)
@@ -139,60 +137,46 @@ bool YieldFacLoad(TDenseVector &ay, TDenseMatrix &by, const TDenseMatrix &KAPPA,
 	return true; 
 }
 
-bool YieldFacLoad_ODE(TDenseVector &A, TDenseMatrix &B, const TDenseVector &TAUgrid, const TDenseVector &k, const TDenseMatrix &K, const TDenseMatrix &H, double rho0, const TDenseVector &rho1)
+bool YieldFacLoad_ODE(TDenseVector &A, TDenseMatrix &B, const TDenseVector &grid, const TDenseVector &k, const TDenseMatrix &K, const TDenseMatrix &K_inv, const TDenseMatrix &K_kron, const TDenseMatrix &H, double rho0, const TDenseVector &rho1)
 {
 	int N = k.Dimension(); 
-	int Ntau = TAUgrid.Dimension(); 
+	int Ntau = grid.Dimension(); 
 
 	A.Zeros(Ntau); 
 	B.Zeros(N, Ntau); 
 
 	std::vector<TDenseMatrix> expk(Ntau); 
 	for (int i=0; i<Ntau; i++)
-		expk[i] = MatrixExp(-TAUgrid(i) * Transpose(K)); 
+		expk[i] = MatrixExp(-grid(i) * Transpose(K)); 
 
-	TDenseMatrix _KtInv; 
-	try {
-		_KtInv = Inverse(-1.0*Transpose(K)); 
-	}
-	catch(...) {
-		return false; 
-	}
-	TDenseVector tmp = _KtInv * (-rho1); 
-	TDenseMatrix Kkron; 
-	try { 
-		Kkron = Inverse(Kron(-1.0*K, Identity(N))+Kron(Identity(N), -1.0*K));
-	}
-	catch(...) {
-		return false; 
-	}
+	TDenseVector tmp = Transpose(-1.0*K_inv) * (-rho1); 
 	for (int i=0; i<Ntau; i++)
 	{
 		B.InsertColumnMatrix(0,i, (expk[i]-Identity(N))*tmp); 
-		double tau = TAUgrid(i); 
-		TDenseVector K0 = ((expk[i]-Identity(N))*_KtInv-tau*Identity(N))*tmp; 
+		double tau = grid(i); 
+		TDenseVector K0 = ((expk[i]-Identity(N))*Transpose(-1.0*K_inv)-tau*Identity(N))*tmp; 
 
 		TDenseMatrix K2 = TransposeMultiply(expk[i], H*expk[i]) - H;  
 		TDenseVector K2_vector(N*N); 
 		for (int j=0; j<N; j++)
 			K2_vector.Insert(j*N, K2.ColumnVector(j)); 
-		K2_vector = Kkron * K2_vector; 
+		K2_vector = K_kron * K2_vector; 
 		K2.Zeros(N, N); 
 		for (int j=0; j<N; j++)
 			K2.InsertColumnMatrix(0,j, K2_vector, j*N, (j+1)*N-1); 
 
-		TDenseMatrix K1 = H * _KtInv * (expk[i]-Identity(N)); 
+		TDenseMatrix K1 = H * Transpose(-1.0*K_inv) * (expk[i]-Identity(N)); 
 		A(i) = InnerProduct(k, K0) + 0.5*InnerProduct(tmp, tmp, K2-K1-Transpose(K1)+tau*H) - tau*rho0; 
 	} 
 	return true; 
 }
 
-bool YieldFacLoad_ODE3(TDenseVector &A, TDenseMatrix &B, TDenseVector &C, const TDenseVector &TAUgrid, const TDenseVector &k, const TDenseMatrix &K, double h, const TDenseMatrix &H, double rho0, const TDenseVector &rho1, double rhov, double Kv, double Hv)
+bool YieldFacLoad_ODE3(TDenseVector &A, TDenseMatrix &B, TDenseVector &C, const TDenseVector &TAUgrid, const TDenseVector &k, const TDenseMatrix &K, const TDenseMatrix &K_inv, const TDenseMatrix &K_kron, double h, const TDenseMatrix &H, double rho0, const TDenseVector &rho1, double rhov, double Kv, double Hv)
 {
 	int Ntau = TAUgrid.Dimension(); 
 
 	TDenseVector A1; 
-	if (!YieldFacLoad_ODE(A1,B,TAUgrid,k,K,H,rho0,rho1))
+	if (!YieldFacLoad_ODE(A1,B,TAUgrid,k,K,K_inv, K_kron, H,rho0,rho1))
 		return false; 
 
 	double a = -rhov, b = -Kv, c = 0.5*Hv, ETA; 

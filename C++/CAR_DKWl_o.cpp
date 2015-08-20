@@ -68,6 +68,7 @@ bool CAR_DKWl_o:: SetParameters_InitializeABOmega()
 		return false;
 
 	TDenseMatrix lambda1 = SIGMA_inverse * SIGMAlambda1;  
+	TDenseVector KAPPAtheta = KAPPA * theta; 
 
 	// aI_Q, bI_Q
 	aI_Q.Zeros(dataP->MATgrid_options.Dimension()); 
@@ -77,7 +78,7 @@ bool CAR_DKWl_o:: SetParameters_InitializeABOmega()
 		double MAT = dataP->MATgrid_options(i); 
 		TDenseVector temp_ay; 
 		TDenseMatrix temp_by; 
-		if (!YieldFacLoad(temp_ay, temp_by, KAPPA,SIGMA,theta,rho0,rho1,lambda0,SIGMAlambda1,TDenseVector(1,MAT)))
+		if (!YieldFacLoad(temp_ay, temp_by, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, SIGMA, KAPPAtheta, rho0, rho1, lambda0,TDenseVector(1,MAT)))
 			return false; 
 		TDenseVector temp_by_vector = temp_by.RowVector(0); 
 

@@ -12,7 +12,8 @@ delta_p(MINUS_INFINITY), delta_tips(),
 ay(), by(), ay_R(), by_R(),af(),bf(),
 FixedIndex(), VariableIndex(), if_variable_index_set(false),
 internal_parameter(), if_internal_parameter_set(false), 
-KAPPA_inverse(), SIGMA_inverse()
+KAPPA_inverse(), SIGMA_inverse(),
+KAPPA_rn(), Inv_KAPPA_rn(), Inv_Kron_KAPPA_rn()
 {
 	if(dataP)
 	{
@@ -33,7 +34,8 @@ sigq(right.sigq), sigqx(right.sigqx), delta_p(right.delta_p), delta_tips(right.d
 ay(right.ay), by(right.by), ay_R(right.ay_R), by_R(right.by_R),af(right.af),bf(right.bf),
 FixedIndex(right.FixedIndex), VariableIndex(right.VariableIndex), if_variable_index_set(right.if_variable_index_set),
 internal_parameter(right.internal_parameter), if_internal_parameter_set(right.if_internal_parameter_set),
-KAPPA_inverse(right.KAPPA_inverse), SIGMA_inverse(right.SIGMA_inverse)
+KAPPA_inverse(right.KAPPA_inverse), SIGMA_inverse(right.SIGMA_inverse), 
+KAPPA_rn(right.KAPPA_rn), Inv_KAPPA_rn(right.Inv_KAPPA_rn), Inv_Kron_KAPPA_rn(right.Inv_Kron_KAPPA_rn)
 {
 	KAPPA.CopyContent(right.KAPPA); 
 	SIGMA.CopyContent(right.SIGMA); 
@@ -55,6 +57,9 @@ KAPPA_inverse(right.KAPPA_inverse), SIGMA_inverse(right.SIGMA_inverse)
 	internal_parameter.CopyContent(right.internal_parameter);
 	KAPPA_inverse.CopyContent(right.KAPPA_inverse); 
 	SIGMA_inverse.CopyContent(right.SIGMA_inverse); 
+	KAPPA_rn.CopyContent(right.KAPPA_rn);
+	Inv_KAPPA_rn.CopyContent(right.Inv_KAPPA_rn);
+	Inv_Kron_KAPPA_rn.CopyContent(right.Inv_Kron_KAPPA_rn);
 }
 
 TDenseVector CAR_DKW::ObservationEquation(int j, const TDenseVector &xt_tm1)
@@ -337,24 +342,28 @@ bool CAR_DKW::SetParameters_FromVectorToMatrix(const TDenseVector &_parameter)
 
 bool CAR_DKW::SetParameters_InitializeABOmega()
 {
+	KAPPA_rn = KAPPA + SIGMAlambda1;
 	try {
 		KAPPA_inverse = Inverse(KAPPA); 
 		SIGMA_inverse = Inverse(SIGMA); 
+		Inv_KAPPA_rn = Inverse(KAPPA_rn); 
+		Inv_Kron_KAPPA_rn = Inverse(Kron(-1.0*KAPPA_rn, Identity(Nfac))+Kron(Identity(Nfac), -1.0*KAPPA_rn));
 	}
 	catch(...) {
 		return false; 
 	}
 	
-	TDenseMatrix lambda1 = SIGMA_inverse * SIGMAlambda1; 
+	TDenseVector KAPPAtheta = KAPPA * theta; 
+
         
-	if(!YieldFacLoad(ay, by, KAPPA, SIGMA,theta,rho0,rho1,lambda0,SIGMAlambda1,dataP->MATgrid))
+	if(!YieldFacLoad(ay, by, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, SIGMA, KAPPAtheta, rho0, rho1, lambda0, dataP->MATgrid))
 		return false; 
 
         double rho0_R = rho0 - rho0_pi - 0.5*(InnerProduct(sigq, sigq) + sigqx*sigqx) + InnerProduct(lambda0, sigq);
+	TDenseMatrix lambda1 = SIGMA_inverse * SIGMAlambda1; 
         TDenseVector rho1_R = rho1 - rho1_pi + TransposeMultiply(lambda1, sigq);
         TDenseVector lambda0_R = lambda0 - sigq;
-        TDenseMatrix SIGMAlambda1_R = SIGMAlambda1;
-        if(!YieldFacLoad(ay_R, by_R, KAPPA,SIGMA,theta,rho0_R,rho1_R,lambda0_R,SIGMAlambda1_R,dataP->TIPSgrid))
+        if(!YieldFacLoad(ay_R, by_R, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, SIGMA, KAPPAtheta, rho0_R, rho1_R, lambda0_R, dataP->TIPSgrid))
 		return false; 
 
         TDenseVector ForecastHor(2);
@@ -436,7 +445,7 @@ TDenseVector CAR_DKW::GetParameters()
 	if (!if_internal_parameter_set)
 	{
 		int counter =0; 
-		internal_parameter.Zeros(NumberParameters()); 
+		internal_parameter.Zeros(CAR_DKW::NumberParameters()); 
 		// KAPPA
 		if (KAPPA.rows != Nfac || KAPPA.cols != Nfac)
 		{

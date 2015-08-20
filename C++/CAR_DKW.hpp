@@ -42,6 +42,9 @@ protected:
 
 	TDenseMatrix KAPPA_inverse; 
 	TDenseMatrix SIGMA_inverse; 
+	TDenseMatrix KAPPA_rn; 
+	TDenseMatrix Inv_KAPPA_rn; 
+	TDenseMatrix Inv_Kron_KAPPA_rn; 
 
 	virtual bool SetParameters_FromVectorToMatrix(const TDenseVector &); 
 	virtual bool SetParameters_InitializeABOmega(); 

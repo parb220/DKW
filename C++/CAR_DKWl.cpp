@@ -110,26 +110,28 @@ bool CAR_DKWl::SetParameters_FromVectorToMatrix(const TDenseVector &_parameter)
 
 bool CAR_DKWl::SetParameters_InitializeABOmega()
 {
+	KAPPA_rn = KAPPA + SIGMAlambda1;
 	try {
 		KAPPA_inverse = Inverse(KAPPA); 
 		SIGMA_inverse = Inverse(SIGMA); 
+                Inv_KAPPA_rn = Inverse(KAPPA_rn);
+                Inv_Kron_KAPPA_rn = Inverse(Kron(-1.0*KAPPA_rn, Identity(Nfac))+Kron(Identity(Nfac), -1.0*KAPPA_rn));
 	}
 	catch(...) {
 		return false; 
 	}
 	
 	// ay, by
-	TDenseMatrix lambda1 = Multiply(SIGMA_inverse, SIGMAlambda1); 
-
-	if(!YieldFacLoad(ay, by, KAPPA, SIGMA,theta,rho0,rho1,lambda0,SIGMAlambda1,dataP->MATgrid))
+        TDenseVector KAPPAtheta = KAPPA * theta;
+	if(!YieldFacLoad(ay, by, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, SIGMA, KAPPAtheta, rho0, rho1,lambda0, dataP->MATgrid))
                 return false;
 
 	// ay_R, by_R
 	double rho0_R = rho0 - rho0_pi - 0.5*(InnerProduct(sigq, sigq) + sigqx*sigqx) + InnerProduct(lambda0, sigq);
+	TDenseMatrix lambda1 = Multiply(SIGMA_inverse, SIGMAlambda1); 
         TDenseVector rho1_R = rho1 - rho1_pi + TransposeMultiply(lambda1, sigq);
         TDenseVector lambda0_R = lambda0 - sigq;
-        TDenseMatrix SIGMAlambda1_R = SIGMAlambda1;
-        if (!YieldFacLoad(ay_R, by_R, KAPPA,SIGMA,theta,rho0_R,rho1_R,lambda0_R,SIGMAlambda1_R,dataP->TIPSgrid))
+        if (!YieldFacLoad(ay_R, by_R, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, SIGMA, KAPPAtheta, rho0_R, rho1_R, lambda0_R, dataP->TIPSgrid))
                 return false;
 
 	// af, bf
@@ -219,13 +221,17 @@ bool CAR_DKWl::SetParameters_InitializeABOmega()
         P0_0 = OMEGA_ss; 
 
 	// ay_TR, by_TR
-	if (!YieldFacLoad(ay_TR, by_TR, KAPPA,SIGMA,theta,rho0_R,rho1_R+rho1_L,lambda0_R,SIGMAlambda1_R,dataP->TIPSgrid))
+	if (!YieldFacLoad(ay_TR, by_TR, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, SIGMA, KAPPAtheta, rho0_R, rho1_R+rho1_L, lambda0_R,dataP->TIPSgrid))
                 return false;
 
 	// ay_L, by_L
-	if (!YieldFacLoad(ay_L, by_L, TDenseMatrix(1,1,KAPPA_L),TDenseMatrix(1,1,SIGMA_L),TDenseVector(1,theta_L),0,TDenseVector(1,rhoL_L),TDenseVector(1,lambda0_L), TDenseMatrix(1,1,SIGMAlambda1_L), dataP->TIPSgrid))
-                return false;
+	double KAPPA_L_rn = KAPPA_L + SIGMAlambda1_L;
+	double Inv_KAPPA_L_rn = 1.0/(KAPPA_L_rn); 
+	double Inv_Kron_KAPPA_L_rn = 1.0/((-1.0*KAPPA_L_rn)+(-1.0*KAPPA_L_rn)); 
+	double KAPPA_Ltheta = KAPPA_L*theta_L; 
 
+	if (!YieldFacLoad(ay_L, by_L, TDenseMatrix(1,1,KAPPA_L_rn), TDenseMatrix(1,1,Inv_KAPPA_L_rn), TDenseMatrix(1,1,Inv_Kron_KAPPA_L_rn), TDenseMatrix(1,1,SIGMA_L),TDenseVector(1,KAPPA_Ltheta), 0, TDenseVector(1,rhoL_L), TDenseVector(1,lambda0_L), dataP->TIPSgrid))
+                return false;
 
         return true;
 }
