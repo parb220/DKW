@@ -197,26 +197,19 @@ bool CAR_DKWlv_o::SetParameters_InitializeABOmega()
 	double MAT, KAPPAv_Q, thetav_Q, rho0_Q, rhov_Q, tmp_aI_Q, tmp_cI_Q; 
 	TDenseVector tmp_ay, tmp_cy, theta_Q, rho1_Q,  tmp_bI_Q; 
 	TDenseMatrix tmp_by; 
-	TDenseMatrix KAPPA_Q = KAPPA+SIGMAlambda1, KAPPA_Q_inv; 
-	try {
-		KAPPA_Q_inv = Inverse(KAPPA_Q);
-	}
-	catch(...) {
-		return false; 
-	}
 	for (int i=0; i<dataP->MATgrid_options.Dimension(); i++)
 	{
 		MAT = dataP->MATgrid_options(i); 
 		if (!YieldFacLoad_ODE3(tmp_ay,tmp_by,tmp_cy, TDenseVector(1,MAT),KAPPAtheta_rn, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, KAPPAv*thetav,SIGMA_SIGMA,rho0,rho1,rhov,KAPPAv_rn,SIGMAv*SIGMAv))
 			return false; 	
-		theta_Q = KAPPA_Q_inv * (KAPPA*theta-SIGMA*lambda0+SIGMA_SIGMA*tmp_by.ColumnVector(0));
+		theta_Q = Inv_KAPPA_rn * (KAPPA*theta-SIGMA*lambda0+SIGMA_SIGMA*tmp_by.ColumnVector(0));
 		KAPPAv_Q = KAPPAv + sqrt(1.0-rho*rho)*SIGMAv*gamv + rho*SIGMAv*gamvx - SIGMAv*SIGMAv*tmp_cy(0);
     		thetav_Q = KAPPAv*thetav/KAPPAv_Q;
 		rho0_Q = rho0_pi - InnerProduct(sigq,lambda0) + InnerProduct(sigq, tmp_by.ColumnVector(0), Transpose(SIGMA)); 
 		rho1_Q = rho1_pi - TransposeMultiply(lambda1,sigq);
     		rhov_Q = rhov_pi - gamvx + rho*SIGMAv*tmp_cy(0);
 		
-		if (!InfExpFacLoad_DKWv_option(tmp_aI_Q,tmp_bI_Q,tmp_cI_Q, KAPPA_Q,SIGMA,theta_Q,KAPPAv_Q,SIGMAv,thetav_Q,sigq,rho0_Q,rho1_Q,rhov_Q,rho,MAT) )
+		if (!InfExpFacLoad_DKWv_option(tmp_aI_Q,tmp_bI_Q,tmp_cI_Q, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, SIGMA, theta_Q, KAPPAv_Q, SIGMAv, thetav_Q ,sigq, rho0_Q, rho1_Q, rhov_Q, rho, MAT) )
 			return false; 
 		aI_Q(i) = tmp_aI_Q; 
 		bI_Q.InsertRowMatrix(i,0,tmp_bI_Q); 

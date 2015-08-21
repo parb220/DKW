@@ -61,8 +61,8 @@ INCLUDE_DIR := $(INCLUDE_DIR) -I$(EQUI_ENERGY_DIR) -I$(TASK_SCHEDULING_DIR) -I$(
 VPATH := $(VPATH) $(BUILD_DIR) $(EQUI_ENERGY_DIR) $(TASK_SCHEDULING_DIR) $(SOURCE_DIR) 
 
 # TEST_ALL #####################################################################
-ALL_OBJS = $(OBJS) $(EQUI_ENERGY_OBJS) $(SIMULATION_OBJS) test_DKWlv_o.o #DKW_optimization.o #lv_o.o #_parallel.o #test_DKW.o #test_DKWl_o.o #DKW_parallel.o
-ALL_EFILE = $(EXE_DIR)/test_DKWlv_o #test_DKW  #test_DKWl_o #DKW_parallel
+ALL_OBJS = $(OBJS) $(EQUI_ENERGY_OBJS) $(SIMULATION_OBJS) test_DKWl_o.o #DKW_optimization.o #lv_o.o #_parallel.o #test_DKW.o #test_DKWl_o.o #DKW_parallel.o
+ALL_EFILE = $(EXE_DIR)/test_DKWl_o #test_DKW  #test_DKWl_o #DKW_parallel
 
 #################################################################################
 all : $(ALL_EFILE)

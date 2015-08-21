@@ -69,6 +69,7 @@ bool CAR_DKWl_o:: SetParameters_InitializeABOmega()
 
 	TDenseMatrix lambda1 = SIGMA_inverse * SIGMAlambda1;  
 	TDenseVector KAPPAtheta = KAPPA * theta; 
+	TDenseVector theta_Q; 
 
 	// aI_Q, bI_Q
 	aI_Q.Zeros(dataP->MATgrid_options.Dimension()); 
@@ -82,21 +83,14 @@ bool CAR_DKWl_o:: SetParameters_InitializeABOmega()
 			return false; 
 		TDenseVector temp_by_vector = temp_by.RowVector(0); 
 
-		TDenseMatrix KAPPA_Q = KAPPA+SIGMAlambda1; 
-		TDenseVector theta_Q; 
-		try {
-			theta_Q = InverseMultiply(KAPPA_Q, KAPPA*theta-SIGMA*lambda0+MultiplyTranspose(SIGMA,SIGMA)*temp_by_vector);
-		}	
-		catch(...) {
-			return false; 
-		}
+		theta_Q = Multiply(Inv_KAPPA_rn, KAPPAtheta-SIGMA*lambda0+MultiplyTranspose(SIGMA,SIGMA)*temp_by_vector);
 
 		double rho0_Q = rho0_pi - InnerProduct(lambda0, sigq)+InnerProduct(sigq, TransposeMultiply(SIGMA,temp_by_vector));
 		TDenseVector rho1_Q = rho1_pi - TransposeMultiply(lambda1, sigq); 
 
 		double temp_aI_Q; 
 		TDenseVector temp_bI_Q; 
-		InfExpFacLoad(temp_aI_Q, temp_bI_Q, KAPPA_Q, SIGMA, theta_Q, sigq, sigqx, rho0_Q, rho1_Q, MAT); 
+		InfExpFacLoad(temp_aI_Q, temp_bI_Q, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, SIGMA, theta_Q, sigq, sigqx, rho0_Q, rho1_Q, MAT); 
 
 		aI_Q(i) = temp_aI_Q; 
 		bI_Q.InsertRowMatrix(i, 0, temp_bI_Q); 

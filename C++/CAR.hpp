@@ -64,9 +64,9 @@ bool YieldFacLoad_ODE(TDenseVector &A, TDenseMatrix &B, const TDenseVector &grid
 
 bool YieldFacLoad_ODE3(TDenseVector &A, TDenseMatrix &B, TDenseVector &C, const TDenseVector &TAUgrid, const TDenseVector &k, const TDenseMatrix &K, const TDenseMatrix &K_inv, const TDenseMatrix &K_kron, double h, const TDenseMatrix &H, double rho0, const TDenseVector &rho1, double rhov, double Kv, double Hv);  
 
-bool InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, const TDenseVector &sigq, double sigqx, double rho0, const TDenseVector &rho1, double maturity); 
+bool InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const TDenseMatrix &Inv_KAPPA, const TDenseMatrix &Inv_Kron_KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, const TDenseVector &sigq, double sigqx, double rho0, const TDenseVector &rho1, double maturity); 
 
-bool InfExpFacLoad_DKWv_option(double &aI, TDenseVector &bI, double &cI, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, double KAPPAv, double SIGMAv, double thetav, const TDenseVector &sigq, double rho0_pi, const TDenseVector &rho1_pi, double rhov_pi, double rho, double Maturity);
+bool InfExpFacLoad_DKWv_option(double &aI, TDenseVector &bI, double &cI, const TDenseMatrix &KAPPA, const TDenseMatrix &Inv_KAPPA, const TDenseMatrix &Inv_Kron_KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, double KAPPAv, double SIGMAv, double thetav, const TDenseVector &sigq, double rho0_pi, const TDenseVector &rho1_pi, double rhov_pi, double rho, double Maturity);
 
 TIndex FixedVariableParameter(TDenseMatrix &destination, const TDenseMatrix & source, int offset); 
 TIndex FixedVariableParameter(TDenseVector &destination, const TDenseVector &source, int offset); 

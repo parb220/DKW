@@ -321,16 +321,9 @@ double CAR::MaximizeLogLikelihood(TDenseVector &x_0, const TDenseVector &lower_x
 	return _loglikelihood_old; 
 }
 
-bool InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, const TDenseVector &sigq, double sigqx, double rho0_pi, const TDenseVector &rho1_pi, double Maturity)
+bool InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const TDenseMatrix &Inv_KAPPA, const TDenseMatrix &Inv_Kron_KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, const TDenseVector &sigq, double sigqx, double rho0_pi, const TDenseVector &rho1_pi, double Maturity)
 {
 	int Nfac = theta.Dimension(); 
-	TDenseMatrix temp_kron; 
-	try {
-		temp_kron = Inverse(Kron(-1.0*KAPPA, Identity(Nfac))+Kron(Identity(Nfac), -1.0*KAPPA)); 
-	}
-	catch(...) {
-		return false; 
-	}
 
 	TDenseMatrix temp_km = MatrixExp(-Maturity*KAPPA); 
 	TDenseMatrix temp_x = temp_km * SIGMA; 
@@ -338,34 +331,19 @@ bool InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const 
 	TDenseVector after_reshape(Nfac*Nfac,0.0); 
 	for (int j=0; j<before_reshape.cols; j++)
 		after_reshape.Insert(j*before_reshape.rows, before_reshape.ColumnVector(j)); 
-	after_reshape = temp_kron * after_reshape; 
+	after_reshape = Inv_Kron_KAPPA * after_reshape; 
 	TDenseMatrix OMEGA_x(Nfac, Nfac, 0.0); 
 	for (int j=0; j<Nfac; j++)
 		OMEGA_x.InsertColumnMatrix(0,j,after_reshape, j*Nfac, (j+1)*Nfac-1); 
 
-	TDenseMatrix _km_inv; 
-	try {
-		_km_inv = Inverse(KAPPA*Maturity); 
-	}
-	catch(...) {
-		return false; 
-	}
+	TDenseMatrix _km_inv = Inv_KAPPA * (1.0/Maturity);  
  	TDenseMatrix bx = _km_inv * (Identity(Nfac)-temp_km); 
 	TDenseVector ax = (Identity(Nfac)-bx) * theta; 
 
-	TDenseMatrix _k_inv; 
-	try { 
-		_k_inv = Inverse(KAPPA); 
-	}
-	catch (...)
-	{
-		return false; 
-	}
-
-	TDenseVector sigq2 = sigq + TransposeMultiply(_k_inv*SIGMA, rho1_pi); 
+	TDenseVector sigq2 = sigq + TransposeMultiply(Inv_KAPPA*SIGMA, rho1_pi); 
 	double tempIU_1 = InnerProduct(sigq2,sigq2) + sigqx*sigqx; 
-	double tempIU_2 =  - 2.0*InnerProduct(sigq2, TransposeMultiply(_km_inv*SIGMA, TransposeMultiply(_k_inv*(Identity(Nfac)-temp_km), rho1_pi) ) ); 
-	double tempIU_3 = InnerProduct(rho1_pi, _k_inv*(1.0/Maturity)*OMEGA_x*TransposeMultiply(_k_inv, rho1_pi));
+	double tempIU_2 =  - 2.0*InnerProduct(sigq2, TransposeMultiply(_km_inv*SIGMA, TransposeMultiply(Inv_KAPPA*(Identity(Nfac)-temp_km), rho1_pi) ) ); 
+	double tempIU_3 = InnerProduct(rho1_pi, _km_inv*OMEGA_x*TransposeMultiply(Inv_KAPPA, rho1_pi));
 
 	double tempIU = tempIU_1 + tempIU_2 + tempIU_3; 
 	B = TransposeMultiply(bx, rho1_pi); 
@@ -373,48 +351,30 @@ bool InfExpFacLoad(double &A, TDenseVector &B, const TDenseMatrix &KAPPA, const 
 	return true; 
 }
 
-bool InfExpFacLoad_DKWv_option(double &aI, TDenseVector &bI, double &cI, const TDenseMatrix &KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, double KAPPAv, double SIGMAv, double thetav, const TDenseVector &sigq, double rho0_pi, const TDenseVector &rho1_pi, double rhov_pi, double rho, double Maturity)
+bool InfExpFacLoad_DKWv_option(double &aI, TDenseVector &bI, double &cI, const TDenseMatrix &KAPPA, const TDenseMatrix &Inv_KAPPA, const TDenseMatrix &Inv_Kron_KAPPA, const TDenseMatrix &SIGMA, const TDenseVector &theta, double KAPPAv, double SIGMAv, double thetav, const TDenseVector &sigq, double rho0_pi, const TDenseVector &rho1_pi, double rhov_pi, double rho, double Maturity)
 {
 	int Nfac = theta.Dimension();
-	TDenseMatrix tmp_kron; 
-	try {
-		tmp_kron = Inverse(Kron(-1.0*KAPPA,Identity(Nfac))+Kron(Identity(Nfac),-1.0*KAPPA)); 
-	} 	
-	catch(...) {
-		return false; 
-	}
+
+
 	TDenseMatrix SIGMA_SIGMA = MultiplyTranspose(SIGMA,SIGMA); 
 	TDenseMatrix tmp_expm = MatrixExp(-Maturity*KAPPA); 
 	TDenseMatrix tmp_X = tmp_expm*SIGMA_SIGMA*Transpose(tmp_expm) - SIGMA_SIGMA; 
 	TDenseVector tmp_X_vector(Nfac*Nfac,0.0); 
 	for (int j=0; j<tmp_X.cols; j++)
 		tmp_X_vector.Insert(j*tmp_X.rows, tmp_X.ColumnVector(j)); 
-	tmp_X_vector = tmp_kron * tmp_X_vector; 
+	tmp_X_vector = Inv_Kron_KAPPA * tmp_X_vector; 
 	TDenseMatrix OMEGA_x(Nfac,Nfac); 
 	for (int j=0; j<Nfac; j++)
 		OMEGA_x.InsertColumnMatrix(0,j,tmp_X_vector,j*Nfac,(j+1)*Nfac-1); 
 
-	TDenseMatrix KAPPA_maturity_inv; 
-	try {
-		KAPPA_maturity_inv = Inverse(Maturity*KAPPA); 
-	}
-	catch(...) {
-		return false; 
-	}
+	TDenseMatrix KAPPA_maturity_inv = Inv_KAPPA * (1.0/Maturity); 
 	TDenseMatrix bx = KAPPA_maturity_inv * (Identity(Nfac)-tmp_expm); 
 	TDenseVector ax = (Identity(Nfac)-bx) * theta; 
 	double bv = 1.0/(KAPPAv*Maturity) * (1.0-exp(-KAPPAv*Maturity)); 
 	double av = (1.0-bv) * thetav; 
 
-	TDenseMatrix KAPPA_inv; 
-	try {
-		KAPPA_inv = Inverse(KAPPA); 
-	}
-	catch(...) {
-		return false; 
-	}
-	TDenseVector sigq2 = sigq + TransposeMultiply(KAPPA_inv*SIGMA, rho1_pi); 
-	double H0 = InnerProduct(sigq2,sigq2) - 2.0*InnerProduct(sigq2, rho1_pi, Transpose(KAPPA_inv*(Identity(Nfac)-tmp_expm)*KAPPA_maturity_inv*SIGMA) ) + InnerProduct(rho1_pi,rho1_pi, KAPPA_inv*(1.0/Maturity)*OMEGA_x*Transpose(KAPPA_inv)); 
+	TDenseVector sigq2 = sigq + TransposeMultiply(Inv_KAPPA*SIGMA, rho1_pi); 
+	double H0 = InnerProduct(sigq2,sigq2) - 2.0*InnerProduct(sigq2, rho1_pi, Transpose(Inv_KAPPA*(Identity(Nfac)-tmp_expm)*KAPPA_maturity_inv*SIGMA) ) + InnerProduct(rho1_pi,rho1_pi, KAPPA_maturity_inv*OMEGA_x*Transpose(Inv_KAPPA)); 
 
 	double tmp1 = rhov_pi*SIGMAv/KAPPAv; 
 	double H1 = (1.0+2.0*rho*tmp1+tmp1*tmp1)-2.0*(rho+tmp1)*tmp1/(KAPPAv*Maturity)*(1.0-exp(-KAPPAv*Maturity))+tmp1*tmp1/(2.0*KAPPAv*Maturity)*(1.0-exp(-2*KAPPAv*Maturity));
