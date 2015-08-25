@@ -13,7 +13,7 @@ delta_options(), aI_Q(), bI_Q()
 
 CAR_DKW_o::CAR_DKW_o(const CAR_DKW_o &right) :
 CAR_DKW(right), 
-delta_options(right.delta_options), aI_Q(), bI_Q()
+delta_options(right.delta_options), aI_Q(right.aI_Q), bI_Q(right.bI_Q)
 {
 	delta_options.CopyContent(right.delta_options); 
 	aI_Q.CopyContent(right.aI_Q); 
@@ -43,13 +43,13 @@ bool CAR_DKW_o::SetParameters_FromVectorToMatrix(const TDenseVector &_parameter)
 {
 	if (_parameter.Dimension() < NumberParameters())
 		return false; 
-	if (!CAR_DKW::SetParameters_FromVectorToMatrix(_parameter.SubVector(0,CAR_DKW::NumberParameters()-1))
+	if (!CAR_DKW::SetParameters_FromVectorToMatrix(_parameter.SubVector(0,CAR_DKW::NumberParameters()-1)) )
 		return false; 
 
 	int counter = CAR_DKW::NumberParameters(); 
 	if (delta_options.Dimension() != dataP->MATgrid_options.Dimension())
 		delta_options.Resize(dataP->MATgrid_options.Dimension()); 
-	delta_options.Insert(0, parameter, counter, counter+delta_options.Dimension()-1); 
+	delta_options.Insert(0, _parameter, counter, counter+delta_options.Dimension()-1); 
 	counter += delta_options.Dimension(); 
 
 	return true; 
@@ -74,7 +74,7 @@ bool CAR_DKW_o::SetParameters_InitializeABOmega()
                 TDenseMatrix temp_by;
                 if (!YieldFacLoad(temp_ay, temp_by, KAPPA_rn, Inv_KAPPA_rn, Inv_Kron_KAPPA_rn, SIGMA, KAPPAtheta, rho0, rho1, lambda0,TDenseVector(1,MAT)))
                         return false;
-                TDenseVector temp_by_vector = -MAT * temp_by.RowVector(0);
+                TDenseVector temp_by_vector = temp_by.RowVector(0); // -MAT * temp_by.RowVector(0);
 
                 theta_Q = Multiply(Inv_KAPPA_rn, KAPPAtheta-SIGMA*lambda0+MultiplyTranspose(SIGMA,SIGMA)*temp_by_vector);
 
@@ -93,9 +93,59 @@ bool CAR_DKW_o::SetParameters_InitializeABOmega()
 
 TDenseVector CAR_DKW_o::ObservationEquation(int j, const TDenseVector &xt_tm1)
 {
-	TDenseVector model_IE_options = CAR_DKW::ObservationEquation(j, xt_tm1); 
+	TDenseVector model_IE_options_vector = CAR_DKW::ObservationEquation(j, xt_tm1); 
 	if (dataP->IE_options(j,0) != MINUS_INFINITY)
 	{
-		
+		TDenseMatrix tmp_b(b);
+                tmp_b.CopyContent(b);
+                b.Zeros(tmp_b.rows+bI_Q.rows, tmp_b.cols);
+                b.Insert(0,0,tmp_b);
+                b.Insert(tmp_b.rows, 1, bI_Q);
+
+                TDenseVector tmp_a(a);
+                tmp_a.CopyContent(a);
+                a.Zeros(tmp_a.Dimension()+aI_Q.Dimension());
+                a.Insert(0, tmp_a);
+                a.Insert(tmp_a.Dimension(), aI_Q);
+
+                TDenseVector tmp_y_obs(y_obs);
+                tmp_y_obs.CopyContent(y_obs);
+		y_obs.Zeros(tmp_y_obs.Dimension()+2);
+		y_obs.Insert(0,tmp_y_obs); 
+		y_obs(tmp_y_obs.Dimension()) = (dataP->IE_options(j,0)+dataP->IE_options(j,1)+dataP->IE_options(j,2))/3.0;
+                y_obs(tmp_y_obs.Dimension()+1) = (dataP->IE_options(j,3)+dataP->IE_options(j,5)+dataP->IE_options(j,5))/3.0;
+
+		TDenseMatrix tmp_R(R);
+                tmp_R.CopyContent(R);
+                R.Zeros(tmp_R.rows+delta_options.Dimension(), tmp_R.cols+delta_options.Dimension());
+                R.Insert(0,0,tmp_R);
+                for (int i=0; i<delta_options.Dimension(); i++)
+                        R(i+tmp_R.rows, i+tmp_R.cols) = delta_options(i) * delta_options(i);
+
+                model_IE_options_vector = aI_Q + bI_Q * xt_tm1.SubVector(1,3);
 	}
+	return model_IE_options_vector; 
 }
+
+bool CAR_DKW_o::SetAsFixed(const TDenseVector &v, const std::string &which_one)
+{
+        TIndex local_fixed_index;
+        int offset;
+        if (iequals(which_one, std::string("delta_options")) )
+        {
+                offset = CAR_DKW::NumberParameters();
+                local_fixed_index = FixedVariableParameter(delta_options, v, offset);
+                FixedIndex.UniqMerge(local_fixed_index);
+                if_variable_index_set = false;
+                return true;
+        }
+        else
+                return CAR_DKW::SetAsFixed(v, which_one);
+}
+
+int CAR_DKW_o::NumberParameters() const
+{
+        return CAR_DKW::NumberParameters() + dataP->MATgrid_options.Dimension();
+}
+
+

@@ -141,7 +141,7 @@ bool CAR_DKWl_o::SetAsFixed(const TDenseVector &v, const std::string &which_one)
 	int offset; 
 	if (iequals(which_one, std::string("delta_options")) )
 	{
-		offset = CAR_DKW::NumberParameters(); 
+		offset = CAR_DKWl::NumberParameters(); 
                 local_fixed_index = FixedVariableParameter(delta_options, v, offset);
 		FixedIndex.UniqMerge(local_fixed_index);
         	if_variable_index_set = false;

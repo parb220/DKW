@@ -94,11 +94,11 @@ pvarLU=[      0.8604           1.e-4  10;   % KAPPA(1,1)
               0.2        -5   5 % delta_option(1)
               0.2        -5   5 % delta_option(2)
                  ];                 
-% pvar=pvarLU(:,1);
+pvar=pvarLU(:,1);
 pvarL=pvarLU(:,2);
 pvarU=pvarLU(:,3);
   
-load '.\results\pvar_DKW_option_9015.mat';
+%load '.\results\pvar_DKW_option_9015.mat';
 
 j=1;
 for i=1:length(paras_vec)

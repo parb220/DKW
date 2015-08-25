@@ -181,7 +181,7 @@ bool CAR_DKWl::SetParameters_InitializeABOmega()
         for (int i=0; i<OMEGA_x_ss.cols; i++)
                 OMEGA_x_ss.InsertColumnMatrix(0, i, tmpVec.SubVector(i*OMEGA_x_ss.rows, (i+1)*OMEGA_x_ss.rows-1)); 
 
-	tmp_Omega = Bx * SIGMA * Transpose(SIGMA) * Transpose(Bx) - SIGMA * Transpose(SIGMA);
+	tmp_Omega = Bx * tmp_Omega * Transpose(Bx) - tmp_Omega;
         tmpVec.Zeros(tmp_Omega.rows*tmp_Omega.cols);
         for (int i=0; i<tmp_Omega.cols; i++)
                 tmpVec.Insert(i*tmp_Omega.rows, tmp_Omega.ColumnVector(i));

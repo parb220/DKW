@@ -19,13 +19,12 @@ protected:
 public:
         using CAR_DKW::SetAsFixed;
         virtual bool SetAsFixed(const TDenseVector &v, const std::string &which_one);
-        virtual bool SetAsFixed(double v, const std::string &which_one);
 
         virtual int NumberParameters() const;
         virtual TDenseVector GetParameters();
 
         CAR_DKW_o(int _Nfac=0, CData_FRBA *_dataP=NULL);
-        CAR_DKW_o(const CAR_DKWl &right);
+        CAR_DKW_o(const CAR_DKW_o &right);
         virtual ~CAR_DKW_o() {};
 }; 
 #endif
