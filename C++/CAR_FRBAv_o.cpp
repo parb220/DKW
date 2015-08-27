@@ -271,13 +271,14 @@ bool CAR_FRBAv_o::CapsFacLoad_FRBAv_o(TDenseVector &ay_caps, TDenseMatrix &by_ca
 	cy_caps.Zeros(Ncaps); 
 	model_prc_caps.Zeros(Ncaps); 
 
+	TDenseMatrix lambda1 = SIGMA_inverse * SIGMAlambda1; 
     	TDenseVector rho1_Q = rho1_pi - TransposeMultiply(lambda1,sigq);
-	TDenseVector sigq2 = sigq + TransposeMultiply(Inv_KAPPA_rn, rho1_Q);
+	TDenseVector sigq2 = sigq + TransposeMultiply(Inv_KAPPA_rn*SIGMA, rho1_Q);
 	for (int i_tau=0; i_tau<Nmat; i_tau++)
 	{
 		double tau = Maturity(i_tau); 
 		// KAPPA_Q = KAPPA_rn
-		TDenseVector  theta_Q = Inv_KAPPA_rn * (KAPPA*theta - SIGMA*lambda0 - MultiplyTranspose(SIGMA,SIGMA)*by.RowVector(i_tau)*tau);
+		TDenseVector  theta_Q = Inv_KAPPA_rn * ((KAPPA*theta - SIGMA*lambda0 - MultiplyTranspose(SIGMA,SIGMA)*by.RowVector(i_tau))*tau);
 		
 		double KAPPAv_Q = KAPPAv + sqrt(1.0-rho*rho)*SIGMAv*gamv + rho*SIGMAv*gamvx + SIGMAv*SIGMAv*cy(i_tau)*tau;
      		double thetav_Q = KAPPAv*thetav/KAPPAv_Q; 
@@ -305,7 +306,7 @@ bool CAR_FRBAv_o::CapsFacLoad_FRBAv_o(TDenseVector &ay_caps, TDenseMatrix &by_ca
 		for (int i=0; i<Nfac; i++)
 			OMEGA_x_Q.InsertColumnMatrix(0,i,Xx_vector, i*Nfac,(i+1)*Nfac-1); 
 
-		double H0 = InnerProduct(sigq2,sigq2) - 2.0*InnerProduct((Inv_KAPPA_rn*(Identity(Nfac)-Bx)*(1.0/tau)*Inv_KAPPA_rn*SIGMA)*sigq2, rho1_Q)  + InnerProduct(rho1_Q, Inv_KAPPA_rn*((1.0/tau)*OMEGA_x_Q)*Transpose(Inv_KAPPA_rn)*rho1_Q); 
+		double H0 = InnerProduct(sigq2,sigq2) - 2.0*InnerProduct(Inv_KAPPA_rn* ((Identity(Nfac)-Bx)*(1.0/tau)*(Inv_KAPPA_rn*(SIGMA*sigq2))), rho1_Q)  + InnerProduct(rho1_Q, Inv_KAPPA_rn*(((1.0/tau)*OMEGA_x_Q)* (Transpose(Inv_KAPPA_rn)*rho1_Q)) ); 
 		double tmp1 = rhov_Q*SIGMAv/KAPPAv_Q;
     		double H1 = (1.0 + 2.0*rho*tmp1+tmp1*tmp1) - 2.0*(rho+tmp1)*tmp1/(KAPPAv_Q*tau)*(1-exp(-1.0*KAPPAv_Q*tau)) + tmp1*tmp1/(2.0*KAPPAv_Q*tau)*(1.0-exp(-2.0*KAPPAv_Q*tau));
     		double H2 = exp(-1.0*KAPPAv_Q*tau)*((1.0+2.0*rho*tmp1+tmp1*tmp1)/(KAPPAv_Q*tau)*(exp(KAPPAv_Q*tau)-1.0) - 2.0*(rho+tmp1)*tmp1+tmp1*tmp1/(KAPPAv_Q*tau)*(1.0-exp(-KAPPAv_Q*tau)));
@@ -349,7 +350,7 @@ bool CAR_FRBAv_o::CapsFacLoad_FRBAv_o(TDenseVector &ay_caps, TDenseMatrix &by_ca
 
         		int id = i_k+(i_tau-1)*Nk;
         		ay_caps(id) = -tau*ay(i_tau) + tmp_a- InnerProduct(tmp_b, xt_tm1)- tmp_c*vt_tm1;
-        		by_caps.InsertRowMatrix(id,0, tau*by.RowVector(i_tau)+tmp_b);
+        		by_caps.InsertRowMatrix(id,0, -tau*by.RowVector(i_tau)+tmp_b);
         		cy_caps(id) = -tau*cy(i_tau) + tmp_c;
 
         		model_prc_caps(id) = -tau*(ay(i_tau)+InnerProduct(by.RowVector(i_tau),xt_tm1)+cy(i_tau)*vt_tm1)+tmp_a;
