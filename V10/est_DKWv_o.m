@@ -110,12 +110,12 @@ pvarLU=[      0.8604           1.e-4  10;   % KAPPA(1,1)
 
 
 
-% pvar=pvarLU(:,1);
-% pvarL=pvarLU(:,2);
-% pvarU=pvarLU(:,3);
+ pvar=pvarLU(:,1);
+ pvarL=pvarLU(:,2);
+ pvarU=pvarLU(:,3);
 
 % load '.\results\pvar_DKWv_o_9012.mat';
-load '.\pvar_DKWv_option.mat';
+%load './pvar_DKWv_option.mat';
 
 j=1;
 for i=1:length(paras_vec)

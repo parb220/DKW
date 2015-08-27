@@ -41,7 +41,7 @@ TDenseVector CAR_DKW_o::GetParameters()
 
 bool CAR_DKW_o::SetParameters_FromVectorToMatrix(const TDenseVector &_parameter)
 {
-	if (_parameter.Dimension() < NumberParameters())
+	if (_parameter.Dimension() < CAR_DKW_o::NumberParameters())
 		return false; 
 	if (!CAR_DKW::SetParameters_FromVectorToMatrix(_parameter.SubVector(0,CAR_DKW::NumberParameters()-1)) )
 		return false; 
